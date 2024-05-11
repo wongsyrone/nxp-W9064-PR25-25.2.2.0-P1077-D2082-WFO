@@ -1,0 +1,61 @@
+#!/bin/sh /etc/rc.common
+
+START=100
+STOP=15
+
+SERVICE_USE_PID=1
+SERVICE_WRITE_PID=1
+SERVICE_DAEMONIZE=0
+EXTRA_COMMANDS="rules"
+
+
+pin()
+{
+	local device_pin
+	config_get device_pin $1 device_pin
+	cd /var/run/hostapd
+	for socket in *; do
+		[ -S "$socket" ] || continue
+		hostapd_cli -i "$socket" wps_pin any $device_pin 120
+	done
+}
+
+
+pbc() {
+	cd /var/run/hostapd
+	for socket in *; do
+		[ -S "$socket" ] || continue
+		hostapd_cli -i "$socket" wps_pbc
+	done
+}
+
+
+stat() {
+	cd /var/run/hostapd
+	for socket in *; do
+		[ -S "$socket" ] || continue
+		hostapd_cli -i "$socket" wps_get_status
+	done
+}
+
+
+start() {
+	if [ $1 == "pin" ]; then
+		stop
+		pin
+	elif [ $1 == "pbc" ]; then
+		stop
+		pbc
+	elif [ $1 == "stat" ]; then
+		stat
+	fi
+}
+
+
+stop() {
+	cd /var/run/hostapd
+	for socket in *; do
+		[ -S "$socket" ] || continue
+		hostapd_cli -i "$socket" wps_cancel
+	done
+}

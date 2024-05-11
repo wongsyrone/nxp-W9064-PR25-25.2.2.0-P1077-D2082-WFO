@@ -1,0 +1,28 @@
+#!/bin/sh /etc/rc.common
+
+START=15
+STOP=15
+
+SERVICE_USE_PID=1
+SERVICE_WRITE_PID=1
+SERVICE_DAEMONIZE=0
+EXTRA_COMMANDS="rules"
+
+start() {
+	. /lib/functions.sh
+	. /lib/functions/system.sh
+
+	ifconfig wdev0 up
+	iwconfig wdev0 channel 36
+	iwconfig wdev0 commit
+	ifconfig wdev1 up
+	iwconfig wdev1 channel 6
+	iwconfig wdev1 commit
+#	iwpriv wdev0 autochannel 1
+#	iwpriv wdev1 autochannel 1
+
+	if [ ! -f /etc/config/wireless ]; then
+		wifi detect > /etc/config/wireless
+	fi
+}
+

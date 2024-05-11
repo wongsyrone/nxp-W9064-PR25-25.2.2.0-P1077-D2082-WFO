@@ -1,0 +1,4 @@
+config MARVELL_WLAN_SOURCES
+	bool "Compile the driver from source"
+	depends on PACKAGE_kmod-wlan-v9_8964
+	default n
