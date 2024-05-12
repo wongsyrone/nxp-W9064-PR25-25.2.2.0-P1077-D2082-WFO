@@ -1,0 +1,17 @@
+NXP Software Content Register
+Release Date: July 2022
+
+Package:                   88W906X-Release-PR25.6.25.0-P1114-D2119.00
+Outgoing License:          GNU General Public License v2.0 only
+License File:              COPYING
+Type of content:           Source code
+Description and comments:  W9064 Linux Driver
+Origin:                    NXP (GPL-2.0-only)
+                           Linux Kernel (GPL-2.0-only) - https://www.kernel.org/
+                           OpenBSD-src (BSD-2-Clause-FreeBSD) - https://github.com/Bluerise/OpenBSD-src/
+                           wpa_supplicant - IEEE 802.1X, WPA, WPA2, RSN, IEEE 802.11i (BSD-3-Clause) - https://hostap.epitest.fi/wpa_supplicant/
+                           kismac (GPL-2.0-or-later) - https://code.google.com/archive/p/kismac/
+                           RFC1321-based (RSA-free) MD5 library (Zlib) - https://sourceforge.net/projects/libmd5-rfc/
+                           SIFT-IO (GPL-2.0-or-later) - http://sourceforge.net/projects/sift-io/
+                           myworks (GPL-2.0-or-later) - http://github.com/liunx/myworks/
+                           zlib (Zlib) - https://tracker.debian.org/pkg/zlib
