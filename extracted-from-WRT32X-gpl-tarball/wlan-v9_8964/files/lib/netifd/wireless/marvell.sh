@@ -344,8 +344,10 @@ marvell_setup_vif() {
 					;;
 				esac
 			fi
-			append hostapd_cfg "track_sta_max_num=100" "$N"
-			append hostapd_cfg "track_sta_max_age=180" "$N"
+			if [ "$bandsteer" == "1" ]; then
+				append hostapd_cfg "track_sta_max_num=100" "$N"
+				append hostapd_cfg "track_sta_max_age=180" "$N"
+			fi
 		;;
 		"11g")
 			append hostapd_cfg "hw_mode=g" "$N"
@@ -614,18 +616,18 @@ marvell_setup_vif() {
 		wpsdevice=$(uci get linksys.@hardware[0].modelNumber)
 		append hostapd_cfg "device_name=$wpsdevice" "$N"
 		append hostapd_cfg "model_name=$wpsdevice" "$N"
+		append hostapd_cfg "model_number=$wpsdevice" "$N"
 		wpsserial=$(uci get linksys.@hardware[0].serial_number)
 		append hostapd_cfg "serial_number=$wpsserial" "$N"
 		wpsmanuf=$(uci get linksys.@hardware[0].manufacturer)
 		append hostapd_cfg "manufacturer=$wpsmanuf" "$N"
 		append hostapd_cfg "wps_pin_requests=/var/run/hostapd_wps_pin_requests" "$N"
-		append hostapd_cfg "config_methods=label push_button keypad virtual_push_button physical_push_button" "$N"
+		append hostapd_cfg "config_methods=label push_button keypad physical_push_button" "$N"
 		wpsuuid=$(uci get linksys.@hardware[0].uuid_key)
 		append hostapd_cfg "uuid=$wpsuuid" "$N"
 		append hostapd_cfg "upnp_iface=br-lan" "$N"
 		wpsappin=$(uci get linksys.@hardware[0].wps_device_pin)
 		append hostapd_cfg "ap_pin=$wpsappin" "$N"
-		append hostapd_cfg "upnp_iface=br-lan"
 		append hostapd_cfg "friendly_name=$wpsdevice" "$N"
 	fi
 
@@ -738,13 +740,24 @@ marvell_hostapd_cleanup() {
 }
 
 drv_marvell_cleanup() {
+	lk="/var/lock/marvell.lock"
+	while true
+	do
+		pid=`cat $lk`
+		echo `pidof lock` | grep $pid
+		if [ $? == 0 ]; then
+			lock -u $lk
+			sleep 1
+		else
+			break
+		fi
+	done
 	logger "drv_marvell_cleanup: $1"
 	logger $(json_dump)
 }
 
 drv_marvell_setup() {
 	lk="/var/lock/marvell.lock"
-	lock -w $lk
 	lock $lk
 	logger "drv_marvell_setup: $1"
 	local vif_ifaces vif_iface
@@ -768,26 +781,26 @@ drv_marvell_setup() {
 
 	for_each_interface "sta ap" marvell_setup_vif
 
-	#if [ -f /var/run/hostapd.pid ]; then
-	#	kill -9 $(cat /var/run/hostapd.pid)
-	#	rm -rf /var/run/hostapd/
-	#	rm -rf /var/run/hostapd.pid
-	#fi
-	#if [ "$(find /var/run/ -name hostapd-wdev*.conf)" != "" ]; then
-	#	sleep 1
-	#	/usr/sbin/hostapd -P /var/run/hostapd.pid -B `ls /var/run/hostapd-wdev*.conf`
-	#fi
-
-	if [ "$(find /var/run/ -name hostapd-wdev${1#radio}*.conf)" != "" ]; then
-		/usr/sbin/hostapd -P /var/run/wdev${1#radio}.pid -B `ls /var/run/hostapd-wdev${1#radio}*.conf`
-		ret="$?"
-		wireless_add_process "$(cat /var/run/wdev${1#radio}.pid)" "/usr/sbin/hostapd" 1
-		[ "$ret" != 0 ] && {
-			wireless_setup_failed HOSTAPD_START_FAILED
-			lock -u $lk
-			return
-		}
+	if [ -f /var/run/hostapd.pid ]; then
+		kill -9 $(cat /var/run/hostapd.pid)
+		rm -rf /var/run/hostapd/
+		rm -rf /var/run/hostapd.pid
 	fi
+	if [ "$(find /var/run/ -name hostapd-wdev*.conf)" != "" ]; then
+		sleep 1
+		/usr/sbin/hostapd -P /var/run/hostapd.pid -B `ls /var/run/hostapd-wdev*.conf`
+	fi
+
+	#if [ "$(find /var/run/ -name hostapd-wdev${1#radio}*.conf)" != "" ]; then
+	#	/usr/sbin/hostapd -P /var/run/wdev${1#radio}.pid -B `ls /var/run/hostapd-wdev${1#radio}*.conf`
+	#	ret="$?"
+	#	wireless_add_process "$(cat /var/run/wdev${1#radio}.pid)" "/usr/sbin/hostapd" 1
+	#	[ "$ret" != 0 ] && {
+	#		wireless_setup_failed HOSTAPD_START_FAILED
+	#		lock -u $lk
+	#		return
+	#	}
+	#fi
 
 	wireless_set_up
 	lock -u $lk
@@ -799,6 +812,18 @@ list_phy_interfaces() {
 }
 
 drv_marvell_teardown() {
+	lk="/var/lock/marvell.lock"
+	while true
+	do
+		pid=`cat $lk`
+		echo `pidof lock` | grep $pid
+		if [ $? == 0 ]; then
+			lock -u $lk
+			sleep 1
+		else
+			break
+		fi
+	done
 	logger "drv_marvell_teardown: $1"
 	echo $(json_dump)
 

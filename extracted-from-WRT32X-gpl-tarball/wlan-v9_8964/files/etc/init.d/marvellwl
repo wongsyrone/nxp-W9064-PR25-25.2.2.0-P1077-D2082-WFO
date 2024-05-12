@@ -18,11 +18,42 @@ start() {
 	ifconfig wdev1 up
 	iwconfig wdev1 channel 6
 	iwconfig wdev1 commit
-#	iwpriv wdev0 autochannel 1
-#	iwpriv wdev1 autochannel 1
 
 	if [ ! -f /etc/config/wireless ]; then
 		wifi detect > /etc/config/wireless
 	fi
+
+	CERT=$(uci get linksys.@hardware[0].cert_region)
+
+	case "$CERT" in
+		CN)
+			if [ -f /etc/config/wireless ]; then
+				uci set wireless.@wifi-device[0].regioncode=0x91
+				uci set wireless.@wifi-device[1].regioncode=0x91
+				uci commit wireless
+			fi
+			iwpriv wdev0 setcmd "loadpwrgrpstbl /etc/mrvl/145.ini"
+			iwpriv wdev1 setcmd "loadpwrgrpstbl /etc/mrvl/145.ini"
+		;;
+		AU)
+			if [ -f /etc/config/wireless ]; then
+				uci set wireless.@wifi-device[0].regioncode=0x81
+				uci set wireless.@wifi-device[1].regioncode=0x81
+				uci commit wireless
+			fi
+			iwpriv wdev0 setcmd "loadpwrgrpstbl /etc/mrvl/129.ini"
+			iwpriv wdev1 setcmd "loadpwrgrpstbl /etc/mrvl/129.ini"
+		;;
+		AH)
+			if [ -f /etc/config/wireless ]; then
+				uci set wireless.@wifi-device[0].regioncode=0x90
+				uci set wireless.@wifi-device[1].regioncode=0x90
+				uci commit wireless
+			fi
+			iwpriv wdev0 setcmd "loadpwrgrpstbl /etc/mrvl/144.ini"
+			iwpriv wdev1 setcmd "loadpwrgrpstbl /etc/mrvl/144.ini"
+		;;
+	esac
+
 }
 

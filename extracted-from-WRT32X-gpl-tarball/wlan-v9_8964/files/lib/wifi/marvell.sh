@@ -136,6 +136,24 @@ detect_marvell() {
 			bandwith="VHT80"
 			essid="OpenWrt"
 		fi
+
+		CERT=$(uci get linksys.@hardware[0].cert_region)
+
+		case "$CERT" in
+			CN)
+				regioncode="0x91"
+			;;
+			AU)
+				regioncode="0x81"
+			;;
+			AH)
+				regioncode="0x90"
+			;;
+			*)
+				regioncode="0x10"
+			;;
+esac
+
 		cat <<EOF
 config wifi-device  radio${i}
 	option type     marvell
@@ -169,7 +187,7 @@ config wifi-device  radio${i}
 	option ratema 2
 	option ratemu 2
 	option raten 271
-	option regioncode 0x10
+	option regioncode ${regioncode}
 	option rifs 0
 	option rts 2347
 	option short_gi_20 0

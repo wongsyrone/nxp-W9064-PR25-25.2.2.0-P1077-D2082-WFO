@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wlan-v9
-PKG_RELEASE=3
+PKG_RELEASE=4
 
 PKG_LICENSE:=Proprietary
 PKG_LICENSE_FILES:=
@@ -40,7 +40,7 @@ define Build/Prepare
 
 ifdef CONFIG_MARVELL_WLAN_SOURCES
 	git clone git@github.com:wrt32x/private.git $(BUILD_DIR)/_private
-	cd $(BUILD_DIR)/_private && git checkout 9a69d90b6eb09deab506e0775867c7f19e46175a
+	cd $(BUILD_DIR)/_private && git checkout 06e8fdfde48b51f86d60e8fd7dc6cab96022cc81
 	$(CP) $(BUILD_DIR)/_private/wlan-v9/* $(PKG_BUILD_DIR)
 	rm -rf $(BUILD_DIR)/_private
 	find $(PKG_BUILD_DIR) -type f -exec chmod +w {} \;
@@ -71,6 +71,8 @@ define KernelPackage/wlan-v9_8964/install
 		$(INSTALL_DIR) $(1)/lib/firmware
 		$(INSTALL_DIR) $(1)/lib/firmware/wlan-v9_8964
 		$(INSTALL_DIR) $(1)/etc
+		$(INSTALL_DIR) $(1)/etc/mrvl
+		$(CP) ./files/etc/mrvl/* $(1)/etc/mrvl/
 		$(INSTALL_DIR) $(1)/etc/init.d
 		$(CP) $(PKG_BUILD_DIR)/*.bin $(1)/lib/firmware/wlan-v9_8964/
 		$(CP) ./files/etc/* $(1)/etc
