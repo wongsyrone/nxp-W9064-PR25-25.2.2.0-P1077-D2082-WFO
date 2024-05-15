@@ -1,31 +1,31 @@
 /** @file ap8xLnxIntf.c
-  *
-  * @brief This file contains WLAN driver specific defines etc.
-  *
-  * Copyright 2005-2020 NXP
-  *
-  * This software file (the "File") is distributed by NXP
-  * under the terms of the GNU General Public License Version 2, June 1991
-  * (the "License").  You may use, redistribute and/or modify the File in
-  * accordance with the terms and conditions of the License, a copy of which
-  * is available by writing to the Free Software Foundation, Inc.,
-  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or on the
-  * worldwide web at http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
-  *
-  * THE FILE IS DISTRIBUTED AS-IS, WITHOUT WARRANTY OF ANY KIND, AND THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
-  * ARE EXPRESSLY DISCLAIMED.  The License provides additional details about
-  * this warranty disclaimer.
-  *
-  */
+ * IMPORTANT
+ * @brief This file contains WLAN driver specific defines etc.
+ *
+ * Copyright 2005-2020 NXP
+ *
+ * This software file (the "File") is distributed by NXP
+ * under the terms of the GNU General Public License Version 2, June 1991
+ * (the "License").  You may use, redistribute and/or modify the File in
+ * accordance with the terms and conditions of the License, a copy of which
+ * is available by writing to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or on the
+ * worldwide web at http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+ *
+ * THE FILE IS DISTRIBUTED AS-IS, WITHOUT WARRANTY OF ANY KIND, AND THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
+ * ARE EXPRESSLY DISCLAIMED.  The License provides additional details about
+ * this warranty disclaimer.
+ *
+ */
 
 /** include files **/
 #include <linux/module.h>
 #include <linux/ethtool.h>
 #include <linux/vmalloc.h>
 #ifdef SOC_W906X
-//PCI reset test
-// fix compile error for kernel 4.7.3
+// PCI reset test
+//  fix compile error for kernel 4.7.3
 #include <linux/of_gpio.h>
 #include <linux/pci.h>
 #endif /* SOC_W906X */
@@ -42,7 +42,7 @@
 #include "ap8xLnxRecv.h"
 #ifdef CB_SUPPORT
 #include "ap8xLnxCB.h"
-#endif //CB_SUPPORT
+#endif // CB_SUPPORT
 #ifdef SOC_W906X
 #include "ap8xLnxAcnt.h"
 #endif
@@ -54,12 +54,12 @@
 #include "mib.h"
 #include "wlvmac.h"
 #include <linux/workqueue.h>
-#if defined (MFG_SUPPORT)
+#if defined(MFG_SUPPORT)
 #include "wl_mib.h"
 #endif
 #include "wl_hal.h"
 #include "wlApi.h"
-#include "smeMain.h"		// MRVL_DFS
+#include "smeMain.h" // MRVL_DFS
 #ifdef CLIENT_SUPPORT
 #include "linkmgt.h"
 #include "ap8xLnxWlLog.h"
@@ -82,7 +82,7 @@
 #include <linux/fs.h>
 #include <linux/debugfs.h>
 #include <linux/slab.h>
-#include <linux/mm.h>		/* mmap related stuff */
+#include <linux/mm.h> /* mmap related stuff */
 #include <linux/io.h>
 #include <linux/of.h>
 #ifdef MV_NSS_SUPPORT
@@ -97,12 +97,13 @@
 #endif /* AIRTIME_FAIRNESS */
 #ifdef IEEE80211K
 #include "msan_report.h"
-#endif //IEEE80211K
+#endif // IEEE80211K
 #ifdef CONFIG_MARVELL_MOCHI_DRIVER
 #include <linux/mci_if.h>
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 4, 120)
-enum mci_status {
+enum mci_status
+{
 	MCI_OK,
 	MCI_FAIL,
 	MCI_PHY_TRAIN_FAIL,
@@ -117,13 +118,17 @@ enum mci_status {
 #endif
 
 #ifndef VM_RESERVED
-#define  VM_RESERVED   (VM_DONTEXPAND | VM_DONTDUMP)
+#define VM_RESERVED (VM_DONTEXPAND | VM_DONTDUMP)
 #endif
 /** local definitions **/
 /* Match table for of_platform binding */
 static const struct of_device_id wldriver_of_match[] = {
-	{.compatible = "mrvl,sc5",},
-	{.compatible = "marvell,sc5",},
+	{
+		.compatible = "mrvl,sc5",
+	},
+	{
+		.compatible = "marvell,sc5",
+	},
 	{},
 };
 
@@ -136,8 +141,7 @@ static struct pci_device_id wlid_tbl[MAX_CARDS_SUPPORT + 1] = {
 	{0, 0, 0, 0, 0, 0,
 	 0},
 	{0, 0, 0, 0, 0, 0,
-	 0}
-};
+	 0}};
 
 #else
 static struct pci_device_id wlid_tbl[MAX_CARDS_SUPPORT + 1] __devinitdata = {
@@ -148,8 +152,7 @@ static struct pci_device_id wlid_tbl[MAX_CARDS_SUPPORT + 1] __devinitdata = {
 	{0, 0, 0, 0, 0, 0,
 	 0},
 	{0, 0, 0, 0, 0, 0,
-	 0}
-};
+	 0}};
 #endif
 MODULE_AUTHOR("NXP");
 MODULE_LICENSE("GPL");
@@ -176,22 +179,22 @@ MODULE_PARM_DESC(dbg_max_tx_pending, "Max num of Tx pending pkt");
 unsigned int dbg_max_tx_pend_cnt_per_sta = 4196;
 module_param(dbg_max_tx_pend_cnt_per_sta, uint, 0644);
 MODULE_PARM_DESC(dbg_max_tx_pend_cnt_per_sta,
-		 "Max num of Tx pending pkt per STA");
+				 "Max num of Tx pending pkt per STA");
 
 unsigned int dbg_max_tx_pend_cnt_per_q = 4096;
 module_param(dbg_max_tx_pend_cnt_per_q, uint, 0644);
 MODULE_PARM_DESC(dbg_max_tx_pend_cnt_per_q,
-		 "Max num of Tx pending pkt per Queue");
+				 "Max num of Tx pending pkt per Queue");
 
 unsigned int dbg_max_tx_pend_cnt_per_mgmt_q = 128;
 module_param(dbg_max_tx_pend_cnt_per_mgmt_q, uint, 0644);
 MODULE_PARM_DESC(dbg_max_tx_pend_cnt_per_mgmt_q,
-		 "Max num of Tx pending pkt per Mgmt Queue");
+				 "Max num of Tx pending pkt per Mgmt Queue");
 
 unsigned int dbg_max_tx_pend_cnt_per_bcast_q = 128;
 module_param(dbg_max_tx_pend_cnt_per_bcast_q, uint, 0644);
 MODULE_PARM_DESC(dbg_max_tx_pend_cnt_per_bcast_q,
-		 "Max num of Tx pending pkt per BCAST Queue");
+				 "Max num of Tx pending pkt per BCAST Queue");
 
 unsigned int dbg_tcp_ack_drop_skip = 1;
 module_param(dbg_tcp_ack_drop_skip, uint, 0644);
@@ -204,17 +207,17 @@ MODULE_PARM_DESC(dbg_tx_pend_cnt_ctrl, "Dynamic tx pending control");
 unsigned int dbg_max_tx_pending_lo = 20000;
 module_param(dbg_max_tx_pending_lo, uint, 0644);
 MODULE_PARM_DESC(dbg_max_tx_pending_lo,
-		 "Max num of Tx pending pkt when free mem is low");
+				 "Max num of Tx pending pkt when free mem is low");
 
 unsigned int dbg_max_tx_pend_cnt_per_sta_lo = 1074;
 module_param(dbg_max_tx_pend_cnt_per_sta_lo, uint, 0644);
 MODULE_PARM_DESC(dbg_max_tx_pend_cnt_per_sta_lo,
-		 "Max num of Tx pending pkt per STA when free mem is low");
+				 "Max num of Tx pending pkt per STA when free mem is low");
 
 unsigned int dbg_max_tx_pend_cnt_per_q_lo = 1024;
 module_param(dbg_max_tx_pend_cnt_per_q_lo, uint, 0644);
 MODULE_PARM_DESC(dbg_max_tx_pend_cnt_per_q_lo,
-		 "Max num of Tx pending pkt per Queue when free mem is low");
+				 "Max num of Tx pending pkt per Queue when free mem is low");
 
 module_param(dbg_level, uint, 0644);
 MODULE_PARM_DESC(dbg_level, "Driver debug level");
@@ -235,13 +238,13 @@ unsigned int pci_only;
 module_param(pci_only, uint, 0644);
 MODULE_PARM_DESC(pci_only, "Only PCI interface is enabled");
 
-#if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(ACNT_REC) && defined(SOC_W906X)
 unsigned int rxacnt_idmsg = 0;
 module_param(rxacnt_idmsg, uint, 0644);
 MODULE_PARM_DESC(rxacnt_msg, "Rx Acnt Id Msg");
-#endif //if defined(ACNT_REC) && defined (SOC_W906X)
+#endif // if defined(ACNT_REC) && defined (SOC_W906X)
 
-#if defined(TXACNT_REC) && defined (SOC_W906X)
+#if defined(TXACNT_REC) && defined(SOC_W906X)
 unsigned int txacnt_msg = 0;
 module_param(txacnt_msg, uint, 0644);
 MODULE_PARM_DESC(txacnt_msg, "Tx Acnt Msg");
@@ -277,7 +280,7 @@ module_param(wfo_disable, uint, S_IRUGO);
 MODULE_PARM_DESC(wfo_disable, "Disable wfo function of radio");
 #endif
 
-#define DEF_MAX_RECYCLE_CNT		5000
+#define DEF_MAX_RECYCLE_CNT 5000
 unsigned int max_recycle_cnt = DEF_MAX_RECYCLE_CNT;
 module_param(max_recycle_cnt, uint, 0644);
 MODULE_PARM_DESC(max_recycle_cnt, "Max pkt recycle count");
@@ -294,14 +297,14 @@ MODULE_PARM_DESC(CAL_FILE_PATH, "FS CAL File path");
 #endif
 #define SET_MODULE_OWNER(x)
 
-#define CMD_BUF_SIZE        0x4000
-//#ifdef SSU_SUPPORT
+#define CMD_BUF_SIZE 0x4000
+// #ifdef SSU_SUPPORT
 ///* SSU buffer size 32MB - currently larger than needed ~17MB for max 700*25000 100ms */
-//#define SSU_BUF_SIZE        0x400000
-//#endif
-#define MAX_ISR_ITERATION   1	// 10
+// #define SSU_BUF_SIZE        0x400000
+// #endif
+#define MAX_ISR_ITERATION 1 // 10
 
-//#define BARBADO_RESET
+// #define BARBADO_RESET
 
 #ifdef BARBADO_RESET
 #define WDEV0_RESET_PIN 16
@@ -314,37 +317,37 @@ MODULE_PARM_DESC(CAL_FILE_PATH, "FS CAL File path");
 int use_localadmin_addr = 1;
 module_param(use_localadmin_addr, int, 0644);
 MODULE_PARM_DESC(use_localadmin_addr,
-		 "Use locally administered MAC address for the virtual APs");
+				 "Use locally administered MAC address for the virtual APs");
 
 int wfa_11ax_pf = 0;
 module_param(wfa_11ax_pf, int, S_IRUGO);
 MODULE_PARM_DESC(wfa_11ax_pf, "WFA 11AX Plugfest");
 
 /*dynamic RTS/CTS protection */
-int protect_dynamic = 1;	// dynamic protect check is enabled
+int protect_dynamic = 1; // dynamic protect check is enabled
 module_param(protect_dynamic, int, 0644);
 MODULE_PARM_DESC(protect_dynamic, "enable protection check");
 
-int protect_tx_rate_thres = 0;	//0Mbps
+int protect_tx_rate_thres = 0; // 0Mbps
 module_param(protect_tx_rate_thres, int, 0644);
 MODULE_PARM_DESC(protect_tx_rate_thres,
-		 "Tx rate threshold for protection check");
+				 "Tx rate threshold for protection check");
 
-int protect_rx_rate_thres = 100000;	//100kbps
+int protect_rx_rate_thres = 100000; // 100kbps
 module_param(protect_rx_rate_thres, int, 0644);
 MODULE_PARM_DESC(protect_rx_rate_thres,
-		 "Rx rate threshold for protection check");
+				 "Rx rate threshold for protection check");
 
-int txq_per_sta_timeout = 0;	//0: disable >0: timeout (us)
+int txq_per_sta_timeout = 0; // 0: disable >0: timeout (us)
 module_param(txq_per_sta_timeout, int, 0644);
 MODULE_PARM_DESC(txq_per_sta_timeout,
-		 "WFA 11AX Plugfest: for tx per sta fairly. 0: disable xmit fairly. >0: timeout");
+				 "WFA 11AX Plugfest: for tx per sta fairly. 0: disable xmit fairly. >0: timeout");
 
-int rssi_threshold = 85;	// rssi threshhold
+int rssi_threshold = 85; // rssi threshhold
 module_param(rssi_threshold, int, 0644);
 MODULE_PARM_DESC(rssi_threshold, "rssi threshold");
 
-int rssi_nf_delta = 10;		// rssi nf delta
+int rssi_nf_delta = 10; // rssi nf delta
 module_param(rssi_nf_delta, int, 0644);
 MODULE_PARM_DESC(rssi_nf_delta, "rssi nf delta");
 
@@ -352,15 +355,15 @@ int ext_weight_1611 = 500;
 module_param(ext_weight_1611, int, 0644);
 MODULE_PARM_DESC(ext_weight_1611, "extra weight for 1/6/11");
 
-unsigned int chld_nf_delta = 7;	// channel load and nf delta
+unsigned int chld_nf_delta = 7; // channel load and nf delta
 module_param(chld_nf_delta, uint, 0644);
 MODULE_PARM_DESC(chld_nf_delta, "channel load and noise floor delta");
 
-unsigned int chld_ceil = 12;	// channel load ceil for 40M
+unsigned int chld_ceil = 12; // channel load ceil for 40M
 module_param(chld_ceil, uint, 0644);
 MODULE_PARM_DESC(chld_ceil, "channel load ceil for 40M");
 
-unsigned int abs_nf_floor = 70;	// nf floor for 40M
+unsigned int abs_nf_floor = 70; // nf floor for 40M
 module_param(abs_nf_floor, uint, 0644);
 MODULE_PARM_DESC(abs_nf_floor, "noise floor for 40M");
 
@@ -370,48 +373,53 @@ MODULE_PARM_DESC(abs_cal, "acs calibration");
 
 #define MACH_COMPAT_MAX_LEN 50
 const static char mach_compat[PLATFORM_ID_MAX][MACH_COMPAT_MAX_LEN] = {
-	"marvell,armada7040",	/* A3900/A7K */
-	"marvell,armada8040",	/* A8K */
-	"marvell,armada380",	/* A390 */
-	"marvell,armada38x",	/* A380 */
+	"marvell,armada7040", /* A3900/A7K */
+	"marvell,armada8040", /* A8K */
+	"marvell,armada380",  /* A390 */
+	"marvell,armada38x",  /* A380 */
 };
 
-const static struct intr_info intr_info_tbl_generic = { 0, 32 };
-const static struct intr_info intr_info_tbl_mci = { 0, 32 };
+const static struct intr_info intr_info_tbl_generic = {0, 32};
+const static struct intr_info intr_info_tbl_mci = {0, 32};
 
 const static struct intr_info intr_info_tbl[PLATFORM_ID_MAX] = {
-	{0x1D, 32},		/* PCI: A3900_A7K */
-	{0x1C, 32},		/* PCI: A8K */
-	{0, 16},		/* PCI: A390 */
-	{0, 16},		/* PCI: A380 */
+	{0x1D, 32}, /* PCI: A3900_A7K */
+	{0x1C, 32}, /* PCI: A8K */
+	{0, 16},	/* PCI: A390 */
+	{0, 16},	/* PCI: A380 */
 };
 
 int platform_id = PLATFORM_ID_MAX;
 
 #ifndef __MOD_INC_USE_COUNT
-#define WL_MOD_INC_USE(_m, _err)                                     \
-	if (1 /*isIfUsed == WL_FALSE*/) {                               \
-		isIfUsed++;                                   \
-		if (!try_module_get(_m)) {                                    \
-			printk( "%s: try_module_get?!?\n", __func__); \
-			_err;                                                     \
-		}                                                             \
+#define WL_MOD_INC_USE(_m, _err)                         \
+	if (1 /*isIfUsed == WL_FALSE*/)                      \
+	{                                                    \
+		isIfUsed++;                                      \
+		if (!try_module_get(_m))                         \
+		{                                                \
+			printk("%s: try_module_get?!?\n", __func__); \
+			_err;                                        \
+		}                                                \
 	}
-#define WL_MOD_DEC_USE(_m)                                           \
-	if (isIfUsed ) {                                \
-		--isIfUsed;                                  \
-		module_put(_m);                                               \
+#define WL_MOD_DEC_USE(_m) \
+	if (isIfUsed)          \
+	{                      \
+		--isIfUsed;        \
+		module_put(_m);    \
 	}
 #else
-#define WL_MOD_INC_USE(_m, _err)                                     \
-	if (1 /*isIfUsed == WL_FALSE*/) {                                                           \
-		isIfUsed++;                                                               \
-		MOD_INC_USE_COUNT;                                            \
+#define WL_MOD_INC_USE(_m, _err)    \
+	if (1 /*isIfUsed == WL_FALSE*/) \
+	{                               \
+		isIfUsed++;                 \
+		MOD_INC_USE_COUNT;          \
 	}
-#define WL_MOD_DEC_USE(_m)                                           \
-	if (isIfUsed ) {                                                                \
-		--isIfUsed;                                                              \
-		MOD_DEC_USE_COUNT;                                            \
+#define WL_MOD_DEC_USE(_m) \
+	if (isIfUsed)          \
+	{                      \
+		--isIfUsed;        \
+		MOD_DEC_USE_COUNT; \
 	}
 #endif
 
@@ -439,14 +447,14 @@ extern int ap8x_stat_proc_unregister(struct net_device *dev);
 extern int ap8x_dump_proc_unregister(struct net_device *dev);
 extern int ap8x_remove_folder(void);
 extern vmacApInfo_t *Mac_Init(struct wlprivate *wlp, struct net_device *dev,
-			      char *addr, UINT32 mode, int phyMacId);
+							  char *addr, UINT32 mode, int phyMacId);
 
-extern void MrvlMICErrorHdl(vmacApInfo_t * vmacSta_p,
-			    COUNTER_MEASURE_EVENT event);
-extern void MrvlICVErrorHdl(vmacApInfo_t * vmacSta_p);
-extern extStaDb_Status_e extStaDb_RemoveStaNSendDeauthMsg(vmacApInfo_t * vmac_p,
-							  IEEEtypes_MacAddr_t *
-							  Addr_p);
+extern void MrvlMICErrorHdl(vmacApInfo_t *vmacSta_p,
+							COUNTER_MEASURE_EVENT event);
+extern void MrvlICVErrorHdl(vmacApInfo_t *vmacSta_p);
+extern extStaDb_Status_e extStaDb_RemoveStaNSendDeauthMsg(vmacApInfo_t *vmac_p,
+														  IEEEtypes_MacAddr_t *
+															  Addr_p);
 
 extern void wl_register_dump_func(struct wlprivate_data *wlpd_p);
 extern void wl_unregister_dump_func(struct wlprivate_data *wlpd_p);
@@ -456,9 +464,9 @@ extern void cck_desense_timer_start(struct net_device *netdev);
 extern void cck_desense_timer_stop(struct net_device *netdev);
 #endif /* CCK_DESENSE */
 
-#if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(ACNT_REC) && defined(SOC_W906X)
 static void wlRxInfoHdlr(struct net_device *netdev);
-#endif //#if defined(ACNT_REC) && defined (SOC_W906X)
+#endif // #if defined(ACNT_REC) && defined (SOC_W906X)
 
 /** external data **/
 extern Timer wfa_test_timer;
@@ -471,7 +479,7 @@ static int wlreset_wds(struct net_device *netdev);
 static void wlIntrPoll(struct net_device *netdev);
 #ifdef CLIENT_SUPPORT
 static int wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
-			 unsigned char *ApRootmacAddr_p);
+						 unsigned char *ApRootmacAddr_p);
 static int wlstop_client(struct net_device *netdev);
 static BOOLEAN hook_intr(struct wlprivate *wlpptr, UINT32 isr_id);
 int wlreset_client(struct net_device *netdev);
@@ -496,9 +504,9 @@ int wlConsecTxFail(struct net_device *netdev);
 #ifdef SOC_W906X
 int wlOffChanTask(struct net_device *netdev);
 static void wlOffChannelStop(struct net_device *netdev);
-#else //906X off-channel
+#else  // 906X off-channel
 int wlOffChanDone(struct net_device *netdev);
-#endif //906X off-channel
+#endif // 906X off-channel
 
 /** public data **/
 
@@ -522,25 +530,25 @@ static int wlprobe_pci(struct pci_dev *, const struct pci_device_id *);
 static void wlremove_pci(struct pci_dev *);
 #else
 static int __devinit wlprobe_pci(struct pci_dev *,
-				 const struct pci_device_id *);
+								 const struct pci_device_id *);
 static void __devexit wlremove_pci(struct pci_dev *);
 #endif
 static int wlsuspend_pci(struct pci_dev *, pm_message_t);
 static int wlresume_pci(struct pci_dev *);
 #ifdef WL_DEBUG
 static const char *wlgetAdapterDescription(struct wlprivate *wlpptr, u_int32_t,
-					   u_int32_t);
+										   u_int32_t);
 #endif
 static int wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr);
 #ifdef ENABLE_MONIF
 static int wlInit_monif(struct wlprivate *wlp, unsigned char *macAddr);
 #endif
 
-#define SMAC_CTRLBASE_NSS_MCI_HI_VAL_INTR		0x00
-#define SMAC_CTRLBASE_NSS_PCIE_HI_VAL_INTR		0x20
-#define SMAC_CTRLBASE_NSS_PCIE_HI_VAL_NOINTR	0x30
+#define SMAC_CTRLBASE_NSS_MCI_HI_VAL_INTR 0x00
+#define SMAC_CTRLBASE_NSS_PCIE_HI_VAL_INTR 0x20
+#define SMAC_CTRLBASE_NSS_PCIE_HI_VAL_NOINTR 0x30
 // Default: No interrupt => enable it if necessary
-#define SMAC_CTRLBASE_NSS_PCIE_HI_VAL	SMAC_CTRLBASE_NSS_PCIE_HI_VAL_NOINTR
+#define SMAC_CTRLBASE_NSS_PCIE_HI_VAL SMAC_CTRLBASE_NSS_PCIE_HI_VAL_NOINTR
 
 static const struct dev_pm_ops wldriver_mci_pm_ops = {
 	.suspend = wlsuspend_mci,
@@ -551,10 +559,10 @@ static struct platform_driver wldriver_mci = {
 	.probe = wlprobe_mci,
 	.remove = wlremove_mci,
 	.driver = {
-		   .name = MOD_NAME,
-		   .pm = &wldriver_mci_pm_ops,
-		   .of_match_table = wldriver_of_match,
-		   },
+		.name = MOD_NAME,
+		.pm = &wldriver_mci_pm_ops,
+		.of_match_table = wldriver_of_match,
+	},
 };
 
 static struct pci_driver wldriver_pci = {
@@ -566,7 +574,7 @@ static struct pci_driver wldriver_pci = {
 	.suspend = wlsuspend_pci,
 	.resume = wlresume_pci,
 };
-struct wlprivate_data *global_private_data[MAX_CARDS_SUPPORT] = { NULL };
+struct wlprivate_data *global_private_data[MAX_CARDS_SUPPORT] = {NULL};
 
 U8 gprv_dat_refcnt = 0;
 static int wlopen(struct net_device *);
@@ -597,7 +605,7 @@ static void wltxTimeout_wds(struct net_device *);
 #endif
 
 #ifdef SOC_W906X
-//PCI reset test
+// PCI reset test
 #include <linux/of_gpio.h>
 #include <linux/pci.h>
 
@@ -626,7 +634,8 @@ wl_pcie_reset(struct pci_dev *pdev)
 	/* pcie_link_reset driver support- platform dependant code: a3900a1 AlliesBT V2 */
 	dev_info(&pdev->dev, "pcie link reset:");
 
-	if (armada8k_pcie_link_reset(dev)) {
+	if (armada8k_pcie_link_reset(dev))
+	{
 		dev_info(&pdev->dev, "Cannot re-enable device after reset.\n");
 		return -1;
 	}
@@ -639,8 +648,9 @@ wl_pcie_reset(struct pci_dev *pdev)
 	dev_info(&pdev->dev, "pcie gipo reset:");
 
 	reset_gpio = of_get_named_gpio_flags(dev->of_node,
-					     "reset-gpios", 0, &flags);
-	if (!gpio_is_valid(reset_gpio)) {
+										 "reset-gpios", 0, &flags);
+	if (!gpio_is_valid(reset_gpio))
+	{
 		dev_info(&pdev->dev, "gpio is invalid\n");
 		return -1;
 	}
@@ -661,23 +671,21 @@ wl_pcie_reset(struct pci_dev *pdev)
 
 /* keep track of how many times it is mmapped */
 
-void
-wdev_mmap_open(struct vm_area_struct *vma)
+void wdev_mmap_open(struct vm_area_struct *vma)
 {
-	mmap_info *info = (mmap_info *) vma->vm_private_data;
+	mmap_info *info = (mmap_info *)vma->vm_private_data;
 
 	info->reference++;
 }
 
-void
-wdev_mmap_close(struct vm_area_struct *vma)
+void wdev_mmap_close(struct vm_area_struct *vma)
 {
-	mmap_info *info = (mmap_info *) vma->vm_private_data;
+	mmap_info *info = (mmap_info *)vma->vm_private_data;
 
 	info->reference--;
 }
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(4,10,0)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(4, 10, 0)
 static int
 wdev_mmap_fault(struct vm_fault *vmf)
 {
@@ -694,8 +702,9 @@ wdev_mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	mmap_info *info;
 
 	/* the data is in vma->vm_private_data */
-	info = (mmap_info *) vma->vm_private_data;
-	if (!info->data || vmf->pgoff >= FW_IO_NUM_PAGE) {
+	info = (mmap_info *)vma->vm_private_data;
+	if (!info->data || vmf->pgoff >= FW_IO_NUM_PAGE)
+	{
 		printk("no data\n");
 		return -ENODATA;
 	}
@@ -714,8 +723,7 @@ struct vm_operations_struct wdev_mmap_vm_ops = {
 	.fault = wdev_mmap_fault,
 };
 
-int
-wdev_mmap(struct file *filp, struct vm_area_struct *vma)
+int wdev_mmap(struct file *filp, struct vm_area_struct *vma)
 {
 	vma->vm_ops = &wdev_mmap_vm_ops;
 	vma->vm_flags |= (unsigned long)VM_RESERVED;
@@ -725,8 +733,7 @@ wdev_mmap(struct file *filp, struct vm_area_struct *vma)
 	return 0;
 }
 
-int
-wdev_close(struct inode *inode, struct file *filp)
+int wdev_close(struct inode *inode, struct file *filp)
 {
 	filp->private_data = NULL;
 	return 0;
@@ -738,49 +745,45 @@ AllocSharedMem(struct wlprivate *wlpptr)
 
 	/* obtain new memory */
 
-	if (!wlpptr->wlpd_p->AllocSharedMeminfo.data) {
+	if (!wlpptr->wlpd_p->AllocSharedMeminfo.data)
+	{
 		wlpptr->wlpd_p->AllocSharedMeminfo.data = (UINT8 *)
 #ifdef SOC_W906X
 			wl_dma_alloc_coherent(wlpptr->wlpd_p->dev,
-					      FW_IO_MB_SIZE,
-					      &wlpptr->wlpd_p->
-					      AllocSharedMeminfo.
-					      dataPhysicalLoc,
-					      wlpptr->wlpd_p->dma_alloc_flags);
+								  FW_IO_MB_SIZE,
+								  &wlpptr->wlpd_p->AllocSharedMeminfo.dataPhysicalLoc,
+								  wlpptr->wlpd_p->dma_alloc_flags);
 #else
 			pci_alloc_consistent(wlpptr->pPciDev, FW_IO_MB_SIZE,
-					     &wlpptr->wlpd_p->
-					     AllocSharedMeminfo.
-					     dataPhysicalLoc);
+								 &wlpptr->wlpd_p->AllocSharedMeminfo.dataPhysicalLoc);
 #endif /* SOC_W906X */
 
-		if (wlpptr->wlpd_p->AllocSharedMeminfo.data) {
+		if (wlpptr->wlpd_p->AllocSharedMeminfo.data)
+		{
 			memset(wlpptr->wlpd_p->AllocSharedMeminfo.data, 0,
-			       FW_IO_MB_SIZE);
-//                      printk("Physical loc =%pad \n", &wlpptr->wlpd_p->AllocSharedMeminfo.dataPhysicalLoc);   //0316
+				   FW_IO_MB_SIZE);
+			//                      printk("Physical loc =%pad \n", &wlpptr->wlpd_p->AllocSharedMeminfo.dataPhysicalLoc);   //0316
 		}
 	}
 }
 
-void
-AllocMrvlPriSharedMem(struct wlprivate *wlpptr)
+void AllocMrvlPriSharedMem(struct wlprivate *wlpptr)
 {
-	if (!wlpptr->wlpd_p->MrvlPriSharedMem.data) {
+	if (!wlpptr->wlpd_p->MrvlPriSharedMem.data)
+	{
 		wlpptr->wlpd_p->MrvlPriSharedMem.data = (UINT8 *)
 #ifdef SOC_W906X
 			wl_dma_alloc_coherent(wlpptr->wlpd_p->dev,
-					      sizeof(drv_fw_shared_t),
-					      &wlpptr->wlpd_p->MrvlPriSharedMem.
-					      dataPhysicalLoc,
-					      wlpptr->wlpd_p->dma_alloc_flags);
+								  sizeof(drv_fw_shared_t),
+								  &wlpptr->wlpd_p->MrvlPriSharedMem.dataPhysicalLoc,
+								  wlpptr->wlpd_p->dma_alloc_flags);
 #else
 			pci_alloc_consistent(wlpptr->pPciDev,
-					     sizeof(drv_fw_shared_t),
-					     &wlpptr->wlpd_p->MrvlPriSharedMem.
-					     dataPhysicalLoc);
+								 sizeof(drv_fw_shared_t),
+								 &wlpptr->wlpd_p->MrvlPriSharedMem.dataPhysicalLoc);
 #endif
 	}
-//      printk("mrvl pri mailbox Physical loc =0x%pad \n", &wlpptr->wlpd_p->MrvlPriSharedMem.dataPhysicalLoc);  //0316
+	//      printk("mrvl pri mailbox Physical loc =0x%pad \n", &wlpptr->wlpd_p->MrvlPriSharedMem.dataPhysicalLoc);  //0316
 }
 
 static int
@@ -797,14 +800,12 @@ wdev_open(int cardindex, struct inode *inode, struct file *filp)
 	return 0;
 }
 
-int
-wdev_open0(struct inode *inode, struct file *filp)
+int wdev_open0(struct inode *inode, struct file *filp)
 {
 	return wdev_open(0, inode, filp);
 }
 
-int
-wdev_open1(struct inode *inode, struct file *filp)
+int wdev_open1(struct inode *inode, struct file *filp)
 {
 	return wdev_open(1, inode, filp);
 }
@@ -823,25 +824,23 @@ static const struct file_operations wdev1_fops = {
 
 /************** ACNT related**************/
 
-void
-ACNT_mmap_open(struct vm_area_struct *vma)
+void ACNT_mmap_open(struct vm_area_struct *vma)
 {
-	mmap_info *info = (mmap_info *) vma->vm_private_data;
+	mmap_info *info = (mmap_info *)vma->vm_private_data;
 
 	info->reference++;
 }
 
-void
-ACNT_mmap_close(struct vm_area_struct *vma)
+void ACNT_mmap_close(struct vm_area_struct *vma)
 {
-	mmap_info *info = (mmap_info *) vma->vm_private_data;
+	mmap_info *info = (mmap_info *)vma->vm_private_data;
 
 	info->reference--;
 }
 
 #if defined(SOC_W906X) || defined(NEWDP_ACNT_CHUNKS)
 static u32 SizeOfChunk;
-#if LINUX_VERSION_CODE > KERNEL_VERSION(4,10,0)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(4, 10, 0)
 static int
 ACNT_mmap_fault(struct vm_fault *vmf)
 {
@@ -855,14 +854,15 @@ ACNT_mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	mmap_info *info;
 
 	/* the data is in vma->vm_private_data */
-	info = (mmap_info *) vma->vm_private_data;
-	if (!info->data || vmf->pgoff >= SizeOfChunk / 4096) {
+	info = (mmap_info *)vma->vm_private_data;
+	if (!info->data || vmf->pgoff >= SizeOfChunk / 4096)
+	{
 		printk("no data\n");
 		return 0;
 	}
 	/* get the page */
 	page = virt_to_page(info->data + 4096 * vmf->pgoff);
-	//printk("info = 0x%X  page = 0x%X \n",info, page);
+	// printk("info = 0x%X  page = 0x%X \n",info, page);
 	/* increment the reference count of this page */
 	get_page(page);
 	vmf->page = page;
@@ -877,8 +877,9 @@ ACNT_mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	mmap_info *info;
 
 	/* the data is in vma->vm_private_data */
-	info = (mmap_info *) vma->vm_private_data;
-	if (!info->data || vmf->pgoff >= DEFAULT_ACNT_RING_SIZE / 4096) {
+	info = (mmap_info *)vma->vm_private_data;
+	if (!info->data || vmf->pgoff >= DEFAULT_ACNT_RING_SIZE / 4096)
+	{
 		printk("no data\n");
 		return NULL;
 	}
@@ -898,8 +899,7 @@ struct vm_operations_struct ACNT_mmap_vm_ops = {
 	.fault = ACNT_mmap_fault,
 };
 
-int
-ACNT_mmap(struct file *filp, struct vm_area_struct *vma)
+int ACNT_mmap(struct file *filp, struct vm_area_struct *vma)
 {
 	vma->vm_ops = &ACNT_mmap_vm_ops;
 	vma->vm_flags |= (unsigned long)VM_RESERVED;
@@ -909,18 +909,16 @@ ACNT_mmap(struct file *filp, struct vm_area_struct *vma)
 	return 0;
 }
 
-int
-ACNT_close(struct inode *inode, struct file *filp)
+int ACNT_close(struct inode *inode, struct file *filp)
 {
 	filp->private_data = NULL;
-	//to do
-	//may need to do pci_free_consistent here
-	//or pci_free_consistent when resize
+	// to do
+	// may need to do pci_free_consistent here
+	// or pci_free_consistent when resize
 	return 0;
 }
 
-int
-ACNT_open(struct inode *inode, struct file *filp)
+int ACNT_open(struct inode *inode, struct file *filp)
 {
 	struct wlprivate *wlpptr;
 	struct net_device *netdev;
@@ -931,19 +929,19 @@ ACNT_open(struct inode *inode, struct file *filp)
 #if defined(SOC_W906X) || defined(NEWDP_ACNT_CHUNKS)
 	filp->private_data = &wlpptr->wlpd_p->mmap_ACNTChunk[ChunkNum];
 	ChunkNum++;
-	if (ChunkNum >= wlpptr->wlpd_p->AcntChunkInfo.NumChunk) {
-		ChunkNum = 0;	//reset to 0
+	if (ChunkNum >= wlpptr->wlpd_p->AcntChunkInfo.NumChunk)
+	{
+		ChunkNum = 0; // reset to 0
 	}
 	SizeOfChunk = wlpptr->wlpd_p->AcntChunkInfo.SizeOfChunk;
-	//printk("filp->private_data = 0x%X \n", filp->private_data);
+	// printk("filp->private_data = 0x%X \n", filp->private_data);
 #else
 	filp->private_data = &wlpptr->wlpd_p->ACNTmemInfo;
 #endif
 	return 0;
 }
 
-int
-ACNT1_open(struct inode *inode, struct file *filp)
+int ACNT1_open(struct inode *inode, struct file *filp)
 {
 	struct wlprivate *wlpptr;
 	struct net_device *netdev;
@@ -954,8 +952,9 @@ ACNT1_open(struct inode *inode, struct file *filp)
 #if defined(SOC_W906X) || defined(NEWDP_ACNT_CHUNKS)
 	filp->private_data = &wlpptr->wlpd_p->mmap_ACNTChunk[ChunkNum];
 	ChunkNum++;
-	if (ChunkNum >= wlpptr->wlpd_p->AcntChunkInfo.NumChunk) {
-		ChunkNum = 0;	//reset to 0
+	if (ChunkNum >= wlpptr->wlpd_p->AcntChunkInfo.NumChunk)
+	{
+		ChunkNum = 0; // reset to 0
 	}
 #else
 	filp->private_data = &wlpptr->wlpd_p->ACNTmemInfo;
@@ -977,19 +976,17 @@ static const struct file_operations ACNT1_fops = {
 
 #ifdef SOC_W906X
 /* SM data */
-#define SMDATA_SIZE_PER_STA	0x10000	//64KB
-void
-smdata_mmap_open(struct vm_area_struct *vma)
+#define SMDATA_SIZE_PER_STA 0x10000 // 64KB
+void smdata_mmap_open(struct vm_area_struct *vma)
 {
-	mmap_info *info = (mmap_info *) vma->vm_private_data;
+	mmap_info *info = (mmap_info *)vma->vm_private_data;
 
 	info->reference++;
 }
 
-void
-smdata_mmap_close(struct vm_area_struct *vma)
+void smdata_mmap_close(struct vm_area_struct *vma)
 {
-	mmap_info *info = (mmap_info *) vma->vm_private_data;
+	mmap_info *info = (mmap_info *)vma->vm_private_data;
 
 	info->reference--;
 }
@@ -1001,9 +998,10 @@ __smdata_mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	mmap_info *info;
 
 	/* the data is in vma->vm_private_data */
-	info = (mmap_info *) vma->vm_private_data;
+	info = (mmap_info *)vma->vm_private_data;
 
-	if (!info->data || vmf->pgoff >= (SMDATA_SIZE_PER_STA * sta_num / 4096)) {
+	if (!info->data || vmf->pgoff >= (SMDATA_SIZE_PER_STA * sta_num / 4096))
+	{
 		printk("no data\n");
 		return 0;
 	}
@@ -1018,7 +1016,7 @@ __smdata_mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	return 0;
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,11,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 11, 0)
 static int
 smdata_mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 {
@@ -1038,8 +1036,7 @@ struct vm_operations_struct smdata_mmap_vm_ops = {
 	.fault = smdata_mmap_fault,
 };
 
-int
-smdata_mmap(struct file *filp, struct vm_area_struct *vma)
+int smdata_mmap(struct file *filp, struct vm_area_struct *vma)
 {
 	vma->vm_ops = &smdata_mmap_vm_ops;
 	vma->vm_flags |= (unsigned long)VM_RESERVED;
@@ -1049,15 +1046,13 @@ smdata_mmap(struct file *filp, struct vm_area_struct *vma)
 	return 0;
 }
 
-int
-smdata_close(struct inode *inode, struct file *filp)
+int smdata_close(struct inode *inode, struct file *filp)
 {
 	filp->private_data = NULL;
 	return 0;
 }
 
-int
-smdata_open(int cardindex, struct inode *inode, struct file *filp)
+int smdata_open(int cardindex, struct inode *inode, struct file *filp)
 {
 	struct wlprivate *wlpptr;
 	struct net_device *netdev;
@@ -1065,13 +1060,14 @@ smdata_open(int cardindex, struct inode *inode, struct file *filp)
 	netdev = global_private_data[cardindex]->rootdev;
 	wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
-	if (!wlpptr->wlpd_p->smdata_mmap_info.data) {
+	if (!wlpptr->wlpd_p->smdata_mmap_info.data)
+	{
 		printk("smdata open fail: address null\n");
 		return -1;
 	}
 
 	/* Upload the processed SM into DDR: set bit 4 of 0x640 */
-	((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->status.sysRsvd11[0] |= 0x10;
+	((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->status.sysRsvd11[0] |= 0x10;
 
 	filp->private_data = &wlpptr->wlpd_p->smdata_mmap_info;
 
@@ -1098,20 +1094,20 @@ smdata_open2(struct inode *inode, struct file *filp)
 
 static const struct file_operations smdata_fops[MAX_CARDS_SUPPORT] = {
 	{
-	 .open = smdata_open0,
-	 .release = smdata_close,
-	 .mmap = smdata_mmap,
-	 },
+		.open = smdata_open0,
+		.release = smdata_close,
+		.mmap = smdata_mmap,
+	},
 	{
-	 .open = smdata_open1,
-	 .release = smdata_close,
-	 .mmap = smdata_mmap,
-	 },
+		.open = smdata_open1,
+		.release = smdata_close,
+		.mmap = smdata_mmap,
+	},
 	{
-	 .open = smdata_open2,
-	 .release = smdata_close,
-	 .mmap = smdata_mmap,
-	 },
+		.open = smdata_open2,
+		.release = smdata_close,
+		.mmap = smdata_mmap,
+	},
 };
 
 static void
@@ -1130,7 +1126,7 @@ create_smdata_mmap(struct wlprivate *priv)
 
 	priv->wlpd_p->smdata_mmap_info.file =
 		debugfs_create_file(buf, 0644, NULL, NULL,
-				    &smdata_fops[cardindex]);
+							&smdata_fops[cardindex]);
 
 	/* Obtain SM data base address from 0x604 */
 	pa = priv->smacStatusAddr->sysRsvdMU0[1];
@@ -1139,13 +1135,12 @@ create_smdata_mmap(struct wlprivate *priv)
 
 	va = phys_to_virt(pa);
 	priv->wlpd_p->smdata_mmap_info.data = va;
-
 }
 #endif /* SOC_W906X */
 
 static ssize_t
-write_pid(int slot, struct file *file, const char __user * buf,
-	  size_t count, loff_t * ppos)
+write_pid(int slot, struct file *file, const char __user *buf,
+		  size_t count, loff_t *ppos)
 {
 	char mybuf[10];
 	int pid = 0;
@@ -1165,15 +1160,15 @@ write_pid(int slot, struct file *file, const char __user * buf,
 }
 
 static ssize_t
-write_pid0(struct file *file, const char __user * buf,
-	   size_t count, loff_t * ppos)
+write_pid0(struct file *file, const char __user *buf,
+		   size_t count, loff_t *ppos)
 {
 	return write_pid(0, file, buf, count, ppos);
 }
 
 static ssize_t
-write_pid1(struct file *file, const char __user * buf,
-	   size_t count, loff_t * ppos)
+write_pid1(struct file *file, const char __user *buf,
+		   size_t count, loff_t *ppos)
 {
 	return write_pid(1, file, buf, count, ppos);
 }
@@ -1193,14 +1188,14 @@ wlmodule_init(void)
 
 	struct pci_dev *dev = NULL, *dev1 = NULL;
 	unsigned long device_id;
-	//int i=0;
+	// int i=0;
 	int j = 0, k = 0, l = 0;
 #ifdef SOC_W906X
 	unsigned short Supported_VID[MRVL_PCI_VENDOR_ID_Count] =
-		{ MRVL_PCI_VENDOR_ID2 };
+		{MRVL_PCI_VENDOR_ID2};
 #else
 	unsigned short Supported_VID[MRVL_PCI_VENDOR_ID_Count] =
-		{ MRVL_PCI_VENDOR_ID1, MRVL_PCI_VENDOR_ID2 };
+		{MRVL_PCI_VENDOR_ID1, MRVL_PCI_VENDOR_ID2};
 #endif /* SOC_W906X */
 
 #ifdef MEMORY_USAGE_TRACE
@@ -1210,7 +1205,7 @@ wlmodule_init(void)
 #ifdef SOC_W906X
 	wl_get_platform_id();
 
-	if (IS_PLATFORM(A390) || IS_PLATFORM(A380) || IS_PLATFORM(MAX))	// MAX is for generic platform
+	if (IS_PLATFORM(A390) || IS_PLATFORM(A380) || IS_PLATFORM(MAX)) // MAX is for generic platform
 		pci_only = 1;
 
 #ifdef PDM_PCI
@@ -1227,23 +1222,28 @@ wlmodule_init(void)
 		platform_driver_register(&wldriver_mci);
 #endif /* SOC_W906X */
 
-	for (l = 0; l < MRVL_PCI_VENDOR_ID_Count; l++) {
+	for (l = 0; l < MRVL_PCI_VENDOR_ID_Count; l++)
+	{
 		dev = NULL;
 		while ((dev =
-			pci_get_device(Supported_VID[l], PCI_ANY_ID,
-				       dev)) != NULL) {
+					pci_get_device(Supported_VID[l], PCI_ANY_ID,
+								   dev)) != NULL)
+		{
 			if (((dev->class >> 16) & 0xff) !=
-			    PCI_BASE_CLASS_NETWORK) {
+				PCI_BASE_CLASS_NETWORK)
+			{
 				continue;
 			}
 
 			dev1 = dev;
-			while (dev1) {
+			while (dev1)
+			{
 				device_id = dev->device;
-				if (pci_dev_driver(dev)) {
+				if (pci_dev_driver(dev))
+				{
 					j++;
 					WLDBG_INFO(DBG_LEVEL_2,
-						   "device already inited\n");
+							   "device already inited\n");
 					break;
 				}
 
@@ -1251,22 +1251,27 @@ wlmodule_init(void)
 				wlid_tbl[k].device = device_id;
 				k++;
 				dev1 = pci_get_device(Supported_VID[l],
-						      device_id, dev);
+									  device_id, dev);
 
-				if (dev1 == dev) {
+				if (dev1 == dev)
+				{
 					WLDBG_INFO(DBG_LEVEL_2,
-						   "same device id, same dev found\n");
+							   "same device id, same dev found\n");
 					break;
-				} else {
-					if (dev1) {
+				}
+				else
+				{
+					if (dev1)
+					{
 						WLDBG_INFO(DBG_LEVEL_2,
-							   "same device id, different dev found\n");
+								   "same device id, different dev found\n");
 						/* decrements the reference count of the pci device */
 						pci_dev_put(dev1);
-					} else
+					}
+					else
 						WLDBG_INFO(DBG_LEVEL_2,
-							   "no more device for id(%x)\n",
-							   device_id);
+								   "no more device for id(%x)\n",
+								   device_id);
 
 					/* increments the reference count of the pci device */
 					pci_dev_get(dev);
@@ -1277,10 +1282,10 @@ wlmodule_init(void)
 	}
 	for (j = 0; j < k; j++)
 		WLDBG_INFO(DBG_LEVEL_2, "found[%d] %x\n", j,
-			   wlid_tbl[j].device);
+				   wlid_tbl[j].device);
 	memset(&wlid_tbl[k], 0, sizeof(struct pci_device_id));
 	if (pci_only && (k == 0))
-		//do not register if no card found
+		// do not register if no card found
 		return -ENODEV;
 	return pci_register_driver(&wldriver_pci);
 }
@@ -1302,15 +1307,14 @@ wlmodule_exit(void)
 	WLDBG_INFO(DBG_LEVEL_2, "Unloaded %s driver\n", DRV_NAME);
 }
 
-void
-wlwlan_setup(struct net_device *dev)
+void wlwlan_setup(struct net_device *dev)
 {
 #if defined(SOC_W8964) && defined(OPENWRT)
 	dev->tx_queue_len = 1000;
 #endif
 }
 
-//static BOOLEAN function1 = FALSE;
+// static BOOLEAN function1 = FALSE;
 static UINT8 cardindex = 0;
 #ifdef SOC_W906X
 static void
@@ -1321,9 +1325,11 @@ wl_init_txpend_cnt(void)
 	const char *model = of_get_property(node, "model", &len);
 	u8 *ptr = NULL;
 
-	if (model) {
+	if (model)
+	{
 		ptr = strnstr(model, "G3", len);
-		if (ptr) {
+		if (ptr)
+		{
 			dbg_max_tx_pend_cnt_per_q_lo = 512;
 			dbg_max_tx_pend_cnt_per_sta_lo = 562;
 		}
@@ -1333,7 +1339,8 @@ wl_init_txpend_cnt(void)
 static void
 wlprobe_set_reg_value(struct wlprivate *wlpptr)
 {
-	if (IS_BUS_TYPE_MCI(wlpptr)) {
+	if (IS_BUS_TYPE_MCI(wlpptr))
+	{
 		wlpptr->wlpd_p->reg.h2a_int_events =
 			MACREG_REG_H2A_INTERRUPT_EVENTS_MCI;
 		wlpptr->wlpd_p->reg.h2a_int_cause =
@@ -1391,8 +1398,9 @@ wlprobe_set_reg_value(struct wlprivate *wlpptr)
 			MACREG_REG_A2H_INTERRUPT_CAUSE_MCI;
 		wlpptr->wlpd_p->reg.fw_setup_int_trigger =
 			MACREG_H2ARIC_BIT_DOOR_BELL;
-
-	} else {
+	}
+	else
+	{
 		wlpptr->wlpd_p->reg.h2a_int_events =
 			MACREG_REG_H2A_INTERRUPT_EVENTS;
 		wlpptr->wlpd_p->reg.h2a_int_cause =
@@ -1447,19 +1455,20 @@ wlprobe_set_reg_value(struct wlprivate *wlpptr)
 			MACREG_REG_H2A_INTERRUPT_CAUSE;
 		wlpptr->wlpd_p->reg.fw_setup_int_trigger =
 			MACREG_A2HRIC_BIT_MASK;
-
 	}
-
 }
 
 static void
 wlprobe_set_intr_info(struct wlprivate *wlpptr)
 {
-	if (IS_BUS_TYPE_MCI(wlpptr)) {
+	if (IS_BUS_TYPE_MCI(wlpptr))
+	{
 		wlpptr->wlpd_p->intr_shift = intr_info_tbl_mci.intr_shift;
 		wlpptr->wlpd_p->msix_num = intr_info_tbl_mci.msix_num;
-	} else {
-		if (IS_PLATFORM(MAX))	// For generic platform
+	}
+	else
+	{
+		if (IS_PLATFORM(MAX)) // For generic platform
 			wlpptr->wlpd_p->msix_num =
 				intr_info_tbl_generic.msix_num;
 		else
@@ -1467,7 +1476,7 @@ wlprobe_set_intr_info(struct wlprivate *wlpptr)
 				intr_info_tbl[platform_id].msix_num;
 	}
 	pr_info("wlprobe: intr_shift=%u msix_num=%u\n",
-		wlpptr->wlpd_p->intr_shift, wlpptr->wlpd_p->msix_num);
+			wlpptr->wlpd_p->intr_shift, wlpptr->wlpd_p->msix_num);
 }
 
 static int
@@ -1475,10 +1484,12 @@ wl_get_platform_id(void)
 {
 	int i;
 
-	for (i = 0; i < PLATFORM_ID_MAX; i++) {
-		if (of_machine_is_compatible(mach_compat[i])) {
+	for (i = 0; i < PLATFORM_ID_MAX; i++)
+	{
+		if (of_machine_is_compatible(mach_compat[i]))
+		{
 			pr_info("machine is compatible id:%d %s\n", i,
-				mach_compat[i]);
+					mach_compat[i]);
 			platform_id = i;
 			return 0;
 		}
@@ -1489,33 +1500,37 @@ wl_get_platform_id(void)
 }
 
 const static u32 def_frm_base[PLATFORM_ID_MAX] = {
-	0xF0290040,		/* PCI: A3900_A7K */
-	0xF0290040,		/* PCI: A8K */
-	0xF101A040,		/* PCI: A390 */
-	0xF101A040,		/* PCI: A380 */
+	0xF0290040, /* PCI: A3900_A7K */
+	0xF0290040, /* PCI: A8K */
+	0xF101A040, /* PCI: A390 */
+	0xF101A040, /* PCI: A380 */
 };
 
 #define INTR_FRAME_MAX_NUM 4
 const static struct intr_frame
 	sysintr_frames[PLATFORM_ID_MAX][INTR_FRAME_MAX_NUM] = {
-	{			/* PCI: A3900_A7K */
-	 {0xF0290040, 0xC0},	///Frame_1
-	 {0xF02A0040, 0xE0},	///Frame_2
-	 {0xF0280040, 0xA0},	///Frame_0
-	 {0xF02B0040, 0x100},	///Frame_3
-	 },
-	{			/* PCI: A8K */
-	 {0xF0290040, 0xC0},	///Frame_1
-	 {0xF02A0040, 0xE0},	///Frame_2
-	 {0xF0280040, 0xA0},	///Frame_0
-	 {0xF02B0040, 0x100},	///Frame_3
-	 },
-	{			/* PCI: A390 */
-	 {0xF101A040, 0x00},
-	 },
-	{			/* PCI: A380 */
-	 {0xF101A040, 0x00},
-	 },
+		{
+			/* PCI: A3900_A7K */
+			{0xF0290040, 0xC0},	 /// Frame_1
+			{0xF02A0040, 0xE0},	 /// Frame_2
+			{0xF0280040, 0xA0},	 /// Frame_0
+			{0xF02B0040, 0x100}, /// Frame_3
+		},
+		{
+			/* PCI: A8K */
+			{0xF0290040, 0xC0},	 /// Frame_1
+			{0xF02A0040, 0xE0},	 /// Frame_2
+			{0xF0280040, 0xA0},	 /// Frame_0
+			{0xF02B0040, 0x100}, /// Frame_3
+		},
+		{
+			/* PCI: A390 */
+			{0xF101A040, 0x00},
+		},
+		{
+			/* PCI: A380 */
+			{0xF101A040, 0x00},
+		},
 };
 
 /*
@@ -1526,21 +1541,24 @@ wl_init_intrfrm(U32 intr_base, struct intr_frame *pintr_frm)
 {
 	const struct intr_frame *pif;
 	int i;
-	UINT8 idx_sf = ((U8) platform_id % PLATFORM_ID_MAX);
+	UINT8 idx_sf = ((U8)platform_id % PLATFORM_ID_MAX);
 
 	memset(pintr_frm, 0, sizeof(struct intr_frame));
-	for (i = 0; i < INTR_FRAME_MAX_NUM; i++) {
+	for (i = 0; i < INTR_FRAME_MAX_NUM; i++)
+	{
 		pif = &sysintr_frames[idx_sf][i];
-		if (pif->frm_base == intr_base) {
+		if (pif->frm_base == intr_base)
+		{
 			memcpy(pintr_frm, pif, sizeof(struct intr_frame));
 			break;
 		}
 	}
-	if (i == INTR_FRAME_MAX_NUM) {
+	if (i == INTR_FRAME_MAX_NUM)
+	{
 		WLDBG_ERROR(DBG_LEVEL_0,
-			    "Failed to find Interrupt Frame (%x)\n", intr_base);
+					"Failed to find Interrupt Frame (%x)\n", intr_base);
 		memcpy(pintr_frm, &sysintr_frames[idx_sf][0],
-		       sizeof(struct intr_frame));
+			   sizeof(struct intr_frame));
 	}
 	return;
 }
@@ -1552,22 +1570,25 @@ wl_get_intr_base(struct wlprivate *wlpptr)
 	U32 intr_base;
 	u32 id;
 
-	if (IS_BUS_TYPE_MCI(wlpptr)) {
-		if (of_property_read_u32
-		    (pdev->dev.of_node, "device-identifier", &id)) {
+	if (IS_BUS_TYPE_MCI(wlpptr))
+	{
+		if (of_property_read_u32(pdev->dev.of_node, "device-identifier", &id))
+		{
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "Failed to get \"device-identifier\"\n");
+						"Failed to get \"device-identifier\"\n");
 		}
 
-		if (of_property_read_u32
-		    (pdev->dev.of_node, "msi-base", &intr_base)) {
+		if (of_property_read_u32(pdev->dev.of_node, "msi-base", &intr_base))
+		{
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "Failed to get \"msi-base\"\n");
+						"Failed to get \"msi-base\"\n");
 			intr_base = def_frm_base[platform_id];
 		}
 
 		WLDBG_INFO(DBG_LEVEL_0, "id=%xh, base=%xh\n", id, intr_base);
-	} else {
+	}
+	else
+	{
 		intr_base = def_frm_base[platform_id];
 	}
 
@@ -1580,123 +1601,129 @@ wl_init_intr(struct wlprivate *wlpptr)
 {
 	U32 regval;
 
-	if (!IS_BUS_TYPE_MCI(wlpptr)) {
-		if (wlpptr->intr_type == INTR_TYPE_MSIX) {
+	if (!IS_BUS_TYPE_MCI(wlpptr))
+	{
+		if (wlpptr->intr_type == INTR_TYPE_MSIX)
+		{
 			wlpptr->num_vectors = wlpptr->wlpd_p->msix_num;
 
 			/* PCIe MSIX Mode using New GIC mode: */
-			//0x38
+			// 0x38
 			printk("%s(%d)\n", __func__, __LINE__);
 			writel(SC5_PCIE_MODE_GIC,
-			       wlpptr->ioBase1 + SC5_REG_PCIE_INTR_MODE_SEL);
-			//0x30
+				   wlpptr->ioBase1 + SC5_REG_PCIE_INTR_MODE_SEL);
+			// 0x30
 			writel(SMAC_CTRLBASE_NSS_PCIE_HI_VAL_NOINTR,
-			       wlpptr->ioBase1 +
-			       SC5_REG_SMAC_CTRLBASE_NSS_PCIE_HI);
+				   wlpptr->ioBase1 +
+					   SC5_REG_SMAC_CTRLBASE_NSS_PCIE_HI);
 			writel(PCI_REG_DOORBELL_ADDR,
-			       wlpptr->ioBase1 + SC5_REG_FRAME_0);
+				   wlpptr->ioBase1 + SC5_REG_FRAME_0);
 			writel(PCI_REG_DOORBELL_ADDR,
-			       wlpptr->ioBase1 + SC5_REG_FRAME_1);
+				   wlpptr->ioBase1 + SC5_REG_FRAME_1);
 			writel(PCI_REG_DOORBELL_ADDR,
-			       wlpptr->ioBase1 + SC5_REG_FRAME_2);
+				   wlpptr->ioBase1 + SC5_REG_FRAME_2);
 			writel(PCI_REG_DOORBELL_ADDR,
-			       wlpptr->ioBase1 + SC5_REG_FRAME_3);
-		} else if (wlpptr->intr_type == PCI_INTR_TYPE_MSI) {
+				   wlpptr->ioBase1 + SC5_REG_FRAME_3);
+		}
+		else if (wlpptr->intr_type == PCI_INTR_TYPE_MSI)
+		{
 			wlpptr->num_vectors = 0;
 
 			/* PCIe MSI Mode using New GIC mode: */
-			//0x38
+			// 0x38
 			writel(SC5_PCIE_MODE_GIC,
-			       wlpptr->ioBase1 + SC5_REG_PCIE_INTR_MODE_SEL);
-			//0x30
+				   wlpptr->ioBase1 + SC5_REG_PCIE_INTR_MODE_SEL);
+			// 0x30
 			writel(SMAC_CTRLBASE_NSS_PCIE_HI_VAL_NOINTR,
-			       wlpptr->ioBase1 +
-			       SC5_REG_SMAC_CTRLBASE_NSS_PCIE_HI);
+				   wlpptr->ioBase1 +
+					   SC5_REG_SMAC_CTRLBASE_NSS_PCIE_HI);
 			writel(PCI_REG_HOST_ITR_ADDR,
-			       wlpptr->ioBase1 + SC5_REG_FRAME_0);
+				   wlpptr->ioBase1 + SC5_REG_FRAME_0);
 			writel(PCI_REG_HOST_ITR_ADDR,
-			       wlpptr->ioBase1 + SC5_REG_FRAME_1);
+				   wlpptr->ioBase1 + SC5_REG_FRAME_1);
 			writel(PCI_REG_HOST_ITR_ADDR,
-			       wlpptr->ioBase1 + SC5_REG_FRAME_2);
+				   wlpptr->ioBase1 + SC5_REG_FRAME_2);
 			writel(PCI_REG_HOST_ITR_ADDR,
-			       wlpptr->ioBase1 + SC5_REG_FRAME_3);
+				   wlpptr->ioBase1 + SC5_REG_FRAME_3);
 		}
 		return;
-	} else {
+	}
+	else
+	{
 
 		wlpptr->num_vectors = wlpptr->netDev->irq;
 
 		wl_get_intr_base(wlpptr);
 		printk("(base, spi)=(%xh, %xh)\n",
-		       wlpptr->wlpd_p->sysintr_frm.frm_base,
-		       wlpptr->wlpd_p->sysintr_frm.spi_num);
+			   wlpptr->wlpd_p->sysintr_frm.frm_base,
+			   wlpptr->wlpd_p->sysintr_frm.spi_num);
 		// ++++++++
 		// Fill base address of frame_x
 		writel(wlpptr->wlpd_p->sysintr_frm.frm_base,
-		       wlpptr->ioBase1 + SC5_REG_FRAME_0);
+			   wlpptr->ioBase1 + SC5_REG_FRAME_0);
 		WLDBG_INFO(DBG_LEVEL_0,
-			   "=> %s(), W906x_REG_FRAME_0, w_reg(ioBase1+%xh) = %xh\n",
-			   __func__, SC5_REG_FRAME_0,
-			   wlpptr->wlpd_p->sysintr_frm.frm_base);
+				   "=> %s(), W906x_REG_FRAME_0, w_reg(ioBase1+%xh) = %xh\n",
+				   __func__, SC5_REG_FRAME_0,
+				   wlpptr->wlpd_p->sysintr_frm.frm_base);
 		writel(wlpptr->wlpd_p->sysintr_frm.frm_base,
-		       wlpptr->ioBase1 + SC5_REG_FRAME_1);
+			   wlpptr->ioBase1 + SC5_REG_FRAME_1);
 		WLDBG_INFO(DBG_LEVEL_0,
-			   "=> %s(), W906x_REG_FRAME_1, w_reg(ioBase1+%xh) = %xh\n",
-			   __func__, SC5_REG_FRAME_1,
-			   wlpptr->wlpd_p->sysintr_frm.frm_base);
+				   "=> %s(), W906x_REG_FRAME_1, w_reg(ioBase1+%xh) = %xh\n",
+				   __func__, SC5_REG_FRAME_1,
+				   wlpptr->wlpd_p->sysintr_frm.frm_base);
 		writel(wlpptr->wlpd_p->sysintr_frm.frm_base,
-		       wlpptr->ioBase1 + SC5_REG_FRAME_2);
+			   wlpptr->ioBase1 + SC5_REG_FRAME_2);
 		WLDBG_INFO(DBG_LEVEL_0,
-			   "=> %s(), W906x_REG_FRAME_2, w_reg(ioBase1+%xh) = %xh\n",
-			   __func__, SC5_REG_FRAME_2,
-			   wlpptr->wlpd_p->sysintr_frm.frm_base);
+				   "=> %s(), W906x_REG_FRAME_2, w_reg(ioBase1+%xh) = %xh\n",
+				   __func__, SC5_REG_FRAME_2,
+				   wlpptr->wlpd_p->sysintr_frm.frm_base);
 		writel(wlpptr->wlpd_p->sysintr_frm.frm_base,
-		       wlpptr->ioBase1 + SC5_REG_FRAME_3);
+			   wlpptr->ioBase1 + SC5_REG_FRAME_3);
 		WLDBG_INFO(DBG_LEVEL_0,
-			   "=> %s(), W906x_REG_FRAME_3, w_reg(ioBase1+%xh) = %xh\n",
-			   __func__, SC5_REG_FRAME_3,
-			   wlpptr->wlpd_p->sysintr_frm.frm_base);
+				   "=> %s(), W906x_REG_FRAME_3, w_reg(ioBase1+%xh) = %xh\n",
+				   __func__, SC5_REG_FRAME_3,
+				   wlpptr->wlpd_p->sysintr_frm.frm_base);
 		// --------
 
 		// HW PCIE-MSIX setting
-		// => #1, set intr mode selected 
+		// => #1, set intr mode selected
 		writel(SC5_PCIE_MODE_GIC,
-		       wlpptr->ioBase1 + SC5_REG_PCIE_INTR_MODE_SEL);
+			   wlpptr->ioBase1 + SC5_REG_PCIE_INTR_MODE_SEL);
 		printk("=> %s(),w_reg(ioBase1+%xh) = %xh\n", __func__,
-		       SC5_REG_PCIE_INTR_MODE_SEL, SC5_PCIE_MODE_GIC);
+			   SC5_REG_PCIE_INTR_MODE_SEL, SC5_PCIE_MODE_GIC);
 		// set hframe register base
 		writel(wlpptr->hframe_phy_addr,
-		       wlpptr->ioBase1 + SC5_REG_HFRAME_BASE);
+			   wlpptr->ioBase1 + SC5_REG_HFRAME_BASE);
 		printk("=> %s(),w_reg(ioBase1+%xh) = %llxh\n", __func__,
-		       SC5_REG_HFRAME_BASE,
-		       (long long unsigned int)wlpptr->hframe_phy_addr);
+			   SC5_REG_HFRAME_BASE,
+			   (long long unsigned int)wlpptr->hframe_phy_addr);
 		// => #2, set ncc pcie val (Using interrupt mode or not)
 		regval = wlpptr->wlpd_p->reg.smac_ctrlbase_nss_hi_val_intr;
 
 		writel(regval,
-		       wlpptr->ioBase1 + SC5_REG_SMAC_CTRLBASE_NSS_PCIE_HI);
+			   wlpptr->ioBase1 + SC5_REG_SMAC_CTRLBASE_NSS_PCIE_HI);
 		printk("=> %s(),w_reg(ioBase1+%xh) = %xh\n", __func__,
-		       SC5_REG_SMAC_CTRLBASE_NSS_PCIE_HI, regval);
+			   SC5_REG_SMAC_CTRLBASE_NSS_PCIE_HI, regval);
 
-		// => #3, set pcie msi address 
+		// => #3, set pcie msi address
 		writel(wlpptr->wlpd_p->sysintr_frm.frm_base,
-		       wlpptr->ioBase1 + SC5_REG_PCIE_MSI_ADDR);
+			   wlpptr->ioBase1 + SC5_REG_PCIE_MSI_ADDR);
 		printk("=> %s(),w_reg(ioBase1+%xh) = %xh\n", __func__,
-		       SC5_REG_PCIE_MSI_ADDR,
-		       wlpptr->wlpd_p->sysintr_frm.frm_base);
+			   SC5_REG_PCIE_MSI_ADDR,
+			   wlpptr->wlpd_p->sysintr_frm.frm_base);
 
-		// => #4, Set SC5_REG_PCIE_MSIX_DATA 
+		// => #4, Set SC5_REG_PCIE_MSIX_DATA
 		writel(wlpptr->wlpd_p->sysintr_frm.spi_num,
-		       wlpptr->ioBase1 + SC5_REG_PCIE_MSIX_DATA);
+			   wlpptr->ioBase1 + SC5_REG_PCIE_MSIX_DATA);
 		printk("=> %s(),w_reg(ioBase1+%xh) = %xh\n", __func__,
-		       SC5_REG_PCIE_MSIX_DATA,
-		       wlpptr->wlpd_p->sysintr_frm.spi_num);
+			   SC5_REG_PCIE_MSIX_DATA,
+			   wlpptr->wlpd_p->sysintr_frm.spi_num);
 
 		writel(wlpptr->hframe_phy_addr,
-		       wlpptr->ioBase1 + SC5_REG_BASE_ADDR_HOST_128B);
+			   wlpptr->ioBase1 + SC5_REG_BASE_ADDR_HOST_128B);
 		printk("===> w_reg(ioBase1+%xh) = %llxh\n",
-		       SC5_REG_BASE_ADDR_HOST_128B,
-		       (long long unsigned int)wlpptr->hframe_phy_addr);
+			   SC5_REG_BASE_ADDR_HOST_128B,
+			   (long long unsigned int)wlpptr->hframe_phy_addr);
 		return;
 	}
 }
@@ -1705,96 +1732,128 @@ static void
 wl_hook_intr(struct wlprivate *wlpptr)
 {
 
-	if (wlpptr->intr_type == INTR_TYPE_MSIX) {
+	if (wlpptr->intr_type == INTR_TYPE_MSIX)
+	{
 		int irq_idx;
 
-		for (irq_idx = 0; irq_idx < wlpptr->num_vectors; irq_idx++) {
+		for (irq_idx = 0; irq_idx < wlpptr->num_vectors; irq_idx++)
+		{
 			wlpptr->msix_ctx[irq_idx].netDev = wlpptr->netDev;
 			wlpptr->msix_ctx[irq_idx].msg_id = irq_idx;
 			hook_intr(wlpptr, irq_idx);
 		}
-
-	} else if (wlpptr->intr_type == PCI_INTR_TYPE_MSI) {
+	}
+	else if (wlpptr->intr_type == PCI_INTR_TYPE_MSI)
+	{
 		int idx, qid, issq;
 
 		/* intr remap to qid */
-		for (idx = 0; idx < wlpptr->wlpd_p->msix_num; idx++) {
-			if (idx >= 0 && idx < 6) {
+		for (idx = 0; idx < wlpptr->wlpd_p->msix_num; idx++)
+		{
+			if (idx >= 0 && idx < 6)
+			{
 				/* qid: rq0-5: */
 				qid = idx;
 				issq = 0;
-			} else if (idx >= 8 && idx < 18) {
+			}
+			else if (idx >= 8 && idx < 18)
+			{
 				/* qid: sq0-9 */
 				qid = idx - 8;
 				issq = 1;
-			} else if (idx >= 18 && idx < 22) {
+			}
+			else if (idx >= 18 && idx < 22)
+			{
 				/* qid: rq10-13 */
 				qid = idx - 8;
 				issq = 0;
-			} else if (idx == 22) {
+			}
+			else if (idx == 22)
+			{
 				/* qid: sq14 */
 				qid = 14;
 				issq = 1;
-			} else if (idx == 23) {
+			}
+			else if (idx == 23)
+			{
 				/* qid: rq8 */
 				qid = 8;
 				issq = 0;
-			} else if (idx == 24) {
+			}
+			else if (idx == 24)
+			{
 				/* qid: rq9 */
 				qid = 9;
 				issq = 0;
-			} else if (idx == 25) {
+			}
+			else if (idx == 25)
+			{
 				/* qid: rq6 -new for SCBT */
 				qid = 6;
 				issq = 0;
-			} else if (idx == 26) {
+			}
+			else if (idx == 26)
+			{
 				/* qid: rq7 -new for SCBT */
 				qid = 7;
 				issq = 0;
-			} else if (idx == 27) {
+			}
+			else if (idx == 27)
+			{
 				/* qid: sq10 -new for SCBT */
 				qid = 10;
 				issq = 1;
-			} else if (idx == 28) {
+			}
+			else if (idx == 28)
+			{
 				/* qid: sq11 -new for SCBT */
 				qid = 11;
 				issq = 1;
-			} else if (idx == 29) {
+			}
+			else if (idx == 29)
+			{
 				/* qid: sq12 -new for SCBT */
 				qid = 12;
 				issq = 1;
-			} else if (idx == 30) {
+			}
+			else if (idx == 30)
+			{
 				/* qid: sq13 -new for SCBT */
 				qid = 13;
 				issq = 1;
-			} else if (idx == 31) {
+			}
+			else if (idx == 31)
+			{
 				/* qid: sq15 -new for SC5/SCBT A0 */
 				qid = 15;
 				issq = 1;
-			} else
+			}
+			else
 				continue;
 
 			writel(0,
-			       wlpptr->ioBase1 + SC5_REG_FRM_SEL(qid,
-								 ((int)(issq) &
-								  0x1)));
+				   wlpptr->ioBase1 + SC5_REG_FRM_SEL(qid,
+													 ((int)(issq) &
+													  0x1)));
 			writel(BIT(idx),
-			       wlpptr->ioBase1 + SC5_REG_EFF_ID(qid,
-								((int)(issq) &
-								 0x1)));
+				   wlpptr->ioBase1 + SC5_REG_EFF_ID(qid,
+													((int)(issq) &
+													 0x1)));
 		}
 
 		if (request_irq(wlpptr->netDev->irq, wlISR, IRQF_SHARED,
-				wlpptr->netDev->name, (wlpptr->netDev))) {
+						wlpptr->netDev->name, (wlpptr->netDev)))
+		{
 			WLDBG_ERROR(DBG_LEVEL_2,
-				    "%s: request_irq failed failed\n",
-				    wlpptr->netDev->name);
+						"%s: request_irq failed failed\n",
+						wlpptr->netDev->name);
 		}
-
-	} else {
+	}
+	else
+	{
 		WLDBG_ERROR(DBG_LEVEL_2,
-			    "%s: INT not remap and request_irq. intr_type %d \n",
-			    wlpptr->netDev->name, wlpptr->intr_type);
+					"%s: INT not remap and request_irq. intr_type %d \n",
+					wlpptr->netDev->name, wlpptr->intr_type);
 	}
 
 	return;
@@ -1805,7 +1864,7 @@ Ref: Definition of SMAC:
 
 	#define SWAR_IP_REV_SCBT_Z1         0x02011400
 	#define SWAR_IP_REV_SCBT_A0         0x02020000
-	
+
 	#define SWAR_IP_REV_SC5_Z1          0x01003300
 	#define SWAR_IP_REV_SC5_Z2          0x01003301
 	#define SWAR_IP_REV_SC5_A0          0x01020000
@@ -1822,24 +1881,25 @@ Rule:
 			SCBT:
 				0x01: z1
 				0x02: a0
-			
+
 */
 static void
 wl_get_chipinfo(struct wlprivate *wlpptr)
 {
 	UINT32 val =
-		cpu_to_le32(*(volatile unsigned int *)
-			    (wlpptr->ioBase1 + SC5_REG_SMAC_CTRLBASE));
+		cpu_to_le32(*(volatile unsigned int *)(wlpptr->ioBase1 + SC5_REG_SMAC_CTRLBASE));
 	UINT8 chipid, rev;
 
 	printk("reg(%x)=%xh\n", SC5_REG_SMAC_CTRLBASE, val);
 	chipid = (val >> 24) & 0xf;
 	rev = (val >> 16 & 0xff) | (val & 0xff);
-	switch (chipid) {
-	case 1:		// This is SC5
+	switch (chipid)
+	{
+	case 1: // This is SC5
 		wlpptr->devid = SC5;
 		printk("==> This is W9068, rev=%u\n", rev);
-		switch (rev) {
+		switch (rev)
+		{
 		case 0:
 			wlpptr->hwData.chipRevision = REV_Z1;
 			break;
@@ -1851,13 +1911,14 @@ wl_get_chipinfo(struct wlprivate *wlpptr)
 			break;
 		default:
 			WLDBG_ERROR(DBG_LEVEL_0, "=> Unknow revision: %xh\n",
-				    val);
+						val);
 		}
 		break;
-	case 2:		// This is SCBT
+	case 2: // This is SCBT
 		wlpptr->devid = SCBT;
 		printk("==> This is W9064, rev=%u\n", rev);
-		switch (rev) {
+		switch (rev)
+		{
 		case 1:
 			wlpptr->hwData.chipRevision = REV_Z1;
 			break;
@@ -1866,16 +1927,17 @@ wl_get_chipinfo(struct wlprivate *wlpptr)
 			break;
 		default:
 			WLDBG_ERROR(DBG_LEVEL_0, "=> Unknow revision: %xh\n",
-				    val);
+						val);
 		}
 		break;
 	default:
-		//Unknown id: Using SC5
+		// Unknown id: Using SC5
 		printk("==> Unknown chip, ");
 		wlpptr->devid = SC5;
 	}
 
-	switch (wlpptr->hwData.chipRevision) {
+	switch (wlpptr->hwData.chipRevision)
+	{
 	case REV_Z1:
 		printk("Revision: Z1\n");
 		break;
@@ -1892,8 +1954,8 @@ wl_get_chipinfo(struct wlprivate *wlpptr)
 	return;
 }
 
-//mochi port base addr
-static UINT32 mciportbase[2] = { 0xfd000000, 0xfe000000 };
+// mochi port base addr
+static UINT32 mciportbase[2] = {0xfd000000, 0xfe000000};
 
 static int
 wlwlan_platform_data_get(struct platform_device *pdev, struct wlprivate *wlpptr)
@@ -1915,36 +1977,37 @@ wlwlan_platform_data_get(struct platform_device *pdev, struct wlprivate *wlpptr)
 	// Get more 1M space mapping so that memdump can get more information
 	//      => It wil be removed after next rootfs release
 	res[0]->end += 0x100000;
-	if (res[0]->end >= res[1]->start) {
+	if (res[0]->end >= res[1]->start)
+	{
 		res[0]->end = res[1]->start - 1;
 	}
 	printk("%s(), (IoBase0)=(%llx, %llx), more mapping space\n", __func__,
-	       res[0]->start, res[0]->end);
+		   res[0]->start, res[0]->end);
 	// WAR--
 	wlpptr->ioBase0 = devm_ioremap_resource(&pdev->dev, res[0]);
 	if (IS_ERR(wlpptr->ioBase0))
 		return PTR_ERR(wlpptr->ioBase0);
 
 	printk("%s(), (IoBase1)=(%llx, %llx)\n", __func__, res[1]->start,
-	       res[1]->end);
+		   res[1]->end);
 	wlpptr->ioBase1 = devm_ioremap_resource(&pdev->dev, res[1]);
 	if (IS_ERR(wlpptr->ioBase1))
 		return PTR_ERR(wlpptr->ioBase1);
 	wlpptr->phys_addr_end = res[1]->end;
 
-	//add for mochi error monitor
+	// add for mochi error monitor
 	wlpptr->ioBaseExt =
 		devm_ioremap(&pdev->dev, mciportbase[wlpptr->cardindex], 0x10);
 	printk("%s(), carindex:%u: ioBaseExt: (v,p)=(%p, %x)\n", __func__,
-	       wlpptr->cardindex, wlpptr->ioBaseExt,
-	       mciportbase[wlpptr->cardindex]);
+		   wlpptr->cardindex, wlpptr->ioBaseExt,
+		   mciportbase[wlpptr->cardindex]);
 
 	return 0;
 }
 
 static BOOLEAN hook_intr(struct wlprivate *wlpptr, UINT32 isr_id);
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,5,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 5, 0)
 /* just back port it from v4.5 and should be remove it after upgrading
    major verion
  */
@@ -1973,21 +2036,22 @@ wlprobe_mci(struct platform_device *pdev)
 	u32 vendor_id, device_id;
 #ifdef CONFIG_MARVELL_MOCHI_DRIVER
 	int mci_id = pdev->name[strlen(pdev->name) - 1] - '0';
-#endif //CONFIG_MARVELL_MOCHI_DRIVER
+#endif // CONFIG_MARVELL_MOCHI_DRIVER
 	u8 i;
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 	printk("=====> %s()\n", __func__);
 
 	printk("the dma_coherent is %s\n",
-	       pdev->dev.archdata.dma_coherent ? "true" : "false");
+		   pdev->dev.archdata.dma_coherent ? "true" : "false");
 	pdev->dev.archdata.dma_coherent = true;
 
 #ifdef CONFIG_MARVELL_MOCHI_DRIVER
 	{
 		u8 rcnt = 0;
 		int mci_speed = MCI_LINK_SPEED_8G;
-		do {
+		do
+		{
 			int mci_ret = mci_do_reset((int)mci_id, mci_speed);
 			if (mci_ret == MCI_FAIL)
 				return -EIO;
@@ -1996,9 +2060,10 @@ wlprobe_mci(struct platform_device *pdev)
 			if (mci_ret == MCI_UNSUPPORTED_SPEED)
 				mci_speed--;
 		} while ((rcnt++ < MAX_BUS_RESET) &&
-			 (mci_speed >= MCI_LINK_SPEED_1G));
+				 (mci_speed >= MCI_LINK_SPEED_1G));
 
-		if (rcnt >= MAX_BUS_RESET) {
+		if (rcnt >= MAX_BUS_RESET)
+		{
 			printk("Failed to reset mochi, after repeating %d times\n", rcnt);
 			return -EIO;
 		}
@@ -2008,32 +2073,36 @@ wlprobe_mci(struct platform_device *pdev)
 	/* XXX, hard-coded ids here until we find how to get them */
 	vendor_id = 0x11ab;
 
-	for (i = 0; i < MAX_CARDS_SUPPORT; i++) {
-		if (global_private_data[i] == NULL) {
+	for (i = 0; i < MAX_CARDS_SUPPORT; i++)
+	{
+		if (global_private_data[i] == NULL)
+		{
 			extern RateGrp_t RateGrpDefault[MAX_GROUP_PER_CHANNEL];
-			if (!
-			    (global_private_data[i] =
-			     wl_vzalloc(sizeof(struct wlprivate_data)))) {
+			if (!(global_private_data[i] =
+					  wl_vzalloc(sizeof(struct wlprivate_data))))
+			{
 				dev_err(&pdev->dev,
-					"Unable to allocate buffer for global_private_data(size %zu)\n",
-					sizeof(struct wlprivate_data));
+						"Unable to allocate buffer for global_private_data(size %zu)\n",
+						sizeof(struct wlprivate_data));
 				return -ENOMEM;
 			}
 			memcpy(global_private_data[i]->RateGrpDefault,
-			       RateGrpDefault,
-			       sizeof(RateGrp_t) * MAX_GROUP_PER_CHANNEL);
+				   RateGrpDefault,
+				   sizeof(RateGrp_t) * MAX_GROUP_PER_CHANNEL);
 			global_private_data[i]->AmpduPckReorder =
 				(Ampdu_Pck_Reorder_t *)
-				wl_vzalloc(sizeof(Ampdu_Pck_Reorder_t) *
-					   (sta_num + 1));
-			if (global_private_data[i]->AmpduPckReorder == NULL) {
+					wl_vzalloc(sizeof(Ampdu_Pck_Reorder_t) *
+							   (sta_num + 1));
+			if (global_private_data[i]->AmpduPckReorder == NULL)
+			{
 				printk("Unable to allocate buffer for Ampdu_Pck_Reorder_t (size %zu)\n", sizeof(Ampdu_Pck_Reorder_t) * (sta_num + 1));
 				return -ENOMEM;
 			}
 			global_private_data[i]->Ampdu_tx =
-				(Ampdu_tx_t *) wl_vzalloc(sizeof(Ampdu_tx_t) *
-							  (MAX_SUPPORT_AMPDU_TX_STREAM_RUNNING));
-			if (global_private_data[i]->Ampdu_tx == NULL) {
+				(Ampdu_tx_t *)wl_vzalloc(sizeof(Ampdu_tx_t) *
+										 (MAX_SUPPORT_AMPDU_TX_STREAM_RUNNING));
+			if (global_private_data[i]->Ampdu_tx == NULL)
+			{
 				printk("Unable to allocate buffer for Ampdu_tx (size %zu)\n", sizeof(Ampdu_tx_t) * (MAX_SUPPORT_AMPDU_TX_STREAM_RUNNING));
 				return -ENOMEM;
 			}
@@ -2042,17 +2111,19 @@ wlprobe_mci(struct platform_device *pdev)
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)
 	dev = alloc_netdev(sizeof(struct wlprivate), DRV_NAME, NET_NAME_UNKNOWN,
-			   ether_setup);
+					   ether_setup);
 #else
 	dev = alloc_netdev(sizeof(struct wlprivate), DRV_NAME, ether_setup);
 #endif
-	if (dev) {
+	if (dev)
+	{
 		wlpptr = NETDEV_PRIV(struct wlprivate, dev);
 		NETDEV_PRIV_S(dev) = wlpptr;
 	}
-	if (wlpptr == NULL) {
+	if (wlpptr == NULL)
+	{
 		dev_err(&pdev->dev, "%s: no mem for private driver context\n",
-			DRV_NAME);
+				DRV_NAME);
 		goto err;
 	}
 	memset(wlpptr, 0, sizeof(struct wlprivate));
@@ -2061,10 +2132,11 @@ wlprobe_mci(struct platform_device *pdev)
 	gprv_dat_refcnt++;
 	wlpptr->cardindex = cardindex;
 	cardindex++;
-	if (wlpdptr == NULL) {
+	if (wlpdptr == NULL)
+	{
 		dev_err(&pdev->dev,
-			"%s: no mem for private driver data context\n",
-			DRV_NAME);
+				"%s: no mem for private driver data context\n",
+				DRV_NAME);
 		goto err;
 	}
 	wlpptr->wlpd_p = wlpdptr;
@@ -2074,9 +2146,10 @@ wlprobe_mci(struct platform_device *pdev)
 	wlpdptr->rootdev = wlpptr->netDev;
 #ifdef CONFIG_MARVELL_MOCHI_DRIVER
 	wlpdptr->mci_id = mci_id;
-#endif //CONFIG_MARVELL_MOCHI_DRIVER
+#endif // CONFIG_MARVELL_MOCHI_DRIVER
 	err = wlwlan_platform_data_get(pdev, wlpptr);
-	if (err) {
+	if (err)
+	{
 		dev_err(&pdev->dev, "%s: platform_data get failed\n", DRV_NAME);
 		goto err;
 	}
@@ -2084,60 +2157,60 @@ wlprobe_mci(struct platform_device *pdev)
 	wl_get_chipinfo(wlpptr);
 
 	if ((wlpptr->hwData.chipRevision == REV_Z1) ||
-	    (wlpptr->hwData.chipRevision == REV_Z2)) {
+		(wlpptr->hwData.chipRevision == REV_Z2))
+	{
 		dev_err(&pdev->dev, "%s: Unsupported chip revision Z1/Z2\n",
-			DRV_NAME);
+				DRV_NAME);
 		goto err;
 	}
 
 	device_id = wlpptr->devid;
 
 	wl_init_const(wlpptr->netDev);
-	//wlpptr->ioBase0 = wlpptr->hwBase0;
+	// wlpptr->ioBase0 = wlpptr->hwBase0;
 	printk("wlprobe  wlpptr->ioBase0 = %p \n", wlpptr->ioBase0);
 
-	wlpptr->smacCfgAddr = &((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->config;
+	wlpptr->smacCfgAddr = &((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config;
 	wlpptr->smacStatusAddr =
-		&((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->status;
+		&((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->status;
 
 	/* Clean DMEM */
 	memset_io(wlpptr->ioBase0, 0, sizeof(SMAC_CTRL_BLK_st));
 
-	//wlpptr->ioBase1 = wlpptr->hwBase1;
+	// wlpptr->ioBase1 = wlpptr->hwBase1;
 	printk("wlprobe  wlpptr->ioBase1 = %p \n", wlpptr->ioBase1);
 
 #define WIFIARB_POST_REQUEST_INTR_DEV_0 "wifiarb_post_request_dev0"
 #define WIFIARB_POST_REQUEST_INTR_DEV_1 "wifiarb_post_request_dev1"
 	sprintf(wlpptr->netDev->name, "%s%1d", DRV_NAME, wlinitcnt);
-	switch (wlinitcnt) {
+	switch (wlinitcnt)
+	{
 	case 0:
-		{
-			wlpptr->wlpd_p->AllocSharedMeminfo.file =
-				debugfs_create_file(wlpptr->netDev->name, 0644,
-						    NULL, NULL, &wdev0_fops);
-			wlpptr->wlpd_p->PostReqSiginfo.file =
-				debugfs_create_file
-				(WIFIARB_POST_REQUEST_INTR_DEV_0, 0200, NULL,
-				 NULL, &postreq_fops0);
-			ACNT_f0 =
-				debugfs_create_file("AcntChunk0", 0644, NULL,
-						    NULL, &ACNT_fops);
-			break;
-		}
+	{
+		wlpptr->wlpd_p->AllocSharedMeminfo.file =
+			debugfs_create_file(wlpptr->netDev->name, 0644,
+								NULL, NULL, &wdev0_fops);
+		wlpptr->wlpd_p->PostReqSiginfo.file =
+			debugfs_create_file(WIFIARB_POST_REQUEST_INTR_DEV_0, 0200, NULL,
+								NULL, &postreq_fops0);
+		ACNT_f0 =
+			debugfs_create_file("AcntChunk0", 0644, NULL,
+								NULL, &ACNT_fops);
+		break;
+	}
 	case 1:
-		{
-			wlpptr->wlpd_p->AllocSharedMeminfo.file =
-				debugfs_create_file(wlpptr->netDev->name, 0644,
-						    NULL, NULL, &wdev1_fops);
-			wlpptr->wlpd_p->PostReqSiginfo.file =
-				debugfs_create_file
-				(WIFIARB_POST_REQUEST_INTR_DEV_1, 0200, NULL,
-				 NULL, &postreq_fops1);
-			ACNT_f1 =
-				debugfs_create_file("AcntChunk1", 0644, NULL,
-						    NULL, &ACNT1_fops);
-			break;
-		}
+	{
+		wlpptr->wlpd_p->AllocSharedMeminfo.file =
+			debugfs_create_file(wlpptr->netDev->name, 0644,
+								NULL, NULL, &wdev1_fops);
+		wlpptr->wlpd_p->PostReqSiginfo.file =
+			debugfs_create_file(WIFIARB_POST_REQUEST_INTR_DEV_1, 0200, NULL,
+								NULL, &postreq_fops1);
+		ACNT_f1 =
+			debugfs_create_file("AcntChunk1", 0644, NULL,
+								NULL, &ACNT1_fops);
+		break;
+	}
 	default:
 		printk(" wlinitcnt = %d \n", wlinitcnt);
 		break;
@@ -2162,9 +2235,10 @@ wlprobe_mci(struct platform_device *pdev)
 	wlpptr->wlpd_p->bus_type = BUS_TYPE_MCI;
 	wlprobe_set_reg_value(wlpptr);
 	wlprobe_set_intr_info(wlpptr);
-	if (wlpptr->netDev->irq != wlpptr->wlpd_p->msix_num) {
+	if (wlpptr->netDev->irq != wlpptr->wlpd_p->msix_num)
+	{
 		dev_err(&pdev->dev, "required %d irq, but %d available\n",
-			wlpptr->wlpd_p->msix_num, wlpptr->netDev->irq);
+				wlpptr->wlpd_p->msix_num, wlpptr->netDev->irq);
 		goto err;
 	}
 
@@ -2177,41 +2251,41 @@ wlprobe_mci(struct platform_device *pdev)
 
 	wlpptr->wlpd_p->CardDeviceInfo = device_id & 0xff;
 	if (wlpptr->wlpd_p->CardDeviceInfo == 4)
-		wlpptr->wlpd_p->SDRAMSIZE_Addr = 0x40fc70b7;	/* 16M SDRAM */
+		wlpptr->wlpd_p->SDRAMSIZE_Addr = 0x40fc70b7; /* 16M SDRAM */
 	else
-		wlpptr->wlpd_p->SDRAMSIZE_Addr = 0x40fe70b7;	/* 8M SDRAM */
+		wlpptr->wlpd_p->SDRAMSIZE_Addr = 0x40fe70b7; /* 8M SDRAM */
 
 	WLDBG_INFO(DBG_LEVEL_2,
-		   "%s: %s: mem=0x%lx, irq=%d, ioBase0=%x, ioBase1=%x\n",
-		   wlpptr->netDev->name, wlgetAdapterDescription(wlpptr,
-								 vendor_id,
-								 device_id),
-		   wlpptr->netDev->mem_start, wlpptr->netDev->irq,
-		   wlpptr->ioBase0, wlpptr->ioBase1);
+			   "%s: %s: mem=0x%lx, irq=%d, ioBase0=%x, ioBase1=%x\n",
+			   wlpptr->netDev->name, wlgetAdapterDescription(wlpptr, vendor_id, device_id),
+			   wlpptr->netDev->mem_start, wlpptr->netDev->irq,
+			   wlpptr->ioBase0, wlpptr->ioBase1);
 
 	wlpptr->hframe_virt_addr = wl_dma_alloc_coherent(&pdev->dev,
-							 SC5_HFRAME_MEM_SIZE,
-							 &wlpptr->
-							 hframe_phy_addr,
-							 GFP_KERNEL);
+													 SC5_HFRAME_MEM_SIZE,
+													 &wlpptr->hframe_phy_addr,
+													 GFP_KERNEL);
 
-	if (wlpptr->hframe_virt_addr == NULL) {
+	if (wlpptr->hframe_virt_addr == NULL)
+	{
 		printk(KERN_ERR
-		       "%s: Can not allocate memory for hframe register",
-		       wlpptr->netDev->name);
+			   "%s: Can not allocate memory for hframe register",
+			   wlpptr->netDev->name);
 		goto err;
 	}
 
 	/* Set hframe register base */
 	writel(wlpptr->hframe_phy_addr, wlpptr->ioBase1 + SC5_REG_HFRAME_BASE);
 	dev_info(&pdev->dev, "hframe base addr %llx \n",
-		 (long long unsigned int)wlpptr->hframe_phy_addr);
+			 (long long unsigned int)wlpptr->hframe_phy_addr);
 
-	if (wlInit((wlpptr->netDev), device_id)) {
+	if (wlInit((wlpptr->netDev), device_id))
+	{
 		goto err;
 	}
 
-	if (start_wlmon(wlpptr)) {
+	if (start_wlmon(wlpptr))
+	{
 		printk("starting background monitor thread fail..\n");
 	}
 
@@ -2229,33 +2303,34 @@ err:
 /*
 	Remap the interrupt
 	intr_id: interrupt id
-	qid: which queue to use. 
+	qid: which queue to use.
 		-1 = map to R7
 	isrq: Is mapping RQ
-	
+
 */
 static void
 intr_sel_frm_effid(struct wlprivate *wlpptr, UINT32 intr_id, SINT32 qid,
-		   BOOLEAN issq)
+				   BOOLEAN issq)
 {
-	if (qid < 0) {
+	if (qid < 0)
+	{
 		return;
 	}
 
 	WLDBG_INFO(DBG_LEVEL_0, "mapping %sQ(%d) to intr(%d)\n",
-		   (issq ? "S" : "R"), qid, intr_id);
+			   (issq ? "S" : "R"), qid, intr_id);
 	// Note: Always using frame_0, unless we need different frames
 	// Driver sets the same addres to fm_0 ~ fm_3 now
 	//      ref: wl_init_intr()
 	writel(0, wlpptr->ioBase1 + SC5_REG_FRM_SEL(qid, ((int)(issq) & 0x1)));
 	WLDBG_INFO(DBG_LEVEL_0, "[FRM_SEL] writel(ioBase1+%xh) = %xh\n",
-		   SC5_REG_FRM_SEL(qid, ((int)(issq) & 0x1)), 0);
+			   SC5_REG_FRM_SEL(qid, ((int)(issq) & 0x1)), 0);
 	// Set the interrupt
 	writel(intr_id + wlpptr->wlpd_p->sysintr_frm.spi_num,
-	       wlpptr->ioBase1 + SC5_REG_EFF_ID(qid, ((int)(issq) & 0x1)));
+		   wlpptr->ioBase1 + SC5_REG_EFF_ID(qid, ((int)(issq) & 0x1)));
 	WLDBG_INFO(DBG_LEVEL_0, "[EFF_ID] writel(ioBase1+%xh) = %xh\n",
-		   SC5_REG_EFF_ID(qid, ((int)(issq) & 0x1)),
-		   intr_id + wlpptr->wlpd_p->sysintr_frm.spi_num);
+			   SC5_REG_EFF_ID(qid, ((int)(issq) & 0x1)),
+			   intr_id + wlpptr->wlpd_p->sysintr_frm.spi_num);
 	return;
 }
 
@@ -2264,14 +2339,18 @@ wldisable_intr(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
-	if (wlpptr->intr_type == INTR_TYPE_MSIX) {
+	if (wlpptr->intr_type == INTR_TYPE_MSIX)
+	{
 		int isr_id;
-		for (isr_id = 0; isr_id < wlpptr->num_vectors; isr_id++) {
-			//unsigned irq_vec = wlpptr->msix_entries[isr_id].vector;
+		for (isr_id = 0; isr_id < wlpptr->num_vectors; isr_id++)
+		{
+			// unsigned irq_vec = wlpptr->msix_entries[isr_id].vector;
 			unsigned irq_vec = wlpptr->msix_ctx[isr_id].irq_vec;
 			disable_irq(irq_vec);
 		}
-	} else if (wlpptr->intr_type == PCI_INTR_TYPE_MSI) {
+	}
+	else if (wlpptr->intr_type == PCI_INTR_TYPE_MSI)
+	{
 		disable_irq(wlpptr->netDev->irq);
 	}
 	return;
@@ -2282,27 +2361,32 @@ wlfree_intr(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
-	if (wlpptr->intr_type == INTR_TYPE_MSIX) {
+	if (wlpptr->intr_type == INTR_TYPE_MSIX)
+	{
 		int isr_id;
-		for (isr_id = 0; isr_id < wlpptr->num_vectors; isr_id++) {
-			//unsigned irq_vec = wlpptr->msix_entries[isr_id].vector;
+		for (isr_id = 0; isr_id < wlpptr->num_vectors; isr_id++)
+		{
+			// unsigned irq_vec = wlpptr->msix_entries[isr_id].vector;
 			unsigned irq_vec = wlpptr->msix_ctx[isr_id].irq_vec;
-			if (irq_vec != 0) {
+			if (irq_vec != 0)
+			{
 				free_irq(irq_vec, &(wlpptr->msix_ctx[isr_id]));
 			}
 		}
-	} else if (wlpptr->intr_type == PCI_INTR_TYPE_MSI) {
+	}
+	else if (wlpptr->intr_type == PCI_INTR_TYPE_MSI)
+	{
 		free_irq(wlpptr->netDev->irq, wlpptr->netDev);
 	}
 	return;
 }
 
-#define	IRQNAMESIZE 32
+#define IRQNAMESIZE 32
 static char irq_name[MAX_CARDS_SUPPORT][SC5_MSIX_NUM][IRQNAMESIZE];
 
 static BOOLEAN
 hook_intr_2_queue(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 qid,
-		  BOOLEAN issq)
+				  BOOLEAN issq)
 {
 	struct wlprivate_data *wlpd_p = wlpptr->wlpd_p;
 	struct bqm_args *pbqm_args = &wlpd_p->bmq_args;
@@ -2319,67 +2403,84 @@ hook_intr_2_queue(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 qid,
 
 	card_idx = wlpptr->cardindex;
 	sprintf(irq_name[card_idx][isr_id], "%s_%sQ[%d]", wlpptr->netDev->name,
-		(issq ? "S" : "R"), qid);
+			(issq ? "S" : "R"), qid);
 
 	// ======== TXQ ========
 	if ((((pbqm_args->txq_start_index <= qid) &&
-	      (qid < (pbqm_args->txq_start_index + pbqm_args->txq_num))) ||
-	     ((SC5_BMQ_START_INDEX <= qid) &&
-	      (qid < (SC5_BMQ_START_INDEX + SC5_BMQ_NUM)))) &&
-	    (issq == FALSE)) {
-		if (request_irq(irq_vec, wlSC5MSIX_tx, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id]))) {	//=> Give any to test....
+		  (qid < (pbqm_args->txq_start_index + pbqm_args->txq_num))) ||
+		 ((SC5_BMQ_START_INDEX <= qid) &&
+		  (qid < (SC5_BMQ_START_INDEX + SC5_BMQ_NUM)))) &&
+		(issq == FALSE))
+	{
+		if (request_irq(irq_vec, wlSC5MSIX_tx, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id])))
+		{ //=> Give any to test....
 			WLDBG_ERROR(DBG_LEVEL_2,
-				    "%s: request_irq for Q(%d) failed\n",
-				    wlpptr->netDev->name, qid);
+						"%s: request_irq for Q(%d) failed\n",
+						wlpptr->netDev->name, qid);
 			wlpptr->num_vectors = isr_id;
 			return FALSE;
-		} else {
-			WLDBG_INFO(DBG_LEVEL_2,
-				   "Intr[%d], %sQ[%d] => wlSC5MSIX_tx()\n",
-				   isr_id, (issq ? "S" : "R"), qid);
 		}
-	} else
+		else
+		{
+			WLDBG_INFO(DBG_LEVEL_2,
+					   "Intr[%d], %sQ[%d] => wlSC5MSIX_tx()\n",
+					   isr_id, (issq ? "S" : "R"), qid);
+		}
+	}
+	else
 		// ======== RXQ ========
-	if (((SC5_RXQ_START_INDEX == qid) ||
-		     (SC5_RXQ_PROMISCUOUS_INDEX == qid) ||
-		     (SC5_RXQ_MGMT_INDEX == qid)) && (issq == TRUE)) {
-		if (request_irq(irq_vec, wlSC5MSIX_rx, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id]))) {	//=> Give any to test....
-			WLDBG_ERROR(DBG_LEVEL_2,
-				    "%s: request_irq for Q(%d) failed\n",
-				    wlpptr->netDev->name, qid);
-			wlpptr->num_vectors = isr_id;
-			return FALSE;
-		} else {
-			WLDBG_INFO(DBG_LEVEL_2,
-				   "Intr[%d], %sQ[%d] => wlSC5MSIX_rx()\n",
-				   isr_id, (issq ? "S" : "R"), qid);
+		if (((SC5_RXQ_START_INDEX == qid) ||
+			 (SC5_RXQ_PROMISCUOUS_INDEX == qid) ||
+			 (SC5_RXQ_MGMT_INDEX == qid)) &&
+			(issq == TRUE))
+		{
+			if (request_irq(irq_vec, wlSC5MSIX_rx, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id])))
+			{ //=> Give any to test....
+				WLDBG_ERROR(DBG_LEVEL_2,
+							"%s: request_irq for Q(%d) failed\n",
+							wlpptr->netDev->name, qid);
+				wlpptr->num_vectors = isr_id;
+				return FALSE;
+			}
+			else
+			{
+				WLDBG_INFO(DBG_LEVEL_2,
+						   "Intr[%d], %sQ[%d] => wlSC5MSIX_rx()\n",
+						   isr_id, (issq ? "S" : "R"), qid);
+			}
 		}
-	} else
-		// ======== RelQ ========
-	if (((pbqm_args->bmq_release_index <= qid) &&
-		     (qid <
-			      (pbqm_args->bmq_release_index +
-				       pbqm_args->bmq_release_num))) &&
-		    (issq == TRUE)) {
-		if (request_irq(irq_vec, wlSC5MSIX_rel, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id]))) {	//=> Give any to test....
-			WLDBG_ERROR(DBG_LEVEL_2,
-				    "%s: request_irq for Q(%d) failed\n",
-				    wlpptr->netDev->name, qid);
-			wlpptr->num_vectors = isr_id;
-			return FALSE;
-		} else {
-			WLDBG_INFO(DBG_LEVEL_2,
-				   "Intr[%d], %sQ[%d] => wlSC5MSIX_rel()\n",
-				   isr_id, (issq ? "S" : "R"), qid);
-		}
-	} else
+		else
+			// ======== RelQ ========
+			if (((pbqm_args->bmq_release_index <= qid) &&
+				 (qid <
+				  (pbqm_args->bmq_release_index +
+				   pbqm_args->bmq_release_num))) &&
+				(issq == TRUE))
+			{
+				if (request_irq(irq_vec, wlSC5MSIX_rel, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id])))
+				{ //=> Give any to test....
+					WLDBG_ERROR(DBG_LEVEL_2,
+								"%s: request_irq for Q(%d) failed\n",
+								wlpptr->netDev->name, qid);
+					wlpptr->num_vectors = isr_id;
+					return FALSE;
+				}
+				else
+				{
+					WLDBG_INFO(DBG_LEVEL_2,
+							   "Intr[%d], %sQ[%d] => wlSC5MSIX_rel()\n",
+							   isr_id, (issq ? "S" : "R"), qid);
+				}
+			}
+			else
 #if defined(ACNT_REC)
-		// ======== SMAC Accounting Record ========
-	if (((pbqm_args->racntq_index <= qid) &&
-		     (qid <
-			      (pbqm_args->racntq_index +
-				       pbqm_args->racntq_num))) &&
-		    (issq == TRUE)) {
+				// ======== SMAC Accounting Record ========
+				if (((pbqm_args->racntq_index <= qid) &&
+					 (qid <
+					  (pbqm_args->racntq_index +
+					   pbqm_args->racntq_num))) &&
+					(issq == TRUE))
+				{
 #if 0
 		if (request_irq(irq_vec, wlSC5MSIX_RxInfo, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id]))) {	//=> Give any to test....
 			WLDBG_ERROR(DBG_LEVEL_2,
@@ -2393,66 +2494,80 @@ hook_intr_2_queue(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 qid,
 				   isr_id, (issq ? "S" : "R"), qid);
 		}
 #else
-		/*
-		   WSW-6521: a problem is found that commit 7302791e will reset cfhul->rxInfoIndex
-		   1. A fix for WSW-6521 has a side-effect that there are interrupt flood in SQ15 that driver may get thousands interrupts
-		   2. The interrupt can only be disabled if not registering the IRQ-handler
-		   3. The purpose of the IRQ-handler is to update the rd-ptr. But fm/hw will keep updating the data even rd-ptr is not touched (queue_full)
-		   => A tmp solution: not register the IRQ-handler, until it's fixed
-		 */
-		wlpptr->msix_ctx[isr_id].irq_vec = 0;
-#endif //0
-	} else
-#endif //ACNT_REC
-		// rx acnt irq
-		// Intr#8 = RQ#4
+					/*
+					   WSW-6521: a problem is found that commit 7302791e will reset cfhul->rxInfoIndex
+					   1. A fix for WSW-6521 has a side-effect that there are interrupt flood in SQ15 that driver may get thousands interrupts
+					   2. The interrupt can only be disabled if not registering the IRQ-handler
+					   3. The purpose of the IRQ-handler is to update the rd-ptr. But fm/hw will keep updating the data even rd-ptr is not touched (queue_full)
+					   => A tmp solution: not register the IRQ-handler, until it's fixed
+					 */
+					wlpptr->msix_ctx[isr_id].irq_vec = 0;
+#endif // 0
+				}
+				else
+#endif // ACNT_REC
+	   //  rx acnt irq
+	   //  Intr#8 = RQ#4
 #ifdef RXACNT_REC
-	if (pbqm_args->rxacnt_intrid == (isr_id - wlpptr->wlpd_p->intr_shift)) {
-		if (request_irq(irq_vec, wlSC5MSIX_RAcntRec, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id]))) {	//=> Give any to test....
-			WLDBG_ERROR(DBG_LEVEL_2,
-				    "%s: request_irq for Q(%d) failed\n",
-				    wlpptr->netDev->name, qid);
-			wlpptr->num_vectors = isr_id;
-			return FALSE;
-		} else {
-			WLDBG_INFO(DBG_LEVEL_2,
-				   "Intr[%d], %sQ[%d] => wlSC5MSIX_RAcntRec()\n",
-				   isr_id, (issq ? "S" : "R"), qid);
-		}
-	} else
-#endif //RXACNT_REC
-#if defined (TXACNT_REC)
-		// tx acnt irq
-		// Intr#10 = RQ#5
-	if (pbqm_args->txacnt_intrid == (isr_id - wlpptr->wlpd_p->intr_shift)) {
-		if (request_irq(irq_vec, wlSC5MSIX_TAcntRec, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id]))) {	//=> Give any to test....
-			WLDBG_ERROR(DBG_LEVEL_2,
-				    "%s: request_irq for Q(%d) failed\n",
-				    wlpptr->netDev->name, qid);
-			wlpptr->num_vectors = isr_id;
-			return FALSE;
-		} else {
-			WLDBG_INFO(DBG_LEVEL_2,
-				   "Intr[%d], %sQ[%d] => wlSC5MSIX_RAcntRec()\n",
-				   isr_id, (issq ? "S" : "R"), qid);
-		}
-	} else
-#endif //#if defined(TXACNT_REC)
+					if (pbqm_args->rxacnt_intrid == (isr_id - wlpptr->wlpd_p->intr_shift))
+				{
+					if (request_irq(irq_vec, wlSC5MSIX_RAcntRec, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id])))
+					{ //=> Give any to test....
+						WLDBG_ERROR(DBG_LEVEL_2,
+									"%s: request_irq for Q(%d) failed\n",
+									wlpptr->netDev->name, qid);
+						wlpptr->num_vectors = isr_id;
+						return FALSE;
+					}
+					else
+					{
+						WLDBG_INFO(DBG_LEVEL_2,
+								   "Intr[%d], %sQ[%d] => wlSC5MSIX_RAcntRec()\n",
+								   isr_id, (issq ? "S" : "R"), qid);
+					}
+				}
+				else
+#endif // RXACNT_REC
+#if defined(TXACNT_REC)
+					// tx acnt irq
+					// Intr#10 = RQ#5
+					if (pbqm_args->txacnt_intrid == (isr_id - wlpptr->wlpd_p->intr_shift))
+					{
+						if (request_irq(irq_vec, wlSC5MSIX_TAcntRec, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id])))
+						{ //=> Give any to test....
+							WLDBG_ERROR(DBG_LEVEL_2,
+										"%s: request_irq for Q(%d) failed\n",
+										wlpptr->netDev->name, qid);
+							wlpptr->num_vectors = isr_id;
+							return FALSE;
+						}
+						else
+						{
+							WLDBG_INFO(DBG_LEVEL_2,
+									   "Intr[%d], %sQ[%d] => wlSC5MSIX_RAcntRec()\n",
+									   isr_id, (issq ? "S" : "R"), qid);
+						}
+					}
+					else
+#endif // #if defined(TXACNT_REC)
 
-		// ======== R7 ========
-	{
-		if (request_irq(irq_vec, wlSC5MSIX_r7, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id]))) {	//=> Give any to test....
-			WLDBG_ERROR(DBG_LEVEL_2,
-				    "%s: request_irq for Q(%d) failed\n",
-				    wlpptr->netDev->name, qid);
-			wlpptr->num_vectors = isr_id;
-			return FALSE;
-		} else {
-			WLDBG_INFO(DBG_LEVEL_2,
-				   "Intr[%d], %sQ[%d] => wlSC5MSIX_r7()\n",
-				   isr_id, (issq ? "S" : "R"), qid);
-		}
-	}
+					// ======== R7 ========
+					{
+						if (request_irq(irq_vec, wlSC5MSIX_r7, IRQF_SHARED, irq_name[card_idx][isr_id], &(wlpptr->msix_ctx[isr_id])))
+						{ //=> Give any to test....
+							WLDBG_ERROR(DBG_LEVEL_2,
+										"%s: request_irq for Q(%d) failed\n",
+										wlpptr->netDev->name, qid);
+							wlpptr->num_vectors = isr_id;
+							return FALSE;
+						}
+						else
+						{
+							WLDBG_INFO(DBG_LEVEL_2,
+									   "Intr[%d], %sQ[%d] => wlSC5MSIX_r7()\n",
+									   isr_id, (issq ? "S" : "R"), qid);
+						}
+					}
 	return TRUE;
 }
 
@@ -2480,24 +2595,26 @@ hook_intr_2_queue(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 qid,
 	interrupt_15  ->  RQ9
 
 remap_intr():
-	input: 
+	input:
 		wlpptr
 		isr_id, which interrupt id to be mapped
-	output: 
+	output:
 		pqid, which queue to be mapped
 		pissq, sq or rq to be mapped
 */
 static void
-remap_intr(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 * pqid,
-	   BOOLEAN * pissq)
+remap_intr(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 *pqid,
+		   BOOLEAN *pissq)
 {
 	struct wlprivate_data *wlpd_p = wlpptr->wlpd_p;
 	struct bqm_args *pbqm_args = &wlpd_p->bmq_args;
 
-	if (IS_PLATFORM(A390) || IS_PLATFORM(A380)) {
-		switch (isr_id) {
+	if (IS_PLATFORM(A390) || IS_PLATFORM(A380))
+	{
+		switch (isr_id)
+		{
 		case 0:
-			*pqid = -1;	// r7 interrupt
+			*pqid = -1; // r7 interrupt
 			*pissq = TRUE;
 			break;
 			// Rx
@@ -2519,19 +2636,22 @@ remap_intr(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 * pqid,
 			*pissq = TRUE;
 			break;
 		case 5:
-			if (wlpptr->devid == SCBT) {	// SC5 has only 1 release_q
+			if (wlpptr->devid == SCBT)
+			{ // SC5 has only 1 release_q
 				*pqid = pbqm_args->bmq_release_index + 1;
 				*pissq = TRUE;
 			}
 			break;
 		case 6:
-			if (wlpptr->devid == SCBT) {	// SC5 has only 1 release_q
+			if (wlpptr->devid == SCBT)
+			{ // SC5 has only 1 release_q
 				*pqid = pbqm_args->bmq_release_index + 2;
 				*pissq = TRUE;
 			}
 			break;
 		case 7:
-			if (wlpptr->devid == SCBT) {	// SC5 has only 1 release_q
+			if (wlpptr->devid == SCBT)
+			{ // SC5 has only 1 release_q
 				*pqid = pbqm_args->bmq_release_index + 3;
 				*pissq = TRUE;
 			}
@@ -2563,13 +2683,15 @@ remap_intr(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 * pqid,
 			*pissq = FALSE;
 			break;
 		case 14:
-			if (wlpptr->devid == SCBT) {	// SC5 has only 2 tx_q
+			if (wlpptr->devid == SCBT)
+			{ // SC5 has only 2 tx_q
 				*pqid = pbqm_args->txq_start_index + 2;
 				*pissq = FALSE;
 			}
 			break;
 		case 15:
-			if (wlpptr->devid == SCBT) {	// SC5 has only 2 tx_q
+			if (wlpptr->devid == SCBT)
+			{ // SC5 has only 2 tx_q
 				*pqid = pbqm_args->txq_start_index + 3;
 				*pissq = FALSE;
 			}
@@ -2578,15 +2700,23 @@ remap_intr(struct wlprivate *wlpptr, UINT32 isr_id, SINT32 * pqid,
 			*pqid = -1;
 			*pissq = FALSE;
 		}
-	} else {
-		if (isr_id < wlpptr->wlpd_p->intr_shift) {
+	}
+	else
+	{
+		if (isr_id < wlpptr->wlpd_p->intr_shift)
+		{
 			*pqid = -1;
 			*pissq = FALSE;
-		} else {
+		}
+		else
+		{
 			*pqid = (isr_id - wlpptr->wlpd_p->intr_shift) / 2;
-			if ((isr_id - wlpptr->wlpd_p->intr_shift) & 1) {
+			if ((isr_id - wlpptr->wlpd_p->intr_shift) & 1)
+			{
 				*pissq = TRUE;
-			} else {
+			}
+			else
+			{
 				*pissq = FALSE;
 			}
 		}
@@ -2604,17 +2734,17 @@ hook_intr(struct wlprivate *wlpptr, UINT32 isr_id)
 
 	remap_intr(wlpptr, isr_id, &qid, &issq);
 	intr_sel_frm_effid(wlpptr, isr_id - wlpptr->wlpd_p->intr_shift, qid,
-			   issq);
+					   issq);
 
 	hook_intr_2_queue(wlpptr, isr_id, qid, issq);
 	return TRUE;
 }
 #endif /* SOC_W906X */
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(4,11,0)
-#define ap8x_enable_msix  pci_enable_msix_exact
+#if LINUX_VERSION_CODE > KERNEL_VERSION(4, 11, 0)
+#define ap8x_enable_msix pci_enable_msix_exact
 #else
-#define ap8x_enable_msix  pci_enable_msix
+#define ap8x_enable_msix pci_enable_msix
 #endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
@@ -2645,35 +2775,41 @@ wlprobe_pci(struct pci_dev *pdev, const struct pci_device_id *id)
 		return 0;
 	}
 #endif
-	for (i = 0; i < MAX_CARDS_SUPPORT; i++) {
-		if (global_private_data[i] == NULL) {
-			if (!
-			    (global_private_data[i] =
-			     wl_vzalloc(sizeof(struct wlprivate_data)))) {
+	for (i = 0; i < MAX_CARDS_SUPPORT; i++)
+	{
+		if (global_private_data[i] == NULL)
+		{
+			if (!(global_private_data[i] =
+					  wl_vzalloc(sizeof(struct wlprivate_data))))
+			{
 				pr_err("Unable to allocate buffer for global_private_data(size %lu)\n", (unsigned long)(sizeof(struct wlprivate_data)));
 				return -ENOMEM;
 			}
 			global_private_data[i]->AmpduPckReorder =
 				(Ampdu_Pck_Reorder_t *)
-				wl_vzalloc(sizeof(Ampdu_Pck_Reorder_t) *
-					   (sta_num + 1));
-			if (global_private_data[i]->AmpduPckReorder == NULL) {
+					wl_vzalloc(sizeof(Ampdu_Pck_Reorder_t) *
+							   (sta_num + 1));
+			if (global_private_data[i]->AmpduPckReorder == NULL)
+			{
 				printk("Unable to allocate buffer for Ampdu_Pck_Reorder_t (size %zu)\n", sizeof(Ampdu_Pck_Reorder_t) * (sta_num + 1));
 				return -ENOMEM;
 			}
 			global_private_data[i]->Ampdu_tx =
-				(Ampdu_tx_t *) wl_vzalloc(sizeof(Ampdu_tx_t) *
-							  (MAX_SUPPORT_AMPDU_TX_STREAM_RUNNING));
-			if (global_private_data[i]->Ampdu_tx == NULL) {
+				(Ampdu_tx_t *)wl_vzalloc(sizeof(Ampdu_tx_t) *
+										 (MAX_SUPPORT_AMPDU_TX_STREAM_RUNNING));
+			if (global_private_data[i]->Ampdu_tx == NULL)
+			{
 				printk("Unable to allocate buffer for Ampdu_tx (size %zu)\n", sizeof(Ampdu_tx_t) * (MAX_SUPPORT_AMPDU_TX_STREAM_RUNNING));
 				return -ENOMEM;
 			}
 		}
 	}
-	if (pci_enable_device(pdev)) {
+	if (pci_enable_device(pdev))
+	{
 		return -EIO;
 	}
-	if (pci_set_dma_mask(pdev, 0xffffffff)) {
+	if (pci_set_dma_mask(pdev, 0xffffffff))
+	{
 		printk(KERN_ERR "%s: 32-bit PCI DMA not supported", DRV_NAME);
 		goto err_pci_disable_device;
 	}
@@ -2681,29 +2817,32 @@ wlprobe_pci(struct pci_dev *pdev, const struct pci_device_id *id)
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)
 	dev = alloc_netdev(sizeof(struct wlprivate), DRV_NAME, NET_NAME_UNKNOWN,
-			   ether_setup);
+					   ether_setup);
 #else
 	dev = alloc_netdev(sizeof(struct wlprivate), DRV_NAME, ether_setup);
 #endif
-	if (dev) {
+	if (dev)
+	{
 		wlpptr = NETDEV_PRIV(struct wlprivate, dev);
 		NETDEV_PRIV_S(dev) = wlpptr;
 	}
-	if (wlpptr == NULL) {
+	if (wlpptr == NULL)
+	{
 		printk(KERN_ERR "%s: no mem for private driver context\n",
-		       DRV_NAME);
+			   DRV_NAME);
 		goto err_pci_disable_device;
 	}
 	memset(wlpptr, 0, sizeof(struct wlprivate));
 	wlpptr->netDev = dev;
-	//wlpdptr = wl_kmalloc(sizeof(struct wlprivate_data), GFP_KERNEL);
+	// wlpdptr = wl_kmalloc(sizeof(struct wlprivate_data), GFP_KERNEL);
 	wlpdptr = global_private_data[cardindex % MAX_CARDS_SUPPORT];
 	gprv_dat_refcnt++;
 	wlpptr->cardindex = cardindex;
 	cardindex++;
-	if (wlpdptr == NULL) {
+	if (wlpdptr == NULL)
+	{
 		printk(KERN_ERR "%s: no mem for private driver data context\n",
-		       DRV_NAME);
+			   DRV_NAME);
 		goto err_kfree;
 	}
 	wlpptr->wlpd_p = wlpdptr;
@@ -2717,21 +2856,21 @@ wlprobe_pci(struct pci_dev *pdev, const struct pci_device_id *id)
 			wlpptr->wlpd_p->gpioresetpin = WDEV1_RESET_PIN;
 
 		pci_read_config_dword(wlpptr->wlpd_p->pPciDev,
-				      PCI_BASE_ADDRESS_0,
-				      (u32 *) & wlpptr->wlpd_p->baseaddress0);
+							  PCI_BASE_ADDRESS_0,
+							  (u32 *)&wlpptr->wlpd_p->baseaddress0);
 		pci_read_config_dword(wlpptr->wlpd_p->pPciDev,
-				      PCI_BASE_ADDRESS_2,
-				      (u32 *) & wlpptr->wlpd_p->baseaddress2);
+							  PCI_BASE_ADDRESS_2,
+							  (u32 *)&wlpptr->wlpd_p->baseaddress2);
 #ifdef SOC_W906X
 		pci_read_config_dword(wlpptr->wlpd_p->pPciDev,
-				      PCI_BASE_ADDRESS_4,
-				      (u32 *) & wlpptr->wlpd_p->baseaddress4);
+							  PCI_BASE_ADDRESS_4,
+							  (u32 *)&wlpptr->wlpd_p->baseaddress4);
 #endif /* SOC_W906X */
-
 	}
 	wlpdptr->rootdev = wlpptr->netDev;
 
-	if (pci_save_state(pdev)) {
+	if (pci_save_state(pdev))
+	{
 		dev_err(&pdev->dev, "Failed to save pci state\n");
 		goto err_pci_disable_device;
 	}
@@ -2739,14 +2878,15 @@ wlprobe_pci(struct pci_dev *pdev, const struct pci_device_id *id)
 	physAddr = pci_resource_start(pdev, 0);
 	resourceFlags = pci_resource_flags(pdev, 0);
 
-	wlpptr->nextBarNum = 1;	/* 32-bit */
+	wlpptr->nextBarNum = 1; /* 32-bit */
 
 	if (resourceFlags & 0x04)
-		wlpptr->nextBarNum = 2;	/* 64-bit */
+		wlpptr->nextBarNum = 2; /* 64-bit */
 
-	if (!request_mem_region(physAddr, pci_resource_len(pdev, 0), DRV_NAME)) {
+	if (!request_mem_region(physAddr, pci_resource_len(pdev, 0), DRV_NAME))
+	{
 		printk(KERN_ERR "%s: cannot reserve PCI memory region 0\n",
-		       DRV_NAME);
+			   DRV_NAME);
 		goto err_kfree1;
 	}
 
@@ -2757,24 +2897,25 @@ wlprobe_pci(struct pci_dev *pdev, const struct pci_device_id *id)
 	wlpptr->ioBase0_phy = physAddr;
 #endif
 	printk("wlprobe  wlpptr->ioBase0 = %p, len=0x%llx (pcie)\n",
-	       wlpptr->ioBase0, pci_resource_len(pdev, 0));
-	if (!wlpptr->ioBase0) {
+		   wlpptr->ioBase0, pci_resource_len(pdev, 0));
+	if (!wlpptr->ioBase0)
+	{
 		printk(KERN_ERR "%s: cannot remap PCI memory region 0\n",
-		       DRV_NAME);
+			   DRV_NAME);
 		goto err_release_mem_region_bar0;
 	}
-	wlpptr->smacCfgAddr = &((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->config;
+	wlpptr->smacCfgAddr = &((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config;
 	wlpptr->smacStatusAddr =
-		&((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->status;
+		&((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->status;
 
 	/* Clean DMEM */
 	memset_io(wlpptr->ioBase0, 0, sizeof(SMAC_CTRL_BLK_st));
 
 	physAddr = pci_resource_start(pdev, wlpptr->nextBarNum);
-	if (!request_mem_region
-	    (physAddr, pci_resource_len(pdev, wlpptr->nextBarNum), DRV_NAME)) {
+	if (!request_mem_region(physAddr, pci_resource_len(pdev, wlpptr->nextBarNum), DRV_NAME))
+	{
 		printk(KERN_ERR "%s: cannot reserve PCI memory region 1\n",
-		       DRV_NAME);
+			   DRV_NAME);
 		goto err_iounmap_ioBase0;
 	}
 
@@ -2786,10 +2927,11 @@ wlprobe_pci(struct pci_dev *pdev, const struct pci_device_id *id)
 	wlpptr->ioBase1_phy = physAddr;
 #endif
 	printk("wlprobe  wlpptr->ioBase1 = %p, len=0x%llx (pcie)\n",
-	       wlpptr->ioBase1, pci_resource_len(pdev, wlpptr->nextBarNum));
-	if (!wlpptr->ioBase1) {
+		   wlpptr->ioBase1, pci_resource_len(pdev, wlpptr->nextBarNum));
+	if (!wlpptr->ioBase1)
+	{
 		printk(KERN_ERR "%s: cannot remap PCI memory region 1\n",
-		       DRV_NAME);
+			   DRV_NAME);
 		goto err_release_mem_region_bar1;
 	}
 	wlpptr->bgscan_period = DEF_BGSCAN_PERIOD;
@@ -2797,15 +2939,16 @@ wlprobe_pci(struct pci_dev *pdev, const struct pci_device_id *id)
 #ifdef SOC_W906X
 	if (!wlpptr->wlpd_p->baseaddress4)
 		goto here;
-	if (resourceFlags & 0x04) {
-		wlpptr->nextBarNum = 4;	/* 64-bit */
+	if (resourceFlags & 0x04)
+	{
+		wlpptr->nextBarNum = 4; /* 64-bit */
 	}
 
 	physAddr = pci_resource_start(pdev, wlpptr->nextBarNum);
-	if (!request_mem_region
-	    (physAddr, pci_resource_len(pdev, wlpptr->nextBarNum), DRV_NAME)) {
+	if (!request_mem_region(physAddr, pci_resource_len(pdev, wlpptr->nextBarNum), DRV_NAME))
+	{
 		printk(KERN_ERR "%s: cannot reserve PCI memory region 2\n",
-		       DRV_NAME);
+			   DRV_NAME);
 		goto err_iounmap_ioBase2;
 	}
 
@@ -2814,69 +2957,70 @@ wlprobe_pci(struct pci_dev *pdev, const struct pci_device_id *id)
 	physAddr2[1] = 0;
 	wlpptr->ioBase2 = physAddr2[0];
 	printk("wlprobe  wlpptr->ioBase2 = %p, len=0x%llx (pcie)\n",
-	       wlpptr->ioBase2, pci_resource_len(pdev, wlpptr->nextBarNum));
-	if (!wlpptr->ioBase2) {
+		   wlpptr->ioBase2, pci_resource_len(pdev, wlpptr->nextBarNum));
+	if (!wlpptr->ioBase2)
+	{
 		printk(KERN_ERR "%s: cannot remap PCI memory region 1\n",
-		       DRV_NAME);
+			   DRV_NAME);
 		goto err_release_mem_region_bar2;
 	}
 here:
 
 	wl_get_chipinfo(wlpptr);
 	if ((wlpptr->hwData.chipRevision == REV_Z1) ||
-	    (wlpptr->hwData.chipRevision == REV_Z2)) {
+		(wlpptr->hwData.chipRevision == REV_Z2))
+	{
 		dev_err(&pdev->dev, "%s: Unsupported chip revision Z1/Z2\n",
-			DRV_NAME);
+				DRV_NAME);
 		goto err_iounmap_ioBase2;
 	}
 #endif /* SOC_W906X */
 #define WIFIARB_POST_REQUEST_INTR_DEV_0 "wifiarb_post_request_dev0"
 #define WIFIARB_POST_REQUEST_INTR_DEV_1 "wifiarb_post_request_dev1"
 	sprintf(wlpptr->netDev->name, "%s%1d", DRV_NAME, wlinitcnt);
-	switch (wlinitcnt) {
+	switch (wlinitcnt)
+	{
 	case 0:
-		{
+	{
 
-			wlpptr->wlpd_p->AllocSharedMeminfo.file =
-				debugfs_create_file(wlpptr->netDev->name, 0644,
-						    NULL, NULL, &wdev0_fops);
-			wlpptr->wlpd_p->PostReqSiginfo.file =
-				debugfs_create_file
-				(WIFIARB_POST_REQUEST_INTR_DEV_0, 0200, NULL,
-				 NULL, &postreq_fops0);
+		wlpptr->wlpd_p->AllocSharedMeminfo.file =
+			debugfs_create_file(wlpptr->netDev->name, 0644,
+								NULL, NULL, &wdev0_fops);
+		wlpptr->wlpd_p->PostReqSiginfo.file =
+			debugfs_create_file(WIFIARB_POST_REQUEST_INTR_DEV_0, 0200, NULL,
+								NULL, &postreq_fops0);
 #if defined(SOC_W906X) || defined(NEWDP_ACNT_CHUNKS)
-			ACNT_f0 =
-				debugfs_create_file("AcntChunk0", 0644, NULL,
-						    NULL, &ACNT_fops);
+		ACNT_f0 =
+			debugfs_create_file("AcntChunk0", 0644, NULL,
+								NULL, &ACNT_fops);
 #else
-			wlpptr->wlpd_p->ACNTmemInfo.file =
-				debugfs_create_file("ACNT0mem", 0644, NULL,
-						    NULL, &ACNT_fops);
+		wlpptr->wlpd_p->ACNTmemInfo.file =
+			debugfs_create_file("ACNT0mem", 0644, NULL,
+								NULL, &ACNT_fops);
 #endif
 
-			break;
-		}
+		break;
+	}
 	case 1:
-		{
+	{
 
-			wlpptr->wlpd_p->AllocSharedMeminfo.file =
-				debugfs_create_file(wlpptr->netDev->name, 0644,
-						    NULL, NULL, &wdev1_fops);
-			wlpptr->wlpd_p->PostReqSiginfo.file =
-				debugfs_create_file
-				(WIFIARB_POST_REQUEST_INTR_DEV_1, 0200, NULL,
-				 NULL, &postreq_fops1);
+		wlpptr->wlpd_p->AllocSharedMeminfo.file =
+			debugfs_create_file(wlpptr->netDev->name, 0644,
+								NULL, NULL, &wdev1_fops);
+		wlpptr->wlpd_p->PostReqSiginfo.file =
+			debugfs_create_file(WIFIARB_POST_REQUEST_INTR_DEV_1, 0200, NULL,
+								NULL, &postreq_fops1);
 #if defined(SOC_W906X) || defined(NEWDP_ACNT_CHUNKS)
-			ACNT_f1 =
-				debugfs_create_file("AcntChunk1", 0644, NULL,
-						    NULL, &ACNT1_fops);
+		ACNT_f1 =
+			debugfs_create_file("AcntChunk1", 0644, NULL,
+								NULL, &ACNT1_fops);
 #else
-			wlpptr->wlpd_p->ACNTmemInfo.file =
-				debugfs_create_file("ACNT1mem", 0644, NULL,
-						    NULL, &ACNT_fops);
+		wlpptr->wlpd_p->ACNTmemInfo.file =
+			debugfs_create_file("ACNT1mem", 0644, NULL,
+								NULL, &ACNT_fops);
 #endif
-			break;
-		}
+		break;
+	}
 	default:
 		printk(" wlinitcnt = %d \n", wlinitcnt);
 		break;
@@ -2901,21 +3045,25 @@ here:
 #ifdef SOC_W906X
 	wlpptr->hframe_virt_addr =
 		pci_alloc_consistent(pdev, SC5_HFRAME_MEM_SIZE,
-				     &wlpptr->hframe_phy_addr);
-	if (wlpptr->hframe_virt_addr == NULL) {
+							 &wlpptr->hframe_phy_addr);
+	if (wlpptr->hframe_virt_addr == NULL)
+	{
 		printk(KERN_ERR
-		       "%s: Can not allocate memory for hframe register",
-		       wlpptr->netDev->name);
+			   "%s: Can not allocate memory for hframe register",
+			   wlpptr->netDev->name);
 		goto err_iounmap_ioBase1;
 	}
 	printk(KERN_ERR "hframe base addr %llx \n",
-	       (long long unsigned int)wlpptr->hframe_phy_addr);
+		   (long long unsigned int)wlpptr->hframe_phy_addr);
 
 #ifdef WIFI_DATA_OFFLOAD
-	if (wfo_disable & (1 << (cardindex - 1))) {
+	if (wfo_disable & (1 << (cardindex - 1)))
+	{
 		wlpptr->wlpd_p->dol.disable = true;
 		wlpptr->wlpd_p->ipc.disable = true;
-	} else {
+	}
+	else
+	{
 		wlpptr->wlpd_p->dol.disable = false;
 		wlpptr->wlpd_p->ipc.disable = false;
 	}
@@ -2927,31 +3075,34 @@ here:
 	wlprobe_set_reg_value(wlpptr);
 	wlprobe_set_intr_info(wlpptr);
 
-	if (pci_find_capability(pdev, PCI_CAP_ID_MSIX)) {
+	if (pci_find_capability(pdev, PCI_CAP_ID_MSIX))
+	{
 		int msi_err = 0;
 
 		wlpptr->intr_type = INTR_TYPE_MSIX;
 		wl_init_intr(wlpptr);
 
-		//writel(wlpptr->hframe_phy_addr,
-		//      wlpptr->ioBase1 + SC5_REG_BASE_ADDR_HOST_128B);
+		// writel(wlpptr->hframe_phy_addr,
+		//       wlpptr->ioBase1 + SC5_REG_BASE_ADDR_HOST_128B);
 
 		if (wlpptr->num_vectors)
 			wlpptr->msix_entries =
 				kcalloc(wlpptr->num_vectors,
-					sizeof(struct msix_entry), GFP_KERNEL);
+						sizeof(struct msix_entry), GFP_KERNEL);
 
-		if (wlpptr->msix_entries) {
+		if (wlpptr->msix_entries)
+		{
 			int i;
 			for (i = 0; i < wlpptr->num_vectors; i++)
 				wlpptr->msix_entries[i].entry = i;
 
 			if ((msi_err =
-			     ap8x_enable_msix(pdev, wlpptr->msix_entries,
-					      wlpptr->num_vectors)) < 0) {
+					 ap8x_enable_msix(pdev, wlpptr->msix_entries,
+									  wlpptr->num_vectors)) < 0)
+			{
 				dev_info(&pdev->dev,
-					 "MSI-X Allocation Failed with error = %d. Fall back to try MSI\n",
-					 msi_err);
+						 "MSI-X Allocation Failed with error = %d. Fall back to try MSI\n",
+						 msi_err);
 
 				if (wlpptr->msix_entries)
 					wl_kfree(wlpptr->msix_entries);
@@ -2964,70 +3115,75 @@ here:
 
 			/* MSI-X vectors are allocated */
 			dev_info(&pdev->dev,
-				 "MSI-X enabled with %d vectors(starts from %d) allocated\n",
-				 wlpptr->num_vectors,
-				 wlpptr->msix_entries[0].vector);
+					 "MSI-X enabled with %d vectors(starts from %d) allocated\n",
+					 wlpptr->num_vectors,
+					 wlpptr->msix_entries[0].vector);
 		}
 
-	}			//end of pci_find_capability(pdev, PCI_CAP_ID_MSIX)
+	} // end of pci_find_capability(pdev, PCI_CAP_ID_MSIX)
 try_msi:
 
 	/* If MSI-X is not enabled and try MSI */
-	if (!wlpptr->msix_entries) {
+	if (!wlpptr->msix_entries)
+	{
 		wlpptr->intr_type = PCI_INTR_TYPE_MSI;
 		wl_init_intr(wlpptr);
 
-		if ((msi_err = pci_enable_msi(pdev)) == 0) {
+		if ((msi_err = pci_enable_msi(pdev)) == 0)
+		{
 			wlpptr->netDev->irq = pdev->irq;
 			dev_info(&pdev->dev, "MSI Enabled with vector=%d\n",
-				 pdev->irq);
-		} else
+					 pdev->irq);
+		}
+		else
 			dev_info(&pdev->dev,
-				 "MSI Enabled failed with err=%d. Fall back to Legacy IRQ %d\n",
-				 msi_err, wlpptr->netDev->irq);
+					 "MSI Enabled failed with err=%d. Fall back to Legacy IRQ %d\n",
+					 msi_err, wlpptr->netDev->irq);
 
-	}			//end of pci_find_capability(pdev, PCI_CAP_ID_MSI)
+	} // end of pci_find_capability(pdev, PCI_CAP_ID_MSI)
 
 	wl_hook_intr(wlpptr);
 
 	WLDBG_DATA(DBG_LEVEL_0, "%s: request_irq %x success pci_intr_type=%d\n",
-		   wlpptr->netDev->name, wlpptr->netDev->irq,
-		   wlpptr->intr_type);
+			   wlpptr->netDev->name, wlpptr->netDev->irq,
+			   wlpptr->intr_type);
 #else
 	if (request_irq(wlpptr->netDev->irq, wlISR, IRQF_SHARED,
-			wlpptr->netDev->name, (wlpptr->netDev))) {
+					wlpptr->netDev->name, (wlpptr->netDev)))
+	{
 		printk(KERN_ERR "%s: request_irq failed\n",
-		       wlpptr->netDev->name);
+			   wlpptr->netDev->name);
 		goto err_iounmap_ioBase1;
 	}
 #endif /* SOC_W906X */
 
 	wlpptr->wlpd_p->CardDeviceInfo = pdev->device & 0xff;
 	if (wlpptr->wlpd_p->CardDeviceInfo == 4)
-		wlpptr->wlpd_p->SDRAMSIZE_Addr = 0x40fc70b7;	/* 16M SDRAM */
+		wlpptr->wlpd_p->SDRAMSIZE_Addr = 0x40fc70b7; /* 16M SDRAM */
 	else
-		wlpptr->wlpd_p->SDRAMSIZE_Addr = 0x40fe70b7;	/* 8M SDRAM */
+		wlpptr->wlpd_p->SDRAMSIZE_Addr = 0x40fe70b7; /* 8M SDRAM */
 	WLDBG_INFO(DBG_LEVEL_2,
-		   "%s: %s: mem=0x%lx, irq=%d, ioBase0=%x, ioBase1=%x\n",
-		   wlpptr->netDev->name, wlgetAdapterDescription(wlpptr,
-								 id->vendor,
-								 id->device),
-		   wlpptr->netDev->mem_start, wlpptr->netDev->irq,
-		   wlpptr->ioBase0, wlpptr->ioBase1);
+			   "%s: %s: mem=0x%lx, irq=%d, ioBase0=%x, ioBase1=%x\n",
+			   wlpptr->netDev->name, wlgetAdapterDescription(wlpptr, id->vendor, id->device),
+			   wlpptr->netDev->mem_start, wlpptr->netDev->irq,
+			   wlpptr->ioBase0, wlpptr->ioBase1);
 
 #ifdef WIFI_DATA_OFFLOAD
-	if (!wlpptr->wlpd_p->dol.disable) {
+	if (!wlpptr->wlpd_p->dol.disable)
+	{
 		dol_core_init(wlpptr);
 		ipc_init(wlpptr);
 		dol_init(wlpptr);
 	}
 #endif
 
-	if (wlInit((wlpptr->netDev), id->device)) {
+	if (wlInit((wlpptr->netDev), id->device))
+	{
 		goto err_free_irq;
 	}
 
-	if (start_wlmon(wlpptr)) {
+	if (start_wlmon(wlpptr))
+	{
 		printk("starting background monitor thread fail..\n");
 	}
 
@@ -3040,16 +3196,20 @@ err_free_irq:
 #ifdef SOC_W906X
 	if (wlpptr->hframe_virt_addr != NULL)
 		pci_free_consistent(pdev, SC5_HFRAME_MEM_SIZE,
-				    wlpptr->hframe_virt_addr,
-				    wlpptr->hframe_phy_addr);
-	if (wlpptr->msix_entries) {
+							wlpptr->hframe_virt_addr,
+							wlpptr->hframe_phy_addr);
+	if (wlpptr->msix_entries)
+	{
 		int i = 0;
-		for (i = 0; i < wlpptr->num_vectors; i++) {
+		for (i = 0; i < wlpptr->num_vectors; i++)
+		{
 			free_irq(wlpptr->msix_entries[i].vector,
-				 &(wlpptr->msix_ctx[i]));
+					 &(wlpptr->msix_ctx[i]));
 			wlpptr->msix_entries[i].vector = 0;
 		}
-	} else {
+	}
+	else
+	{
 		free_irq(wlpptr->netDev->irq, (wlpptr->netDev));
 		wlpptr->netDev->irq = 0;
 	}
@@ -3057,7 +3217,7 @@ err_iounmap_ioBase2:
 	iounmap(wlpptr->ioBase2);
 err_release_mem_region_bar2:
 	release_mem_region(pci_resource_start(pdev, 2),
-			   pci_resource_len(pdev, 2));
+					   pci_resource_len(pdev, 2));
 #else
 	free_irq(wlpptr->netDev->irq, (wlpptr->netDev));
 #endif /* SOC_W906X */
@@ -3065,17 +3225,19 @@ err_iounmap_ioBase1:
 	iounmap(wlpptr->ioBase1);
 err_release_mem_region_bar1:
 	release_mem_region(pci_resource_start(pdev, 1),
-			   pci_resource_len(pdev, 1));
+					   pci_resource_len(pdev, 1));
 err_iounmap_ioBase0:
 	iounmap(wlpptr->ioBase0);
 err_release_mem_region_bar0:
 	release_mem_region(pci_resource_start(pdev, 0),
-			   pci_resource_len(pdev, 0));
+					   pci_resource_len(pdev, 0));
 err_kfree1:
 #ifdef SOC_W8964
-	if ((--gprv_dat_refcnt) == 0) {
+	if ((--gprv_dat_refcnt) == 0)
+	{
 		u8 i = 0;
-		for (i = 0; i < MAX_CARDS_SUPPORT; i++) {
+		for (i = 0; i < MAX_CARDS_SUPPORT; i++)
+		{
 			vfree(global_private_data[i]);
 			global_private_data[i] = NULL;
 		}
@@ -3098,61 +3260,71 @@ wlremove_mci(struct platform_device *pdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlDeinit(netdev)) {
+	if (wlDeinit(netdev))
+	{
 		printk(KERN_ERR "%s: deinit of device failed\n", netdev->name);
 	}
 
-	if (wlpptr->hframe_virt_addr) {
+	if (wlpptr->hframe_virt_addr)
+	{
 		wl_dma_free_coherent(&(pdev->dev), SC5_HFRAME_MEM_SIZE,
-				     wlpptr->hframe_virt_addr,
-				     wlpptr->hframe_phy_addr);
+							 wlpptr->hframe_virt_addr,
+							 wlpptr->hframe_phy_addr);
 	}
 
-	if (netdev->irq) {
+	if (netdev->irq)
+	{
 		wlfree_intr(netdev);
 		netdev->irq = 0;
 	}
 
 	/* Release Shared Memory FW Host I/O Request MailBox Region */
-	if (wlpptr->wlpd_p->AllocSharedMeminfo.data) {
+	if (wlpptr->wlpd_p->AllocSharedMeminfo.data)
+	{
 		wl_dma_free_coherent(wlpptr->wlpd_p->dev, FW_IO_MB_SIZE,
-				     wlpptr->wlpd_p->AllocSharedMeminfo.data,
-				     wlpptr->wlpd_p->AllocSharedMeminfo.
-				     dataPhysicalLoc);
+							 wlpptr->wlpd_p->AllocSharedMeminfo.data,
+							 wlpptr->wlpd_p->AllocSharedMeminfo.dataPhysicalLoc);
 	}
-	if (wlpptr->wlpd_p->MrvlPriSharedMem.data) {
+	if (wlpptr->wlpd_p->MrvlPriSharedMem.data)
+	{
 		wl_dma_free_coherent(wlpptr->wlpd_p->dev,
-				     sizeof(drv_fw_shared_t),
-				     wlpptr->wlpd_p->MrvlPriSharedMem.data,
-				     wlpptr->wlpd_p->MrvlPriSharedMem.
-				     dataPhysicalLoc);
+							 sizeof(drv_fw_shared_t),
+							 wlpptr->wlpd_p->MrvlPriSharedMem.data,
+							 wlpptr->wlpd_p->MrvlPriSharedMem.dataPhysicalLoc);
 	}
-	if (wlpptr->wlpd_p->AllocSharedMeminfo.file) {
+	if (wlpptr->wlpd_p->AllocSharedMeminfo.file)
+	{
 		debugfs_remove(wlpptr->wlpd_p->AllocSharedMeminfo.file);
 		wlpptr->wlpd_p->AllocSharedMeminfo.file = NULL;
 	}
-	if (wlpptr->wlpd_p->PostReqSiginfo.file) {
+	if (wlpptr->wlpd_p->PostReqSiginfo.file)
+	{
 		debugfs_remove(wlpptr->wlpd_p->PostReqSiginfo.file);
 		wlpptr->wlpd_p->PostReqSiginfo.file = NULL;
 	}
-	if (ACNT_f0) {
+	if (ACNT_f0)
+	{
 		debugfs_remove(ACNT_f0);
 		ACNT_f0 = NULL;
 	}
-	if (ACNT_f1) {
+	if (ACNT_f1)
+	{
 		debugfs_remove(ACNT_f1);
 		ACNT_f1 = NULL;
 	}
 
-	if (wlpptr->wlpd_p->smdata_mmap_info.file) {
+	if (wlpptr->wlpd_p->smdata_mmap_info.file)
+	{
 		debugfs_remove(wlpptr->wlpd_p->smdata_mmap_info.file);
 		wlpptr->wlpd_p->smdata_mmap_info.file = NULL;
 	}
 
 	cardindex--;
-	if ((--gprv_dat_refcnt) == 0) {
+	if ((--gprv_dat_refcnt) == 0)
+	{
 		u8 i = 0;
-		for (i = 0; i < MAX_CARDS_SUPPORT; i++) {
+		for (i = 0; i < MAX_CARDS_SUPPORT; i++)
+		{
 			wl_vfree(global_private_data[i]->AmpduPckReorder);
 			wl_vfree(global_private_data[i]->Ampdu_tx);
 			wl_vfree(global_private_data[i]);
@@ -3183,10 +3355,12 @@ wlremove_pci(struct pci_dev *pdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlDeinit(netdev)) {
+	if (wlDeinit(netdev))
+	{
 		printk(KERN_ERR "%s: deinit of device failed\n", netdev->name);
 	}
-	if (netdev->irq) {
+	if (netdev->irq)
+	{
 #ifdef SOC_W906X
 		wlfree_intr(netdev);
 		netdev->irq = 0;
@@ -3195,7 +3369,8 @@ wlremove_pci(struct pci_dev *pdev)
 #endif /* SOC_W906X */
 	}
 
-	if (wlpptr->msix_entries) {
+	if (wlpptr->msix_entries)
+	{
 		pci_disable_msix(pdev);
 		wl_kfree(wlpptr->msix_entries);
 		wlpptr->msix_entries = NULL;
@@ -3203,37 +3378,42 @@ wlremove_pci(struct pci_dev *pdev)
 	}
 
 	/* Release Shared Memory FW Host I/O Request MailBox Region */
-	if (wlpptr->wlpd_p->AllocSharedMeminfo.data) {
+	if (wlpptr->wlpd_p->AllocSharedMeminfo.data)
+	{
 		wl_dma_free_coherent(wlpptr->wlpd_p->dev, FW_IO_MB_SIZE,
-				     wlpptr->wlpd_p->AllocSharedMeminfo.data,
-				     wlpptr->wlpd_p->AllocSharedMeminfo.
-				     dataPhysicalLoc);
+							 wlpptr->wlpd_p->AllocSharedMeminfo.data,
+							 wlpptr->wlpd_p->AllocSharedMeminfo.dataPhysicalLoc);
 	}
-	if (wlpptr->wlpd_p->MrvlPriSharedMem.data) {
+	if (wlpptr->wlpd_p->MrvlPriSharedMem.data)
+	{
 		wl_dma_free_coherent(wlpptr->wlpd_p->dev,
-				     sizeof(drv_fw_shared_t),
-				     wlpptr->wlpd_p->MrvlPriSharedMem.data,
-				     wlpptr->wlpd_p->MrvlPriSharedMem.
-				     dataPhysicalLoc);
+							 sizeof(drv_fw_shared_t),
+							 wlpptr->wlpd_p->MrvlPriSharedMem.data,
+							 wlpptr->wlpd_p->MrvlPriSharedMem.dataPhysicalLoc);
 	}
-	if (wlpptr->wlpd_p->AllocSharedMeminfo.file) {
+	if (wlpptr->wlpd_p->AllocSharedMeminfo.file)
+	{
 		debugfs_remove(wlpptr->wlpd_p->AllocSharedMeminfo.file);
 		wlpptr->wlpd_p->AllocSharedMeminfo.file = NULL;
 	}
-	if (wlpptr->wlpd_p->PostReqSiginfo.file) {
+	if (wlpptr->wlpd_p->PostReqSiginfo.file)
+	{
 		debugfs_remove(wlpptr->wlpd_p->PostReqSiginfo.file);
 		wlpptr->wlpd_p->PostReqSiginfo.file = NULL;
 	}
-	if (ACNT_f0) {
+	if (ACNT_f0)
+	{
 		debugfs_remove(ACNT_f0);
 		ACNT_f0 = NULL;
 	}
-	if (ACNT_f1) {
+	if (ACNT_f1)
+	{
 		debugfs_remove(ACNT_f1);
 		ACNT_f1 = NULL;
 	}
 #ifdef SOC_W906X
-	if (wlpptr->wlpd_p->smdata_mmap_info.file) {
+	if (wlpptr->wlpd_p->smdata_mmap_info.file)
+	{
 		debugfs_remove(wlpptr->wlpd_p->smdata_mmap_info.file);
 		wlpptr->wlpd_p->smdata_mmap_info.file = NULL;
 	}
@@ -3243,30 +3423,31 @@ wlremove_pci(struct pci_dev *pdev)
 	mdelay(2000);
 #ifdef SOC_W906X
 	pci_free_consistent(pdev, SC5_HFRAME_MEM_SIZE, wlpptr->hframe_virt_addr,
-			    wlpptr->hframe_phy_addr);
+						wlpptr->hframe_phy_addr);
 	iounmap(wlpptr->ioBase2);
 	release_mem_region(pci_resource_start(pdev, 4),
-			   pci_resource_len(pdev, 4));
+					   pci_resource_len(pdev, 4));
 #endif
 	iounmap(wlpptr->ioBase1);
 	iounmap(wlpptr->ioBase0);
 	release_mem_region(pci_resource_start(pdev, 2),
-			   pci_resource_len(pdev, 2));
+					   pci_resource_len(pdev, 2));
 	release_mem_region(pci_resource_start(pdev, 0),
-			   pci_resource_len(pdev, 0));
+					   pci_resource_len(pdev, 0));
 	pci_disable_device(pdev);
 	pci_clear_master(pdev);
 
 	cardindex--;
-	if ((--gprv_dat_refcnt) == 0) {
+	if ((--gprv_dat_refcnt) == 0)
+	{
 		u8 i = 0;
-		for (i = 0; i < MAX_CARDS_SUPPORT; i++) {
+		for (i = 0; i < MAX_CARDS_SUPPORT; i++)
+		{
 			wl_vfree(global_private_data[i]->AmpduPckReorder);
 			wl_vfree(global_private_data[i]->Ampdu_tx);
 			wl_vfree(global_private_data[i]);
 			global_private_data[i] = NULL;
 		}
-
 	}
 
 #ifdef CFG80211
@@ -3275,7 +3456,8 @@ wlremove_pci(struct pci_dev *pdev)
 #endif
 
 #ifdef WIFI_DATA_OFFLOAD
-	if (!wlpptr->wlpd_p->dol.disable) {
+	if (!wlpptr->wlpd_p->dol.disable)
+	{
 		dol_deinit(wlpptr);
 		ipc_deinit(wlpptr);
 		dol_core_deinit(wlpptr);
@@ -3317,26 +3499,29 @@ wlresume_pci(struct pci_dev *pdev)
 #ifdef WL_DEBUG
 static const char *
 wlgetAdapterDescription(struct wlprivate *wlpptr, u_int32_t vendorid,
-			u_int32_t devid)
+						u_int32_t devid)
 {
 #ifdef SOC_W906X
-	if (IS_BUS_TYPE_MCI(wlpptr)) {
+	if (IS_BUS_TYPE_MCI(wlpptr))
+	{
 		/* XXX, fix it until a valid id could be retrieved. */
 		return "NXP AP-8x 802.11 adapter";
-	} else
+	}
+	else
 #endif /* SOC_W906X */
 	{
 		int numEntry =
 			((sizeof(wlid_tbl) / sizeof(struct pci_device_id)) - 1);
 
-		while (numEntry) {
+		while (numEntry)
+		{
 			numEntry--;
 			if ((wlid_tbl[numEntry].vendor == vendorid) &&
-			    (wlid_tbl[numEntry].device == devid)) {
-				if ((const char *)wlid_tbl[numEntry].
-				    driver_data != NULL) {
-					return (const char *)wlid_tbl[numEntry].
-						driver_data;
+				(wlid_tbl[numEntry].device == devid))
+			{
+				if ((const char *)wlid_tbl[numEntry].driver_data != NULL)
+				{
+					return (const char *)wlid_tbl[numEntry].driver_data;
 				}
 				break;
 			}
@@ -3348,7 +3533,7 @@ wlgetAdapterDescription(struct wlprivate *wlpptr, u_int32_t vendorid,
 #ifdef NEW_DP
 int doneTxDoneCnt = 50;
 #endif
-UINT32 AUTO_MU_TIME_CONSTANT = 10;	//multiple of 10msec
+UINT32 AUTO_MU_TIME_CONSTANT = 10; // multiple of 10msec
 static void
 timer_routine(unsigned long arg)
 {
@@ -3375,12 +3560,16 @@ timer_routine(unsigned long arg)
 	 * is too deep.
 	 */
 #ifdef SOC_W906X
-	if (wlpptr->wlpd_p->tx_async == TRUE) {
+	if (wlpptr->wlpd_p->tx_async == TRUE)
+	{
 #else
-	if (!wlpptr->wlpd_p->isTxTaskScheduled) {
+	if (!wlpptr->wlpd_p->isTxTaskScheduled)
+	{
 #endif /* SOC_W906X */
-		while (num--) {
-			if (wlpptr->wlpd_p->txQ[num].qlen != 0) {
+		while (num--)
+		{
+			if (wlpptr->wlpd_p->txQ[num].qlen != 0)
+			{
 #ifdef USE_TASKLET
 				tasklet_schedule(&wlpptr->wlpd_p->txtask);
 #else
@@ -3397,31 +3586,31 @@ timer_routine(unsigned long arg)
 
 	/*Auto MU set creation by finding potential sta to group */
 	wlpptr->wlpd_p->MUtimercnt++;
-	if ((wlpptr->wlpd_p->MUtimercnt >= AUTO_MU_TIME_CONSTANT)) {	//every AUTO_MU_TIME_CONSTANT x HZ/100
+	if ((wlpptr->wlpd_p->MUtimercnt >= AUTO_MU_TIME_CONSTANT))
+	{ // every AUTO_MU_TIME_CONSTANT x HZ/100
 		wlpptr->wlpd_p->MUtimercnt = 0;
 
 #ifdef SOC_W906X
 		if ((wlpptr->vdev[wlpptr->wlpd_p->MUcurVapidx] != NULL) &&
-		    ((wlpptr->vdev[wlpptr->wlpd_p->MUcurVapidx]->
-		      flags & IFF_RUNNING))) {
+			((wlpptr->vdev[wlpptr->wlpd_p->MUcurVapidx]->flags & IFF_RUNNING)))
+		{
 #else
-		if ((wlpptr->vdev[wlpptr->wlpd_p->MUcurVapidx]->
-		     flags & IFF_RUNNING)) {
+		if ((wlpptr->vdev[wlpptr->wlpd_p->MUcurVapidx]->flags & IFF_RUNNING))
+		{
 #endif
 
 #ifdef USE_TASKLET
 			wlpptr_vap_p =
 				NETDEV_PRIV_P(struct wlprivate,
-					      wlpptr->vdev[wlpptr->wlpd_p->
-							   MUcurVapidx]);
+							  wlpptr->vdev[wlpptr->wlpd_p->MUcurVapidx]);
 			vmacSta_vap_p = wlpptr_vap_p->vmacSta_p;
 			mib = vmacSta_vap_p->ShadowMib802dot11;
 
-			if (*(mib->mib_mumimo_mgmt)) {
+			if (*(mib->mib_mumimo_mgmt))
+			{
 				tasklet_init(&wlpptr->wlpd_p->MUtask,
-					     (void *)MUAutoSet_Hdlr,
-					     (unsigned long)wlpptr->
-					     vdev[wlpptr->wlpd_p->MUcurVapidx]);
+							 (void *)MUAutoSet_Hdlr,
+							 (unsigned long)wlpptr->vdev[wlpptr->wlpd_p->MUcurVapidx]);
 				tasklet_schedule(&wlpptr->wlpd_p->MUtask);
 			}
 #endif
@@ -3430,29 +3619,33 @@ timer_routine(unsigned long arg)
 
 		if (wlpptr->wlpd_p->MUcurVapidx >= bss_num)
 			wlpptr->wlpd_p->MUcurVapidx = 0;
-
 	}
 #ifdef SOC_W906X
-	//txdone poll only for  platform A390 and A380
-	if (IS_PLATFORM(A390) || IS_PLATFORM(A380)) {
-		if (wlpptr->wlpd_p->bfwreset == 0) {
-			if (!(doneTxDoneCnt++ % 5)) {
+	// txdone poll only for  platform A390 and A380
+	if (IS_PLATFORM(A390) || IS_PLATFORM(A380))
+	{
+		if (wlpptr->wlpd_p->bfwreset == 0)
+		{
+			if (!(doneTxDoneCnt++ % 5))
+			{
 				// Polling mode, simulate the tx-done interrupt
 				wlpptr->BQRelId |=
 					pbqm_args->buf_release_msix_mask;
-				tasklet_hi_schedule(&wlpptr->wlpd_p->
-						    buf_rel_task);
+				tasklet_hi_schedule(&wlpptr->wlpd_p->buf_rel_task);
 			}
 		}
 	}
 
-	if (wlpd_p->idx_test_arg.pkt_cnt > 0) {
+	if (wlpd_p->idx_test_arg.pkt_cnt > 0)
+	{
 		long pktcnt =
 			(wlpd_p->idx_test_arg.pkt_cnt <
-			 128) ? wlpd_p->idx_test_arg.pkt_cnt : 128;
+			 128)
+				? wlpd_p->idx_test_arg.pkt_cnt
+				: 128;
 		wlTxSkbTest_1(netdev, pktcnt, wlpd_p->idx_test_arg.pkt_size,
-			      wlpd_p->idx_test_arg.qid,
-			      wlpd_p->idx_test_arg.frameType);
+					  wlpd_p->idx_test_arg.qid,
+					  wlpd_p->idx_test_arg.frameType);
 		wlpd_p->idx_test_arg.pkt_cnt -= pktcnt;
 	}
 #else
@@ -3467,9 +3660,12 @@ timer_routine(unsigned long arg)
 #endif /* SOC_W906X */
 	{
 		static uint8 passcnt = 0;
-		if (passcnt < 100) {
+		if (passcnt < 100)
+		{
 			passcnt++;
-		} else {
+		}
+		else
+		{
 			// Run it once per 100ms or 1sec
 			uint8 i;
 			extern const u_int32_t
@@ -3477,21 +3673,20 @@ timer_routine(unsigned long arg)
 			static uint32 last_qlen[SC5_BMQ_NUM];
 
 			for (i = SC5_BMQ_START_INDEX;
-			     i < SC5_BMQ_START_INDEX + SC5_BMQ_NUM; i++) {
+				 i < SC5_BMQ_START_INDEX + SC5_BMQ_NUM; i++)
+			{
 				struct wldesc_data *wlqm =
 					&wlpptr->wlpd_p->descData[i];
 				rpkt_reuse_free_resource(&wlqm->rq.skbTrace,
-							 &last_qlen[i -
-								    SC5_BMQ_START_INDEX],
-							 buf_pool_max_entries[i
-									      -
-									      SC5_BMQ_START_INDEX]);
+										 &last_qlen[i -
+													SC5_BMQ_START_INDEX],
+										 buf_pool_max_entries[i -
+															  SC5_BMQ_START_INDEX]);
 			}
 			passcnt = 0;
 		}
 	}
 	add_timer(&wlpptr->wlpd_p->Timer);
-
 }
 
 extern void wlRecv(struct net_device *netdev);
@@ -3518,8 +3713,8 @@ _wlRadarDetection(struct work_struct *work)
 
 #ifdef CONCURRENT_DFS_SUPPORT
 extern void dfs_proc_aux(struct net_device *dev,
-			 SCANNER_CTL_EVENT event,
-			 DFS_STATE dfs_status, UINT8 IsFromAux);
+						 SCANNER_CTL_EVENT event,
+						 DFS_STATE dfs_status, UINT8 IsFromAux);
 static void
 _wlAuxChRadarDetection(struct work_struct *work)
 {
@@ -3573,7 +3768,7 @@ _wlOffChanTask(struct work_struct *work)
 
 	wlOffChanTask(wlpptr->netDev);
 }
-#else //906X off-channel
+#else  // 906X off-channel
 static void
 _wlOffChanDone(struct work_struct *work)
 {
@@ -3583,7 +3778,7 @@ _wlOffChanDone(struct work_struct *work)
 
 	wlOffChanDone(wlpptr->netDev);
 }
-#endif //906X off-channel
+#endif // 906X off-channel
 
 #endif
 
@@ -3620,23 +3815,23 @@ _wlDataTxHdl(struct work_struct *work)
 	wlDataTxHdl(wlpptr->netDev);
 }
 
-#if defined(ACNT_REC) && defined (SOC_W906X)
-//static void _wlRxInfo(struct work_struct *work)
+#if defined(ACNT_REC) && defined(SOC_W906X)
+// static void _wlRxInfo(struct work_struct *work)
 //{
-//      struct wlprivate_data *wlpd_p = container_of(work, struct wlprivate_data, rxinfotask);
-//      struct wlprivate *wlpptr = wlpd_p->masterwlp;
+//       struct wlprivate_data *wlpd_p = container_of(work, struct wlprivate_data, rxinfotask);
+//       struct wlprivate *wlpptr = wlpd_p->masterwlp;
 //
-//      wlrxinfo_qproc(wlpptr->netDev);
-//}
-//static void _wlRAcnt(struct work_struct *work)
+//       wlrxinfo_qproc(wlpptr->netDev);
+// }
+// static void _wlRAcnt(struct work_struct *work)
 //{
-//      struct wlprivate_data *wlpd_p = container_of(work, struct wlprivate_data, rxtask);
-//      struct wlprivate *wlpptr = wlpd_p->masterwlp;
+//       struct wlprivate_data *wlpd_p = container_of(work, struct wlprivate_data, rxtask);
+//       struct wlprivate *wlpptr = wlpd_p->masterwlp;
 //
-//      wlRxPPDUAcntHndl(wlpptr->netDev);
-//}
+//       wlRxPPDUAcntHndl(wlpptr->netDev);
+// }
 
-#endif //defined(TXACNT_REC) && defined (SOC_W906X)
+#endif // defined(TXACNT_REC) && defined (SOC_W906X)
 
 #endif
 
@@ -3668,7 +3863,7 @@ static const struct ethtool_ops wl_ethtool_ops = {
 /** public functions **/
 // Timeout period for checking SMAC ready
 //      => If running on PDM system, it should be longer (longer than 300ms)
-#define INIT_SMAC_RDY_TIMEUT		500
+#define INIT_SMAC_RDY_TIMEUT 500
 // Polling & check SMAC ready
 //      TRUE: it's ready
 //      FALSE: Failed to get ready within INIT_SMAC_RDY_TIMEUT
@@ -3678,10 +3873,12 @@ wlInitChkSmacRdy(struct net_device *netdev)
 	BOOLEAN result = FALSE;
 	int counter = 0;
 
-	while (counter < INIT_SMAC_RDY_TIMEUT) {
+	while (counter < INIT_SMAC_RDY_TIMEUT)
+	{
 		// Need to delya before checking CheckSMACReady(). Otherwise it may fail at the 1st time
 		mdelay(1);
-		if (CheckSMACReady(netdev)) {
+		if (CheckSMACReady(netdev))
+		{
 			result = TRUE;
 			break;
 		}
@@ -3691,17 +3888,19 @@ wlInitChkSmacRdy(struct net_device *netdev)
 	return result;
 }
 
-//MFG Support 2017/09/07
+// MFG Support 2017/09/07
 #ifdef MFG_SUPPORT
 #define WAIT_FW_COMPLETE_ITERATIONS 9000000
-#define MFG_CMD_MAX_LENGTH          2048
+#define MFG_CMD_MAX_LENGTH 2048
 
-struct mfg_handle {
+struct mfg_handle
+{
 	struct sock *nlsk;
 	struct net_device *netdev;
 };
 
-struct hostcmd_header {
+struct hostcmd_header
+{
 	__le16 cmd;
 	__le16 len;
 	u8 seq_num;
@@ -3709,7 +3908,8 @@ struct hostcmd_header {
 	__le16 result;
 } __packed;
 
-struct cmd_header {
+struct cmd_header
+{
 	__le16 command;
 	__le16 len;
 } __packed;
@@ -3730,16 +3930,16 @@ mfg_send_cmd(struct net_device *netdev)
 	writel(0x00, wlpptr->ioBase1 + MACREG_REG_INT_CODE);
 	writel(len + 4, wlpptr->ioBase1 + 0xc40);
 #endif
-#if 0				//For MOCHI
+#if 0 // For MOCHI
 	writel(wlpptr->wlpd_p->pPhysCmdBuf,
 	       wlpptr->ioBase1 + MACREG_REG_GEN_PTR_MCI);
 	writel(MACREG_H2ARIC_BIT_DOOR_BELL,
 	       wlpptr->ioBase1 + MACREG_REG_H2A_INTERRUPT_EVENTS_MCI);
-#else //For Auto check (PCIe or Mochi) reference from function wlprobe_set_reg_value(struct wlprivate *wlpptr)
+#else // For Auto check (PCIe or Mochi) reference from function wlprobe_set_reg_value(struct wlprivate *wlpptr)
 	writel(wlpptr->wlpd_p->pPhysCmdBuf,
-	       wlpptr->ioBase1 + wlpptr->wlpd_p->reg.gen_ptr);
+		   wlpptr->ioBase1 + wlpptr->wlpd_p->reg.gen_ptr);
 	writel(MACREG_H2ARIC_BIT_DOOR_BELL,
-	       wlpptr->ioBase1 + wlpptr->wlpd_p->reg.h2a_int_events);
+		   wlpptr->ioBase1 + wlpptr->wlpd_p->reg.h2a_int_events);
 #endif
 }
 
@@ -3755,15 +3955,16 @@ mfg_wait_complete(struct net_device *netdev, unsigned short cmd)
 	int offset = 0;
 #endif
 
-	do {
-		int_code = le16_to_cpu(*((__le16 *) & wlpptr->pCmdBuf[offset]));
+	do
+	{
+		int_code = le16_to_cpu(*((__le16 *)&wlpptr->pCmdBuf[offset]));
 		udelay(1);
 	} while ((int_code != cmd) && (--curr_iteration));
 
 	if (curr_iteration == 0)
 		return -EIO;
 
-	//udelay(1);
+	// udelay(1);
 
 	return 0;
 }
@@ -3774,17 +3975,21 @@ mfg_exec_cmd(struct net_device *netdev, unsigned short cmd)
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	bool busy = false;
 
-	if (!wlpptr->wlpd_p->inSendCmd) {
+	if (!wlpptr->wlpd_p->inSendCmd)
+	{
 		wlpptr->wlpd_p->inSendCmd = true;
 		mfg_send_cmd(netdev);
-		if (mfg_wait_complete(netdev, 0x8000 | cmd)) {
+		if (mfg_wait_complete(netdev, 0x8000 | cmd))
+		{
 			printk(KERN_ERR "%s: timeout: 0x%04x\n", __func__, cmd);
 			wlpptr->wlpd_p->inSendCmd = false;
 			return -EIO;
 		}
-	} else {
+	}
+	else
+	{
 		printk(KERN_WARNING "%s: previous command is still running\n",
-		       __func__);
+			   __func__);
 		busy = true;
 	}
 
@@ -3794,8 +3999,7 @@ mfg_exec_cmd(struct net_device *netdev, unsigned short cmd)
 	return 0;
 }
 
-int
-send_mfg_cmd(struct net_device *netdev, char *mfgcmd)
+int send_mfg_cmd(struct net_device *netdev, char *mfgcmd)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	struct hostcmd_header *pcmd;
@@ -3826,14 +4030,15 @@ send_mfg_cmd(struct net_device *netdev, char *mfgcmd)
 
 	cmd = le16_to_cpu(cmd_hd->command);
 	start_time = ktime_get_real();
-	if (mfg_exec_cmd(netdev, cmd)) {
+	if (mfg_exec_cmd(netdev, cmd))
+	{
 		SPIN_UNLOCK_IRQRESTORE(&wlpptr->wlpd_p->locks.fwLock, flags);
 		printk(KERN_ERR "%s: failed execution", __func__);
 		return -EIO;
 	}
 	time_elapsed = ktime_to_us(ktime_sub(ktime_get_real(), start_time));
-	//printk(KERN_ERR "Result from FW, time elapsed %lld us", time_elapsed);
-	//netdev_notice(netdev, "time elapsed %lld us", time_elapsed);
+	// printk(KERN_ERR "Result from FW, time elapsed %lld us", time_elapsed);
+	// netdev_notice(netdev, "time elapsed %lld us", time_elapsed);
 
 	cmd_hd = (struct cmd_header *)&wlpptr->pCmdBuf[offset];
 	len = le16_to_cpu(cmd_hd->len);
@@ -3867,40 +4072,42 @@ process_mfgbridge_cmd(struct sk_buff *skb)
 	if (!cmd)
 		return;
 
-	if (!memcmp(data, "mfg ", strlen("mfg "))) {
+	if (!memcmp(data, "mfg ", strlen("mfg ")))
+	{
 		data += strlen("mfg ");
 		device_no = *(int *)data;
-		//printk("received bridge device_no =%d\n", device_no);
+		// printk("received bridge device_no =%d\n", device_no);
 		data += sizeof(int);
-		len = le16_to_cpu(*(__le16 *) (data + 2));
+		len = le16_to_cpu(*(__le16 *)(data + 2));
 		*(unsigned short *)&cmd[0] = len;
-		*(__le16 *) & cmd[2] = cpu_to_le16(1);
+		*(__le16 *)&cmd[2] = cpu_to_le16(1);
 		memcpy(&cmd[4], data, len);
-		if (send_mfg_cmd(mfg_handle[device_no].netdev, cmd)) {
+		if (send_mfg_cmd(mfg_handle[device_no].netdev, cmd))
+		{
 			printk(KERN_ERR "mfgcmd failed ...\n");
 			goto out;
 		}
-	} else
+	}
+	else
 		goto out;
-	len = le16_to_cpu(*(__le16 *) (cmd + 2));
+	len = le16_to_cpu(*(__le16 *)(cmd + 2));
 	resp_skb = alloc_skb(len + sizeof(struct nlmsghdr) + 1, GFP_ATOMIC);
 	nlh = __nlmsg_put(resp_skb, NETLINK_CB(skb).portid, seq, 0, len, 0);
 	nlh->nlmsg_flags = 0;
 	data = NLMSG_DATA(nlh);
 	memcpy((char *)data, cmd, len);
-	//printk("jklchen memcpy len =%d\n", len);
-	//mwl_hex_dump((u8*)data, len);
+	// printk("jklchen memcpy len =%d\n", len);
+	// mwl_hex_dump((u8*)data, len);
 	NETLINK_CB(resp_skb).dst_group = 0;
 	ret = netlink_unicast(skb->sk, resp_skb,
-			      NETLINK_CB(skb).portid, MSG_DONTWAIT);
+						  NETLINK_CB(skb).portid, MSG_DONTWAIT);
 	if (ret < 0)
 		printk(KERN_ERR "send failed...\n");
 out:
 	wl_kfree(cmd);
 }
 
-void
-mfg_handler_init(struct net_device *netdev)
+void mfg_handler_init(struct net_device *netdev)
 {
 	struct sock *nlsk;
 	struct netlink_kernel_cfg cfg = {
@@ -3910,7 +4117,7 @@ mfg_handler_init(struct net_device *netdev)
 	struct wlprivate *parent_wlpptr = GET_PARENT_PRIV(wlpptr);
 
 	printk(KERN_ERR "mfg_handler_init ChipRevision = %d\n",
-	       parent_wlpptr->hwData.chipRevision);
+		   parent_wlpptr->hwData.chipRevision);
 #if 1
 	nlsk = netlink_kernel_create(&init_net, 29 + devcnt, &cfg);
 	printk("***********mfg netlink_kernel_create = %d\n", 29 + devcnt);
@@ -3918,7 +4125,8 @@ mfg_handler_init(struct net_device *netdev)
 	nlsk = netlink_kernel_create(&init_net, 30 + devcnt, &cfg);
 	printk("PCIE  wdev0 30+devcnt =%d\n", 30 + devcnt);
 #endif
-	if (!nlsk) {
+	if (!nlsk)
+	{
 		printk("%s: Failed to create netlink ...\n", __func__);
 		devcnt++;
 		return;
@@ -3929,7 +4137,7 @@ mfg_handler_init(struct net_device *netdev)
 	devcnt++;
 }
 #endif
-//endif mfg support
+// endif mfg support
 #endif /* SOC_W906X */
 
 int wlinitcnt = 0;
@@ -3937,15 +4145,14 @@ extern char cwd[256];
 extern void wl_get_cwd(char buf[]);
 #ifdef SOC_W906X
 extern mvl_status_t CH_radio_status[IEEEtypes_MAX_CHANNELS +
-				    IEEEtypes_MAX_CHANNELS_A];
+									IEEEtypes_MAX_CHANNELS_A];
 
-int
-wlInit(struct net_device *netdev, u_int16_t devid)
+int wlInit(struct net_device *netdev, u_int16_t devid)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	int retCode, index, i, j;
 	int bssidmask = 0;
-	unsigned char macaddr[6] = { 0x00, 0xde, 0xad, 0xde, 0xad, 0xee };
+	unsigned char macaddr[6] = {0x00, 0xde, 0xad, 0xde, 0xad, 0xee};
 	unsigned char major;
 	unsigned char minor;
 	unsigned char rel;
@@ -3964,12 +4171,13 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	WLDBG_ENTER(DBG_LEVEL_2);
 
 	smeCmdBuf_q =
-		(macmgmtQ_CmdBuf_t *) wl_vzalloc(sizeof(macmgmtQ_CmdBuf_t) *
-						 SME_CMD_BUF_Q_LIMIT);
-	if (!smeCmdBuf_q) {
+		(macmgmtQ_CmdBuf_t *)wl_vzalloc(sizeof(macmgmtQ_CmdBuf_t) *
+										SME_CMD_BUF_Q_LIMIT);
+	if (!smeCmdBuf_q)
+	{
 		printk("wlInit smeCmdBuf_q alloc fail: size=%zu*%d=%zu\n",
-		       sizeof(macmgmtQ_CmdBuf_t), SME_CMD_BUF_Q_LIMIT,
-		       sizeof(macmgmtQ_CmdBuf_t) * SME_CMD_BUF_Q_LIMIT);
+			   sizeof(macmgmtQ_CmdBuf_t), SME_CMD_BUF_Q_LIMIT,
+			   sizeof(macmgmtQ_CmdBuf_t) * SME_CMD_BUF_Q_LIMIT);
 		goto failed;
 	}
 
@@ -3981,48 +4189,49 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #ifndef NAPI
 #ifdef USE_TASKLET
 	tasklet_init(&wlpptr->wlpd_p->rxtask, (void *)wlRecv,
-		     (unsigned long)netdev);
+				 (unsigned long)netdev);
 #else
 	INIT_WORK(&wlpptr->wlpd_p->rxtask, (void (*)(void *))_wlRecv);
 #endif
 #endif
-#if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(ACNT_REC) && defined(SOC_W906X)
 	wlpptr->wlpd_p->rxinfotask.handle_func =
 		(void (*)(unsigned long))wlrxinfo_qproc;
 	wlpptr->wlpd_p->rxinfotask.phandle_param = (unsigned long)netdev;
 	mthread_init(&wlpptr->wlpd_p->rxinfotask);
-#endif //#if defined(ACNT_REC) && defined (SOC_W906X)
-#if defined(RXACNT_REC) && defined (SOC_W906X)
+#endif // #if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(RXACNT_REC) && defined(SOC_W906X)
 	wlpptr->wlpd_p->racnttask.handle_func =
 		(void (*)(unsigned long))wlRxPPDUAcntHndl;
 	wlpptr->wlpd_p->racnttask.phandle_param = (unsigned long)netdev;
 	mthread_init(&wlpptr->wlpd_p->racnttask);
 #endif //
-#if defined(TXACNT_REC) && defined (SOC_W906X)
+#if defined(TXACNT_REC) && defined(SOC_W906X)
 	wlpptr->wlpd_p->tacnttask.handle_func = wlTxPPDUAcntHndl;
 	wlpptr->wlpd_p->tacnttask.phandle_param = (unsigned long)netdev;
 	mthread_init(&wlpptr->wlpd_p->tacnttask);
-#endif //#if defined(ACNT_REC) && defined (SOC_W906X)
+#endif // #if defined(ACNT_REC) && defined (SOC_W906X)
 
-//A390/A385 platform supports only 16 interrupts => Use polling function instead
-	if (IS_PLATFORM(A390) || IS_PLATFORM(A380)) {
+	// A390/A385 platform supports only 16 interrupts => Use polling function instead
+	if (IS_PLATFORM(A390) || IS_PLATFORM(A380))
+	{
 #ifdef USE_TASKLET
 		tasklet_init(&wlpptr->wlpd_p->intrtask, (void *)wlIntrPoll,
-			     (unsigned long)netdev);
+					 (unsigned long)netdev);
 #else
 		INIT_WORK(&wlpptr->wlpd_p->intrtask,
-			  (void (*)(void *))wlIntrPoll);
+				  (void (*)(void *))wlIntrPoll);
 #endif
 	}
 
 	tasklet_init(&wlpptr->wlpd_p->rx_refill_task, (void *)wlRxBufFill,
-		     (unsigned long)netdev);
+				 (unsigned long)netdev);
 #ifdef USE_TASKLET
 	tasklet_init(&wlpptr->wlpd_p->txtask, (void *)wlDataTxHdl,
-		     (unsigned long)netdev);
-	//tasklet_init(&wlpptr->wlpd_p->MUtask, (void*)MUAutoSet_Hdlr, (unsigned long)netdev);
+				 (unsigned long)netdev);
+	// tasklet_init(&wlpptr->wlpd_p->MUtask, (void*)MUAutoSet_Hdlr, (unsigned long)netdev);
 	tasklet_init(&wlpptr->wlpd_p->buf_rel_task, (void *)wlTxDone,
-		     (unsigned long)netdev);
+				 (unsigned long)netdev);
 #else
 	INIT_WORK(&wlpptr->wlpd_p->txtask, (void (*)(void *))_wlDataTxHdl);
 #endif
@@ -4032,26 +4241,26 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	INIT_WORK(&wlpptr->wlpd_p->csatask, (void *)(void *)_wlApplyCSAChannel);
 #ifdef CONCURRENT_DFS_SUPPORT
 	INIT_WORK(&wlpptr->wlpd_p->dfstaskAux,
-		  (void *)(void *)_wlAuxChRadarDetection);
+			  (void *)(void *)_wlAuxChRadarDetection);
 #endif /* CONCURRENT_DFS_SUPPORT */
 #endif
 	INIT_WORK(&wlpptr->wlpd_p->resettask, (void *)(void *)_wlreset);
 	INIT_WORK(&wlpptr->wlpd_p->kickstatask,
-		  (void *)(void *)_wlConsecTxFail);
+			  (void *)(void *)_wlConsecTxFail);
 #ifdef SOC_W906X
 	INIT_WORK(&wlpptr->wlpd_p->offchantask, (void *)(void *)_wlOffChanTask);
-#else //906X off-channel
+#else  // 906X off-channel
 	INIT_WORK(&wlpptr->wlpd_p->offchandonetask,
-		  (void *)(void *)_wlOffChanDone);
-#endif //906X off-channel
+			  (void *)(void *)_wlOffChanDone);
+#endif // 906X off-channel
 #ifdef NEW_DP
 	if (!wfa_11ax_pf)
 		INIT_WORK(&wlpptr->wlpd_p->acnttask,
-			  (void *)(void *)_wlAcntRecordReady);
+				  (void *)(void *)_wlAcntRecordReady);
 #endif
 #ifdef SYSFS_STADB_INFO
 	INIT_WORK(&wlpptr->wlpd_p->sysfstask,
-		  (void *)(void *)_wlSysfsSTAHdlTask);
+			  (void *)(void *)_wlSysfsSTAHdlTask);
 #endif /* SYSFS_STADB_INFO */
 
 #ifdef WTP_SUPPORT
@@ -4076,16 +4285,17 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #endif /* WIFI_DATA_OFFLOAD */
 #ifdef CB_SUPPORT
 	wlpptr->is_resp_mgmt = TRUE;
-#endif //CB_SUPPORT
+#endif // CB_SUPPORT
 	wlpptr->wlpd_p->MUtimercnt = 0;
 	wlpptr->wlpd_p->MUcurVapidx = 0;
 
 	SPIN_LOCK_INIT(&wlpptr->wlpd_p->MUSetListLock);
 
-	for (i = 0; i < sta_num; i++) {
-		for (j = 0; j < MAX_UP; j++) {
-			SPIN_LOCK_INIT(&wlpptr->wlpd_p->AmpduPckReorder[i].
-				       ba[j].BAreodrLock);
+	for (i = 0; i < sta_num; i++)
+	{
+		for (j = 0; j < MAX_UP; j++)
+		{
+			SPIN_LOCK_INIT(&wlpptr->wlpd_p->AmpduPckReorder[i].ba[j].BAreodrLock);
 		}
 		wlpptr->wlpd_p->txRateHistogram[i] = NULL;
 		wlpptr->wlpd_p->scheHistogram[i] = NULL;
@@ -4101,65 +4311,68 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #endif
 	wlpptr->pCmdBuf = (unsigned short *)
 		wl_dma_alloc_coherent(wlpptr->wlpd_p->dev, CMD_BUF_SIZE,
-				      &wlpptr->wlpd_p->pPhysCmdBuf,
-				      wlpptr->wlpd_p->dma_alloc_flags);
+							  &wlpptr->wlpd_p->pPhysCmdBuf,
+							  wlpptr->wlpd_p->dma_alloc_flags);
 #ifdef SOC_W906X
 	/* set the deivce to non-dma_coherent device only for device on MoChi bus */
 	if (IS_BUS_TYPE_MCI(wlpptr))
 		wlpptr->wlpd_p->dev->archdata.dma_coherent = false;
 	wlpptr->pFwDlBuf = (unsigned short *)
 		wl_dma_alloc_coherent(wlpptr->wlpd_p->dev, CMD_BUF_SIZE,
-				      &wlpptr->wlpd_p->pPhysFwDlBuf,
-				      wlpptr->wlpd_p->dma_alloc_flags);
+							  &wlpptr->wlpd_p->pPhysFwDlBuf,
+							  wlpptr->wlpd_p->dma_alloc_flags);
 	if (IS_BUS_TYPE_MCI(wlpptr))
 		wlpptr->wlpd_p->dev->archdata.dma_coherent = true;
-	/* restore the deivce to dma_coherent device only for device on MoChi bus */
+		/* restore the deivce to dma_coherent device only for device on MoChi bus */
 #endif /* SOC_W906X */
 #ifdef SSU_SUPPORT
 	wlpptr->ssuSize = SSU_BUF_SIZE;
 	wlpptr->pSsuBuf = (unsigned short *)
 		wl_dma_alloc_coherent(wlpptr->wlpd_p->dev, wlpptr->ssuSize,
-				      &wlpptr->wlpd_p->pPhysSsuBuf,
-				      wlpptr->wlpd_p->dma_alloc_flags);
+							  &wlpptr->wlpd_p->pPhysSsuBuf,
+							  wlpptr->wlpd_p->dma_alloc_flags);
 	printk("wlInit SSU pSsuBuf = %p  pPhysSsuBuf = %pad size=0x%08x\n",
-	       wlpptr->pSsuBuf, &wlpptr->wlpd_p->pPhysSsuBuf, wlpptr->ssuSize);
+		   wlpptr->pSsuBuf, &wlpptr->wlpd_p->pPhysSsuBuf, wlpptr->ssuSize);
 #endif
 #ifdef DSP_COMMAND
 	wlpptr->dspSize = DSP_BUF_SIZE;
 	wlpptr->pDspBuf = (int *)
 		wl_dma_alloc_coherent(wlpptr->wlpd_p->dev, wlpptr->dspSize,
-				      &wlpptr->wlpd_p->pPhysDspBuf,
-				      wlpptr->wlpd_p->dma_alloc_flags);
+							  &wlpptr->wlpd_p->pPhysDspBuf,
+							  wlpptr->wlpd_p->dma_alloc_flags);
 	printk("wlInit DSP pDspBuf = %p  pPhysDspBuf = %pad size=0x%08x\n",
-	       wlpptr->pDspBuf, &wlpptr->wlpd_p->pPhysDspBuf, wlpptr->dspSize);
+		   wlpptr->pDspBuf, &wlpptr->wlpd_p->pPhysDspBuf, wlpptr->dspSize);
 #endif
-	printk("wlInit wlpptr->pCmdBuf = %p  wlpptr->wlpd_p->pPhysCmdBuf = %x\n", wlpptr->pCmdBuf, (u32) wlpptr->wlpd_p->pPhysCmdBuf);
-	if (wlpptr->pCmdBuf == NULL) {
+	printk("wlInit wlpptr->pCmdBuf = %p  wlpptr->wlpd_p->pPhysCmdBuf = %x\n", wlpptr->pCmdBuf, (u32)wlpptr->wlpd_p->pPhysCmdBuf);
+	if (wlpptr->pCmdBuf == NULL)
+	{
 		printk(KERN_ERR "%s: can not alloc mem\n", netdev->name);
 		goto err_init_cmd_buf;
 	}
 	memset(wlpptr->pCmdBuf, 0x00, CMD_BUF_SIZE);
 
 #ifdef SOC_W906X
-	if (wlpptr->pFwDlBuf == NULL) {
+	if (wlpptr->pFwDlBuf == NULL)
+	{
 		printk(KERN_ERR "%s: can not alloc mem\n", netdev->name);
 		goto err_init_fwdl_buf;
 	}
-	printk("wlInit wlpptr->pFwDlBuf = %p  wlpptr->wlpd_p->pPhysFwDlBuf = %x\n", wlpptr->pFwDlBuf, (u32) wlpptr->wlpd_p->pPhysFwDlBuf);
+	printk("wlInit wlpptr->pFwDlBuf = %p  wlpptr->wlpd_p->pPhysFwDlBuf = %x\n", wlpptr->pFwDlBuf, (u32)wlpptr->wlpd_p->pPhysFwDlBuf);
 	memset(wlpptr->pFwDlBuf, 0x00, CMD_BUF_SIZE);
-#endif /* SOC_W906X */
-	ether_setup(netdev);	/* init eth data structures */
+#endif					 /* SOC_W906X */
+	ether_setup(netdev); /* init eth data structures */
 
 #ifdef MV_NSS_SUPPORT
 	wlNssOps = mv_nss_ops_get();
-	if (wlNssOps == 0) {
+	if (wlNssOps == 0)
+	{
 		printk("cannot get NSS options...\n");
 		return -ENODEV;
 	}
 #endif
 	/* Allocate Shared Memory FW Host I/O Request MailBox Region */
 	AllocSharedMem(wlpptr);
-	AllocMrvlPriSharedMem(wlpptr);	//mrvl private mailbox region
+	AllocMrvlPriSharedMem(wlpptr); // mrvl private mailbox region
 #ifdef BARBADO_RESET
 	wlFwHardreset(netdev, 1);
 	wlpptr->wlpd_p->bfwreset = FALSE;
@@ -4169,16 +4382,20 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #ifdef FS_CAL_FILE_SUPPORT
 	wlDownloadMFGFile(netdev);
 #endif
-	if (wlPrepareFwFile(netdev) == FAIL) {
-		//printk(KERN_ERR  "%s: prepare firmware downloading failed\n", netdev->name);
-		//goto err_init_rx;
+	if (wlPrepareFwFile(netdev) == FAIL)
+	{
+		// printk(KERN_ERR  "%s: prepare firmware downloading failed\n", netdev->name);
+		// goto err_init_rx;
 		/* No external fw .bin, assume fw downoaded from debuggger */
 		printk("%s: No firmware download, pleaes make sure fw has been loaded by debugger!!!!!\n", netdev->name);
-	} else {
+	}
+	else
+	{
 #ifndef SC_PALLADIUM
-		if (wlFwDownload(netdev)) {
+		if (wlFwDownload(netdev))
+		{
 			printk(KERN_ERR "%s: firmware downloading failed\n",
-			       netdev->name);
+				   netdev->name);
 			wl_kfree(wlpptr->FwPointer);
 			goto err_init_qm;
 		}
@@ -4190,28 +4407,31 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 			mfg_handler_init(netdev);
 #endif
 
-		if ((retCode = wlTxRingAlloc(netdev)) != 0) {
+		if ((retCode = wlTxRingAlloc(netdev)) != 0)
+		{
 			printk(KERN_ERR "%s: allocating TX ring failed\n",
-			       netdev->name);
+				   netdev->name);
 			goto err_init_tx1;
 		}
-		if ((retCode = wlTxRingInit(netdev)) != 0) {
+		if ((retCode = wlTxRingInit(netdev)) != 0)
+		{
 			printk(KERN_ERR "%s: initializing TX ring failed\n",
-			       netdev->name);
+				   netdev->name);
 			goto err_init_qm;
 		}
 
-		if ((retCode = wlQMInit(netdev)) != 0) {
+		if ((retCode = wlQMInit(netdev)) != 0)
+		{
 			printk(KERN_ERR "%s: initializing BM Q failed\n",
-			       netdev->name);
+				   netdev->name);
 			goto err_init_qm;
 		}
-#if defined(TXACNT_REC) && defined (SOC_W906X)
+#if defined(TXACNT_REC) && defined(SOC_W906X)
 		wlTAcntBufInit(netdev);
-#endif //#if defined(TXACNT_REC) && defined (SOC_W906X)
-#if defined(RXACNT_REC) && defined (SOC_W906X)
+#endif // #if defined(TXACNT_REC) && defined (SOC_W906X)
+#if defined(RXACNT_REC) && defined(SOC_W906X)
 		wlRxAcntPPDUBufInit(netdev);
-#endif //#if defined(TXACNT_REC) && defined (SOC_W906X)
+#endif // #if defined(TXACNT_REC) && defined (SOC_W906X)
 #ifdef DSP_COMMAND
 #ifdef DSP_INT_MODE
 		wlpptr->smacconfig.dspIntMode = 1;
@@ -4227,29 +4447,33 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 			sta_num = MAX_STNS;
 
 		dev_info(wlpptr->wlpd_p->dev,
-			 "Setup device to %d BSSs and %d STAs\n", bss_num,
-			 sta_num);
+				 "Setup device to %d BSSs and %d STAs\n", bss_num,
+				 sta_num);
 		wlpptr->smacconfig.num_running_bss = bss_num;
 		wlpptr->smacconfig.num_running_sta = sta_num;
 
 		memcpy(wlpptr->ioBase0, (void *)&wlpptr->smacconfig,
-		       sizeof(SMAC_CONFIG_st));
-		//write HAL VERSION for SMAC to checking DRV HAL version
-		if (SMAC_HAL_VERSION >= 0x0080) {
+			   sizeof(SMAC_CONFIG_st));
+		// write HAL VERSION for SMAC to checking DRV HAL version
+		if (SMAC_HAL_VERSION >= 0x0080)
+		{
 			printk("=> %s(), MAC_CONFIG_st->magic = %xh\n",
-			       __func__, SMAC_HAL_VERSION);
+				   __func__, SMAC_HAL_VERSION);
 			writel(SMAC_HAL_VERSION, &wlpptr->smacCfgAddr->magic);
-			//wlpptr->smacCfgAddr->magic = SMAC_HAL_VERSION;
+			// wlpptr->smacCfgAddr->magic = SMAC_HAL_VERSION;
 		}
 
 		printk("=> %s(), MAC_STATUS_st->verCtrl[3] = %xh\n", __func__,
-		       0xF0000000);
+			   0xF0000000);
 		writel(0xF0000000, &wlpptr->smacStatusAddr->verCtrl[3]);
-		if (wlInitChkSmacRdy(netdev) == FALSE) {
+		if (wlInitChkSmacRdy(netdev) == FALSE)
+		{
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "Failed to get macRdy at init\n");
+						"Failed to get macRdy at init\n");
 			goto err_init_qm;
-		} else {
+		}
+		else
+		{
 			WLDBG_INFO(DBG_LEVEL_0, "macRdy is ready now\n");
 		}
 		post_init_bq_idx(netdev, true);
@@ -4257,55 +4481,59 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #ifdef WIFI_DATA_OFFLOAD
 		/* enable radio without taking care of DFS first */
 		dol_radio_data_ctrl(wlpptr, wlpptr->wlpd_p->ipc_session_id,
-				    true);
+							true);
 #endif
 		/* Is MMDU Support */
 		major = wlpptr->smacStatusAddr->verCtrl[0] >> 24;
 		minor = (wlpptr->smacStatusAddr->verCtrl[0] & 0x00FF0000) >> 16;
 		rel = (wlpptr->smacStatusAddr->verCtrl[0] & 0x0000FF00) >> 8;
 		if ((major >= 25) ||
-		    ((major == 24) && ((minor == 4) || (minor == 5)) &&
-		     (rel >= 11))) {
+			((major == 24) && ((minor == 4) || (minor == 5)) &&
+			 (rel >= 11)))
+		{
 			/* After SMAC PR24.4.11/PR24.5.11(STA-Only) and PR25, we can check the cap bit to know the MMDU support */
 			wlpptr->wlpd_p->mmdu_mgmt_enable =
 				wlpptr->wlpd_p->mmdu_data_enable =
-				!(wlpptr->smacStatusAddr->
-				  smacCap & SMAC_CAP_MMDU_NOT_SUPPORT);
-		} else {
+					!(wlpptr->smacStatusAddr->smacCap & SMAC_CAP_MMDU_NOT_SUPPORT);
+		}
+		else
+		{
 			wlpptr->wlpd_p->mmdu_mgmt_enable =
 				wlpptr->wlpd_p->mmdu_data_enable = FALSE;
 		}
 		dev_info(wlpptr->wlpd_p->dev,
-			 "%s MMDU support\n",
-			 wlpptr->wlpd_p->
-			 mmdu_mgmt_enable ? "Enable" : "Disable");
+				 "%s MMDU support\n",
+				 wlpptr->wlpd_p->mmdu_mgmt_enable ? "Enable" : "Disable");
 
 		// Save the base address of rxSBinfoBaseAddr_v
 		wlpptr->rxSBinfoBaseAddr_v = wlpptr->smac_base_vp +
-			(wlpptr->smacStatusAddr->rxSBinfoBaseAddr -
-			 wlpptr->smacconfig.smacBmBaseAddr);
+									 (wlpptr->smacStatusAddr->rxSBinfoBaseAddr -
+									  wlpptr->smacconfig.smacBmBaseAddr);
 
 		printk("(v,p)=(%p, %x)\n", wlpptr->smac_base_vp,
-		       wlpptr->smacconfig.smacBmBaseAddr);
+			   wlpptr->smacconfig.smacBmBaseAddr);
 		printk("rxSBinfoBaseAddr_v=%p, %x, %u, %lu\n",
-		       wlpptr->rxSBinfoBaseAddr_v,
-		       wlpptr->smacStatusAddr->rxSBinfoBaseAddr,
-		       wlpptr->smacStatusAddr->rxSBinfoUnitSize,
-		       (unsigned long)sizeof(RxSidebandInfo_t));
+			   wlpptr->rxSBinfoBaseAddr_v,
+			   wlpptr->smacStatusAddr->rxSBinfoBaseAddr,
+			   wlpptr->smacStatusAddr->rxSBinfoUnitSize,
+			   (unsigned long)sizeof(RxSidebandInfo_t));
 
-		do {
+		do
+		{
 			UINT32 regionIdx;
 			core_dump =
 				(coredump_cmd_t *)
-				wl_kmalloc(sizeof(coredump_cmd_t), GFP_ATOMIC);
-			if (!core_dump) {
+					wl_kmalloc(sizeof(coredump_cmd_t), GFP_ATOMIC);
+			if (!core_dump)
+			{
 				printk("Error[%s:%d]: Allocating F/W Core Dump Memory \n", __func__, __LINE__);
 				break;
 			}
 
 			buff = (char *)wl_kmalloc(MAX_CORE_DUMP_BUFFER,
-						  GFP_ATOMIC);
-			if (!buff) {
+									  GFP_ATOMIC);
+			if (!buff)
+			{
 				printk("Error[%s:%d]: Allocating F/W Buffer for Core Dump \n", __func__, __LINE__);
 				break;
 			}
@@ -4315,13 +4543,16 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 			core_dump->context = 0;
 			core_dump->flags = 0;
 			core_dump->sizeB = MAX_CORE_DUMP_BUFFER;
-			if (wlFwGetCoreSniff(netdev, core_dump, buff) == FAIL) {
+			if (wlFwGetCoreSniff(netdev, core_dump, buff) == FAIL)
+			{
 				printk("Error[%s:%d]: Failed to get Core Dump \n", __func__, __LINE__);
 				break;
-			} else {
-				//memcpy(&wlpptr->wlpd_p->coredump.version_major, buff, sizeof(coredump_t));
+			}
+			else
+			{
+				// memcpy(&wlpptr->wlpd_p->coredump.version_major, buff, sizeof(coredump_t));
 				memcpy(&wlpptr->wlpd_p->coredump, buff,
-				       sizeof(coredump_t));
+					   sizeof(coredump_t));
 #if 0
 /* FW version foramt is changed, below version need remap, temporary disbaled */
 				printk("Major Version : %d\n",
@@ -4332,13 +4563,14 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 				       wlpptr->wlpd_p->coredump.version_patch);
 #endif
 				printk("Num of Regions: %d\n",
-				       wlpptr->wlpd_p->coredump.num_regions);
+					   wlpptr->wlpd_p->coredump.num_regions);
 				printk("Num of Symbols: %d\n",
-				       wlpptr->wlpd_p->coredump.num_symbols);
+					   wlpptr->wlpd_p->coredump.num_symbols);
 				for (regionIdx = 0;
-				     regionIdx <
-				     wlpptr->wlpd_p->coredump.num_regions;
-				     regionIdx++) {
+					 regionIdx <
+					 wlpptr->wlpd_p->coredump.num_regions;
+					 regionIdx++)
+				{
 					printk("region[%2d].address = 0x%10x, region[%2d].length = 0x%10x\n", regionIdx, wlpptr->wlpd_p->coredump.region[regionIdx].address, regionIdx, wlpptr->wlpd_p->coredump.region[regionIdx].length);
 				}
 			}
@@ -4350,14 +4582,16 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 		if (core_dump)
 			wl_kfree(core_dump);
 	}
-	if (wlFwGetHwSpecs(netdev)) {
+	if (wlFwGetHwSpecs(netdev))
+	{
 		printk(KERN_ERR "%s: failed to get HW specs\n", netdev->name);
 		goto err_init_qm;
 	}
 
 	printk("wlpptr->hwData.ulShalVersion:%04x\n",
-	       wlpptr->hwData.ulShalVersion);
-	if (wlpptr->hwData.ulShalVersion < 0x0080 && SMAC_HAL_VERSION >= 0x0080) {
+		   wlpptr->hwData.ulShalVersion);
+	if (wlpptr->hwData.ulShalVersion < 0x0080 && SMAC_HAL_VERSION >= 0x0080)
+	{
 		printk("\nIncompatiable DRV/FW HAL version, DRV:%04x, HAL/FW:%04x\n\n", SMAC_HAL_VERSION, wlpptr->hwData.ulShalVersion);
 		BUG();
 	}
@@ -4370,7 +4604,7 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 
 #ifdef SOC_W906X
 	for (i = 0; i < MAX_MBSSID_SET; i++)
-		wlpptr->wlpd_p->mbssSet[i].primbss = (UINT32) (bss_num);
+		wlpptr->wlpd_p->mbssSet[i].primbss = (UINT32)(bss_num);
 #endif
 	memcpy(netdev->dev_addr, &wlpptr->hwData.macAddr[0], 6);
 	printk("Mac address = %s \n", mac_display(&wlpptr->hwData.macAddr[0]));
@@ -4394,20 +4628,23 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 
 	wlpptr->vmacSta_p =
 		Mac_Init(NULL, netdev, &wlpptr->hwData.macAddr[0],
-			 WL_OP_MODE_AP, wlinitcnt);
-	if (wlpptr->vmacSta_p == NULL) {
+				 WL_OP_MODE_AP, wlinitcnt);
+	if (wlpptr->vmacSta_p == NULL)
+	{
 		printk(KERN_ERR "%s: failed to init driver mac\n",
-		       netdev->name);
+			   netdev->name);
 		goto err_init_qm;
 	}
 #ifdef FS_CAL_FILE_SUPPORT
-	if (wlFreeMFGFileBuffer(netdev)) {
+	if (wlFreeMFGFileBuffer(netdev))
+	{
 		WLDBG_WARNING(DBG_LEVEL_3, "%s: MFG file free buffer failed\n",
-			      netdev->name);
+					  netdev->name);
 		goto err_init_qm;
 	}
 #endif
-	if (wlFwSetHwSpecs(netdev)) {
+	if (wlFwSetHwSpecs(netdev))
+	{
 		WLDBG_ERROR(DBG_LEVEL_2, "failed to set HW specs");
 	}
 #ifndef TIMER_TASK
@@ -4430,7 +4667,7 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	wlSetupWEHdlr(netdev);
 	sprintf(netdev->name, "%s%1d", DRV_NAME, wlinitcnt);
 
-#if     defined(SINGLE_DEV_INTERFACE) && !defined(CLIENTONLY)
+#if defined(SINGLE_DEV_INTERFACE) && !defined(CLIENTONLY)
 	wlpptr->vdev[wlpptr->wlpd_p->vmacIndex++] = wlpptr->netDev;
 #endif
 
@@ -4444,7 +4681,8 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	SET_NETDEV_DEV(netdev, wiphy_dev(wlpptr->wdev.wiphy));
 #endif
 
-	if (register_netdev(netdev)) {
+	if (register_netdev(netdev))
+	{
 		printk(KERN_ERR "%s: failed to register device\n", DRV_NAME);
 		goto err_register_netdev;
 	}
@@ -4464,53 +4702,66 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #endif
 #endif
 #ifdef CLIENTONLY
-	if (wlInit_mbss(wlpptr, &wlpptr->hwData.macAddr[0])) {
+	if (wlInit_mbss(wlpptr, &wlpptr->hwData.macAddr[0]))
+	{
 		printk("*********** Fail to Init Client \n");
 	}
 #endif
 #if defined(MBSS) && !defined(CLIENTONLY)
 	memcpy(macaddr, wlpptr->hwData.macAddr, 6);
 
-	for (index = 0; index < wlpptr->wlpd_p->NumOfAPs; index++) {
+	for (index = 0; index < wlpptr->wlpd_p->NumOfAPs; index++)
+	{
 
 #ifdef SOC_W906X
 		// Change local mac address assignment scheme for applying MBSSID usage.
-		if (!use_localadmin_addr) {
+		if (!use_localadmin_addr)
+		{
 			macaddr[5] =
 				wlpptr->hwData.macAddr[5] +
 				((index + 1) & 0xff);
-		} else {
-			macaddr[0] = (BIT(1) | (wlpptr->hwData.macAddr[5] << 2));	//enable local admin mac 
+		}
+		else
+		{
+			macaddr[0] = (BIT(1) | (wlpptr->hwData.macAddr[5] << 2)); // enable local admin mac
 			macaddr[5] =
 				wlpptr->hwData.macAddr[5] +
 				((index + 1) & 0xff);
 		}
 
-		if (wlInit_mbss(wlpptr, &macaddr[0])) {
+		if (wlInit_mbss(wlpptr, &macaddr[0]))
+		{
 			printk(KERN_ERR "%s: failed to setup mbss No. %d\n",
-			       netdev->name, index);
+				   netdev->name, index);
 			break;
 		}
-#else //SOC_W906X
-		if (wlInit_mbss(wlpptr, &macaddr[0])) {
+#else  // SOC_W906X
+		if (wlInit_mbss(wlpptr, &macaddr[0]))
+		{
 			printk(KERN_ERR "%s: failed to setup mbss No. %d\n",
-			       netdev->name, index);
+				   netdev->name, index);
 			break;
 		}
 
-		if (!use_localadmin_addr) {
+		if (!use_localadmin_addr)
+		{
 			macaddr[5] =
 				wlpptr->hwData.macAddr[5] +
 				((index + 1) & 0xff);
-		} else {
+		}
+		else
+		{
 			/* uses mac addr bit 41 & up as mbss addresses */
-			for (i = 1; i < 32; i++) {
-				if ((bssidmask & (1 << i)) == 0) {
+			for (i = 1; i < 32; i++)
+			{
+				if ((bssidmask & (1 << i)) == 0)
+				{
 					break;
 				}
 			}
 
-			if (i) {
+			if (i)
+			{
 				/*When the first byte of mac addr is not 0x00, there might be chances that
 				   same mac addr assigned to different VAPs */
 				/*so make 0x00 */
@@ -4519,8 +4770,7 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 			}
 			bssidmask |= 1 << i;
 		}
-#endif //SOC_W906X
-
+#endif // SOC_W906X
 	}
 #endif
 
@@ -4533,25 +4783,31 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 		bssidmask = 0;
 		memcpy(macaddr, wlpptr->hwData.macAddr, 6);
 #if defined(MBSS)
-		for (index = 0; index < wlpptr->wlpd_p->NumOfAPs; index++) {
+		for (index = 0; index < wlpptr->wlpd_p->NumOfAPs; index++)
+		{
 #else
-		for (index = 0; index < 1; index++) {
+		for (index = 0; index < 1; index++)
+		{
 #endif
-			if (!use_localadmin_addr) {
+			if (!use_localadmin_addr)
+			{
 				macaddr[5] =
 					wlpptr->hwData.macAddr[5] +
 					((index + 1) & 0xff);
-			} else {
+			}
+			else
+			{
 				/* uses mac addr bit 41 & up as mbss addresses */
-				for (i = 1; i < 32; i++) {
+				for (i = 1; i < 32; i++)
+				{
 					if ((bssidmask & (1 << i)) == 0)
 						break;
 				}
 
-				if (i) {
+				if (i)
+				{
 					macaddr[0] =
-						wlpptr->hwData.
-						macAddr[0] | ((i << 2) | 0x2);
+						wlpptr->hwData.macAddr[0] | ((i << 2) | 0x2);
 				}
 
 				bssidmask |= 1 << i;
@@ -4560,16 +4816,15 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 
 #ifdef SINGLE_DEV_INTERFACE
 		/* Set static for continue debugging purposes */
-		UINT8 myAddr[6] = { 0x00, 0x40, 0x05, 0x8F, 0x55, 0x17 };
+		UINT8 myAddr[6] = {0x00, 0x40, 0x05, 0x8F, 0x55, 0x17};
 
 		/* Update the static with AP's wireless mac address */
 		memcpy(&myAddr[0], &wlpptr->hwData.macAddr[0], 6);
 
-		if (wlInit_client
-		    (wlpptr, &myAddr[0], &wlpptr->hwData.macAddr[0]))
+		if (wlInit_client(wlpptr, &myAddr[0], &wlpptr->hwData.macAddr[0]))
 #else
 		if (!use_localadmin_addr)
-			macaddr[0] |= 0x02;	/* Usse local administration bit for STA */
+			macaddr[0] |= 0x02; /* Usse local administration bit for STA */
 
 		if (wlInit_client(wlpptr, &macaddr[0], &macaddr[0]))
 #endif
@@ -4579,8 +4834,9 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	}
 #ifdef ENABLE_MONIF
 	{
-		UINT8 myAddr[6] = { 0x00, 0x77, 0x77, 0x77, 0x77, 0x77 };	//for easy checking.
-		if (wlInit_monif(wlpptr, &myAddr[0])) {
+		UINT8 myAddr[6] = {0x00, 0x77, 0x77, 0x77, 0x77, 0x77}; // for easy checking.
+		if (wlInit_monif(wlpptr, &myAddr[0]))
+		{
 			printk("Fail to init monitor interface  ...\n");
 		}
 	}
@@ -4608,8 +4864,8 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	wlpptr->wlpd_p->bandSteer.queued_skb_num = 0;
 #endif /* BAND_STEERING */
 	memset(CH_radio_status, 0,
-	       sizeof(mvl_status_t) * (IEEEtypes_MAX_CHANNELS +
-				       IEEEtypes_MAX_CHANNELS_A));
+		   sizeof(mvl_status_t) * (IEEEtypes_MAX_CHANNELS +
+								   IEEEtypes_MAX_CHANNELS_A));
 #ifdef WLS_FTM_SUPPORT
 	{
 		extern int wlsFTM_init(struct net_device *);
@@ -4624,7 +4880,7 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #endif
 #ifdef PRD_CSI_DMA
 	INIT_WORK(&wlpptr->wlpd_p->prd_csi_dma_done_wq,
-		  (void *)(void *)wl_WiFi_AoA_Decode);
+			  (void *)(void *)wl_WiFi_AoA_Decode);
 #endif
 
 #ifdef CCK_DESENSE
@@ -4677,37 +4933,37 @@ err_init_cmd_buf:
 #endif
 	tasklet_kill(&wlpptr->wlpd_p->txtask);
 	tasklet_kill(&wlpptr->wlpd_p->MUtask);
-	for (i = 0; i < sta_num; i++) {
+	for (i = 0; i < sta_num; i++)
+	{
 		for (j = 0; j < MAX_UP; j++)
-			tasklet_kill(&wlpptr->wlpd_p->AmpduPckReorder[i].ba[j].
-				     BArodertask);
+			tasklet_kill(&wlpptr->wlpd_p->AmpduPckReorder[i].ba[j].BArodertask);
 	}
 #endif
 	tasklet_kill(&wlpptr->wlpd_p->rx_refill_task);
 
-	if (IS_PLATFORM(A390) || IS_PLATFORM(A380)) {
+	if (IS_PLATFORM(A390) || IS_PLATFORM(A380))
+	{
 #ifdef USE_TASKLET
 		tasklet_kill(&wlpptr->wlpd_p->intrtask);
-#endif //USE_TASKLET
+#endif // USE_TASKLET
 	}
 	flush_scheduled_work();
 
 	wl_dma_free_coherent(wlpptr->wlpd_p->dev, CMD_BUF_SIZE,
-			     wlpptr->pCmdBuf, wlpptr->wlpd_p->pPhysCmdBuf);
+						 wlpptr->pCmdBuf, wlpptr->wlpd_p->pPhysCmdBuf);
 failed:
 	WLDBG_EXIT_INFO(DBG_LEVEL_2, NULL);
 	return FAIL;
 }
 #else
-int
-wlInit(struct net_device *netdev, u_int16_t devid)
+int wlInit(struct net_device *netdev, u_int16_t devid)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	int retCode, index, i;
 	int bssidmask = 0;
-	unsigned char macaddr[6] = { 0x00, 0xde, 0xad, 0xde, 0xad, 0xee };
+	unsigned char macaddr[6] = {0x00, 0xde, 0xad, 0xde, 0xad, 0xee};
 #ifdef WTP_SUPPORT
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0)
 	struct netlink_kernel_cfg cfg = {
 		.input = txWtpMgmtMsg,
 	};
@@ -4724,12 +4980,12 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #ifndef NAPI
 #ifdef USE_TASKLET
 	tasklet_init(&wlpptr->wlpd_p->rxtask, (void *)wlRecv,
-		     (unsigned long)netdev);
+				 (unsigned long)netdev);
 #else
 	INIT_WORK(&wlpptr->wlpd_p->rxtask, (void (*)(void *))_wlRecv);
 #endif
 #endif
-#if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(ACNT_REC) && defined(SOC_W906X)
 	wlpptr->wlpd_p->rxinfotask.handle_func = wlrxinfo_qproc;
 	wlpptr->wlpd_p->rxinfotask.phandle_param = netdev;
 	mthread_init(&wlpptr->wlpd_p->rxinfotask);
@@ -4737,20 +4993,20 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	wlpptr->wlpd_p->racnttask.handle_func = wlRxPPDUAcntHndl;
 	wlpptr->wlpd_p->racnttask.phandle_param = netdev;
 	mthread_init(&wlpptr->wlpd_p->racnttask);
-//#ifdef USE_TASKLET
-//      tasklet_init(&wlpptr->wlpd_p->rxinfotask, (void *)wlrxinfo_qproc, (unsigned long)netdev);
-//      tasklet_init(&wlpptr->wlpd_p->racnttask, (void *)wlRxPPDUAcntHndl, (unsigned long)netdev);
-//#else
-//      INIT_WORK(&wlpptr->wlpd_p->rxinfotask, (void (*)(void *))_wlRxInfo);
-//      INIT_WORK(&wlpptr->wlpd_p->racnttask, (void (*)(void *))_wlRAcnt);
-//#endif
-#endif //#if defined(ACNT_REC) && defined (SOC_W906X)
+// #ifdef USE_TASKLET
+//       tasklet_init(&wlpptr->wlpd_p->rxinfotask, (void *)wlrxinfo_qproc, (unsigned long)netdev);
+//       tasklet_init(&wlpptr->wlpd_p->racnttask, (void *)wlRxPPDUAcntHndl, (unsigned long)netdev);
+// #else
+//       INIT_WORK(&wlpptr->wlpd_p->rxinfotask, (void (*)(void *))_wlRxInfo);
+//       INIT_WORK(&wlpptr->wlpd_p->racnttask, (void (*)(void *))_wlRAcnt);
+// #endif
+#endif // #if defined(ACNT_REC) && defined (SOC_W906X)
 
 #ifdef USE_TASKLET
 	tasklet_init(&wlpptr->wlpd_p->txtask, (void *)wlDataTxHdl,
-		     (unsigned long)netdev);
+				 (unsigned long)netdev);
 	tasklet_init(&wlpptr->wlpd_p->MUtask, (void *)MUAutoSet_Hdlr,
-		     (unsigned long)netdev);
+				 (unsigned long)netdev);
 #else
 	INIT_WORK(&wlpptr->wlpd_p->txtask, (void (*)(void *))_wlDataTxHdl);
 #endif
@@ -4761,26 +5017,26 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 
 	INIT_WORK(&wlpptr->wlpd_p->resettask, (void *)(void *)_wlreset);
 	INIT_WORK(&wlpptr->wlpd_p->kickstatask,
-		  (void *)(void *)_wlConsecTxFail);
+			  (void *)(void *)_wlConsecTxFail);
 #ifdef SOC_W906X
 	INIT_WORK(&wlpptr->wlpd_p->offchantask, (void *)(void *)_wlOffChanTask);
-#else //906X off-channel
+#else  // 906X off-channel
 	INIT_WORK(&wlpptr->wlpd_p->offchandonetask,
-		  (void *)(void *)_wlOffChanDone);
-#endif //906X off-channel
+			  (void *)(void *)_wlOffChanDone);
+#endif // 906X off-channel
 #ifdef NEW_DP
 	INIT_WORK(&wlpptr->wlpd_p->acnttask,
-		  (void *)(void *)_wlAcntRecordReady);
+			  (void *)(void *)_wlAcntRecordReady);
 #endif
 
 #if defined(MRVL_MUG_ENABLE)
 	INIT_WORK(&wlpptr->wlpd_p->mug.irq_task,
-		  (void *)(void *)mug_irq_task_handler);
+			  (void *)(void *)mug_irq_task_handler);
 #endif
 
 #if defined(AIRTIME_FAIRNESS)
 	INIT_WORK(&wlpptr->wlpd_p->atf_irq_task,
-		  (void *)(void *)atf_irq_task_handler);
+			  (void *)(void *)atf_irq_task_handler);
 #endif /* AIRTIME_FAIRNESS */
 
 #ifdef WTP_SUPPORT
@@ -4798,7 +5054,8 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 
 	SPIN_LOCK_INIT(&wlpptr->wlpd_p->MUSetListLock);
 
-	for (i = 0; i < sta_num; i++) {
+	for (i = 0; i < sta_num; i++)
+	{
 		wlpptr->wlpd_p->txRateHistogram[i] = NULL;
 		SPIN_LOCK_INIT(&wlpptr->wlpd_p->txRateHistoLock[i]);
 	}
@@ -4810,82 +5067,97 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 
 	wlpptr->pCmdBuf = (unsigned short *)
 		pci_alloc_consistent(wlpptr->pPciDev, CMD_BUF_SIZE,
-				     &wlpptr->wlpd_p->pPhysCmdBuf);
+							 &wlpptr->wlpd_p->pPhysCmdBuf);
 #ifdef SSU_SUPPORT
 	wlpptr->ssuSize = SSU_BUF_SIZE;
 	wlpptr->pSsuBuf = (unsigned short *)
 		pci_alloc_consistent(wlpptr->pPciDev, wlpptr->ssuSize,
-				     &wlpptr->wlpd_p->pPhysSsuBuf);
+							 &wlpptr->wlpd_p->pPhysSsuBuf);
 	printk("wlInit SSU pSsuBuf = %p  pPhysSsuBuf = %pad size=0x%08x\n",
-	       wlpptr->pSsuBuf, &wlpptr->wlpd_p->pPhysSsuBuf, wlpptr->ssuSize);
+		   wlpptr->pSsuBuf, &wlpptr->wlpd_p->pPhysSsuBuf, wlpptr->ssuSize);
 #endif
 	printk("wlInit wlpptr->pCmdBuf = %p  wlpptr->wlpd_p->pPhysCmdBuf = %p \n", wlpptr->pCmdBuf, (void *)wlpptr->wlpd_p->pPhysCmdBuf);
-	if (wlpptr->pCmdBuf == NULL) {
+	if (wlpptr->pCmdBuf == NULL)
+	{
 		printk(KERN_ERR "%s: can not alloc mem\n", netdev->name);
 		goto err_init_cmd_buf;
 	}
 	memset(wlpptr->pCmdBuf, 0x00, CMD_BUF_SIZE);
 
-	ether_setup(netdev);	/* init eth data structures */
+	ether_setup(netdev); /* init eth data structures */
 
 #ifdef MV_NSS_SUPPORT
 	wlNssOps = mv_nss_ops_get();
-	if (wlNssOps == 0) {
+	if (wlNssOps == 0)
+	{
 		printk("cannot get NSS options...\n");
 		return -ENODEV;
 	}
 #endif
 
-	if ((retCode = wlTxRingAlloc(netdev)) == 0) {
-		if ((retCode = wlTxRingInit(netdev)) != 0) {
+	if ((retCode = wlTxRingAlloc(netdev)) == 0)
+	{
+		if ((retCode = wlTxRingInit(netdev)) != 0)
+		{
 			printk(KERN_ERR "%s: initializing TX ring failed\n",
-			       netdev->name);
+				   netdev->name);
 			goto err_init_tx2;
 		}
-	} else {
+	}
+	else
+	{
 		printk(KERN_ERR "%s: allocating TX ring failed\n",
-		       netdev->name);
+			   netdev->name);
 		goto err_init_tx1;
 	}
 
-	if ((retCode = wlRxRingAlloc(netdev)) == 0) {
-		if ((retCode = wlRxRingInit(netdev)) != 0) {
+	if ((retCode = wlRxRingAlloc(netdev)) == 0)
+	{
+		if ((retCode = wlRxRingInit(netdev)) != 0)
+		{
 			printk(KERN_ERR "%s: initializing RX ring failed\n",
-			       netdev->name);
+				   netdev->name);
 			goto err_init_rx;
 		}
-	} else {
+	}
+	else
+	{
 		printk(KERN_ERR "%s: allocating RX ring failed\n",
-		       netdev->name);
+			   netdev->name);
 		goto err_init_rx;
 	}
 
 	/* Allocate Shared Memory FW Host I/O Request MailBox Region */
 	AllocSharedMem(wlpptr);
-	AllocMrvlPriSharedMem(wlpptr);	//mrvl private mailbox region
+	AllocMrvlPriSharedMem(wlpptr); // mrvl private mailbox region
 #ifdef BARBADO_RESET
 	wlFwHardreset(netdev, 1);
 	wlpptr->wlpd_p->bfwreset = FALSE;
 	wlpptr->wlpd_p->bpreresetdone = TRUE;
 #endif
 	wl_get_cwd(cwd);
-	if (wlPrepareFwFile(netdev)) {
-		//printk(KERN_ERR  "%s: prepare firmware downloading failed\n", netdev->name);
-		//goto err_init_rx;
+	if (wlPrepareFwFile(netdev))
+	{
+		// printk(KERN_ERR  "%s: prepare firmware downloading failed\n", netdev->name);
+		// goto err_init_rx;
 		/* No external fw .bin, assume fw downoaded from debuggger */
 		printk("%s: No firmware download, pleaes make sure fw has been loaded by debugger!!!!!\n", netdev->name);
-	} else {
+	}
+	else
+	{
 #ifndef SC_PALLADIUM
-		if (wlFwDownload(netdev)) {
+		if (wlFwDownload(netdev))
+		{
 			printk(KERN_ERR "%s: firmware downloading failed\n",
-			       netdev->name);
+				   netdev->name);
 			wl_kfree(wlpptr->FwPointer);
 			goto err_init_rx;
 		}
 		wl_kfree(wlpptr->FwPointer);
 #endif
 	}
-	if (wlFwGetHwSpecs(netdev)) {
+	if (wlFwGetHwSpecs(netdev))
+	{
 		printk(KERN_ERR "%s: failed to get HW specs\n", netdev->name);
 		goto err_init_rx;
 	}
@@ -4894,27 +5166,29 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	printk("Mac_Init \n");
 	wlpptr->vmacSta_p =
 		Mac_Init(NULL, netdev, &wlpptr->hwData.macAddr[0],
-			 WL_OP_MODE_AP, wlinitcnt);
-	if (wlpptr->vmacSta_p == NULL) {
+				 WL_OP_MODE_AP, wlinitcnt);
+	if (wlpptr->vmacSta_p == NULL)
+	{
 		printk(KERN_ERR "%s: failed to init driver mac\n",
-		       netdev->name);
+			   netdev->name);
 		goto err_init_rx;
 	}
 #ifndef NEW_DP
 	writel((wlpptr->wlpd_p->descData[0].pPhysTxRing),
-	       wlpptr->ioBase0 + wlpptr->wlpd_p->descData[0].wcbBase);
-#if NUM_OF_DESCRIPTOR_DATA >3
+		   wlpptr->ioBase0 + wlpptr->wlpd_p->descData[0].wcbBase);
+#if NUM_OF_DESCRIPTOR_DATA > 3
 	int i;
 	for (i = 1; i < TOTAL_TX_QUEUES; i++)
 		writel((wlpptr->wlpd_p->descData[i].pPhysTxRing),
-		       wlpptr->ioBase0 + wlpptr->wlpd_p->descData[i].wcbBase);
+			   wlpptr->ioBase0 + wlpptr->wlpd_p->descData[i].wcbBase);
 #endif
 	writel((wlpptr->wlpd_p->descData[0].pPhysRxRing),
-	       wlpptr->ioBase0 + wlpptr->wlpd_p->descData[0].rxDescRead);
+		   wlpptr->ioBase0 + wlpptr->wlpd_p->descData[0].rxDescRead);
 	writel((wlpptr->wlpd_p->descData[0].pPhysRxRing),
-	       wlpptr->ioBase0 + wlpptr->wlpd_p->descData[0].rxDescWrite);
+		   wlpptr->ioBase0 + wlpptr->wlpd_p->descData[0].rxDescWrite);
 #endif
-	if (wlFwSetHwSpecs(netdev)) {
+	if (wlFwSetHwSpecs(netdev))
+	{
 		WLDBG_ERROR(DBG_LEVEL_2, "failed to set HW specs");
 	}
 
@@ -4931,7 +5205,7 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	wlSetupWEHdlr(netdev);
 	sprintf(netdev->name, "%s%1d", DRV_NAME, wlinitcnt);
 
-#if	defined(SINGLE_DEV_INTERFACE) && !defined(CLIENTONLY)
+#if defined(SINGLE_DEV_INTERFACE) && !defined(CLIENTONLY)
 	wlpptr->vdev[wlpptr->wlpd_p->vmacIndex++] = wlpptr->netDev;
 #endif
 
@@ -4945,7 +5219,8 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	SET_NETDEV_DEV(netdev, wiphy_dev(wlpptr->wdev.wiphy));
 #endif
 
-	if (register_netdev(netdev)) {
+	if (register_netdev(netdev))
+	{
 		printk(KERN_ERR "%s: failed to register device\n", DRV_NAME);
 		goto err_register_netdev;
 	}
@@ -4964,32 +5239,37 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 #endif
 #endif
 #ifdef CLIENTONLY
-	if (wlInit_mbss(wlpptr, &wlpptr->hwData.macAddr[0])) {
+	if (wlInit_mbss(wlpptr, &wlpptr->hwData.macAddr[0]))
+	{
 		printk("*********** Fail to Init Client \n");
 	}
 #endif
 #if defined(MBSS) && !defined(CLIENTONLY)
 	memcpy(macaddr, wlpptr->hwData.macAddr, 6);
-	for (index = 0; index < bss_num; index++) {
-		if (wlInit_mbss(wlpptr, &macaddr[0])) {
+	for (index = 0; index < bss_num; index++)
+	{
+		if (wlInit_mbss(wlpptr, &macaddr[0]))
+		{
 			printk(KERN_ERR "%s: failed to setup mbss No. %d\n",
-			       netdev->name, index);
+				   netdev->name, index);
 			break;
 		}
 #if 1
 		macaddr[5] = wlpptr->hwData.macAddr[5] + ((index + 1) & 0xf);
 #else
 		int i;
-		//uses mac addr bit 41 & up as mbss addresses
-		for (i = 1; i < 32; i++) {
+		// uses mac addr bit 41 & up as mbss addresses
+		for (i = 1; i < 32; i++)
+		{
 
-			if ((bssidmask & (1 << i)) == 0) {
+			if ((bssidmask & (1 << i)) == 0)
+			{
 				break;
 			}
-
 		}
 
-		if (i) {
+		if (i)
+		{
 
 			macaddr[0] =
 				wlpptr->hwData.macAddr[0] | ((i << 2) | 0x2);
@@ -5026,15 +5306,16 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 				wlpptr->hwData.macAddr[5] + ((index + 1) & 0xf);
 #else
 			int i;
-			//uses mac addr bit 41 & up as mbss addresses
-			for (i = 1; i < 32; i++) {
+			// uses mac addr bit 41 & up as mbss addresses
+			for (i = 1; i < 32; i++)
+			{
 				if ((bssidmask & (1 << i)) == 0)
 					break;
 			}
-			if (i) {
+			if (i)
+			{
 				macaddr[0] =
-					wlpptr->hwData.
-					macAddr[0] | ((i << 2) | 0x2);
+					wlpptr->hwData.macAddr[0] | ((i << 2) | 0x2);
 			}
 			bssidmask |= 1 << i;
 #endif
@@ -5042,16 +5323,15 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 
 #ifdef SINGLE_DEV_INTERFACE
 		/* Set static for continue debugging purposes */
-		UINT8 myAddr[6] = { 0x00, 0x40, 0x05, 0x8F, 0x55, 0x17 };
+		UINT8 myAddr[6] = {0x00, 0x40, 0x05, 0x8F, 0x55, 0x17};
 
 		/* Update the static with AP's wireless mac address */
 		memcpy(&myAddr[0], &wlpptr->hwData.macAddr[0], 6);
 
-		if (wlInit_client
-		    (wlpptr, &myAddr[0], &wlpptr->hwData.macAddr[0]))
+		if (wlInit_client(wlpptr, &myAddr[0], &wlpptr->hwData.macAddr[0]))
 #else
 
-		macaddr[0] |= 0x02;	//Usse local administration bit for STA 
+		macaddr[0] |= 0x02; // Usse local administration bit for STA
 
 		if (wlInit_client(wlpptr, &macaddr[0], &macaddr[0]))
 #endif
@@ -5061,8 +5341,9 @@ wlInit(struct net_device *netdev, u_int16_t devid)
 	}
 #ifdef ENABLE_MONIF
 	{
-		UINT8 myAddr[6] = { 0x00, 0x77, 0x77, 0x77, 0x77, 0x77 };	//for easy checking.
-		if (wlInit_monif(wlpptr, &myAddr[0])) {
+		UINT8 myAddr[6] = {0x00, 0x77, 0x77, 0x77, 0x77, 0x77}; // for easy checking.
+		if (wlInit_monif(wlpptr, &myAddr[0]))
+		{
 			printk("Fail to init monitor interface  ...\n");
 		}
 	}
@@ -5097,29 +5378,32 @@ err_init_cmd_buf:
 	flush_scheduled_work();
 
 	pci_free_consistent(wlpptr->pPciDev, CMD_BUF_SIZE,
-			    wlpptr->pCmdBuf, wlpptr->wlpd_p->pPhysCmdBuf);
+						wlpptr->pCmdBuf, wlpptr->wlpd_p->pPhysCmdBuf);
 	WLDBG_EXIT_INFO(DBG_LEVEL_2, NULL);
 	return FAIL;
 }
 #endif /* SOC_W906X */
 
-void
-wlFreeQueueTxPkt(struct net_device *netdev)
+void wlFreeQueueTxPkt(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	struct wlprivate_data *wlpd_p = wlpptr->wlpd_p;
 	UINT8 num = NUM_OF_DESCRIPTOR_DATA;
 	struct sk_buff *skb;
 
-	while (num--) {
-		while ((skb = skb_dequeue(&wlpd_p->txQ[num])) != 0) {
+	while (num--)
+	{
+		while ((skb = skb_dequeue(&wlpd_p->txQ[num])) != 0)
+		{
 			wl_free_skb(skb);
 		}
 	}
 
 	num = NUM_OF_TCP_ACK_Q;
-	while (num--) {
-		while ((skb = skb_dequeue(&wlpd_p->tcp_ackQ[num])) != 0) {
+	while (num--)
+	{
+		while ((skb = skb_dequeue(&wlpd_p->tcp_ackQ[num])) != 0)
+		{
 			wl_free_skb(skb);
 		}
 	}
@@ -5133,8 +5417,7 @@ extern void wlDeinit_client(struct net_device *netdev);
 #endif /* CLIENT_SUPPORT */
 
 #ifdef SOC_W906X
-int
-wlDeinit(struct net_device *netdev)
+int wlDeinit(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	struct wlprivate_data *wlpd_p = wlpptr->wlpd_p;
@@ -5147,7 +5430,8 @@ wlDeinit(struct net_device *netdev)
 	wlFwSetAcntStop(netdev);
 	TimerRemove(&wfa_test_timer);
 
-	if (wlpd_p->downloadSuccessful == TRUE) {
+	if (wlpd_p->downloadSuccessful == TRUE)
+	{
 		disableSMACRx(netdev);
 	}
 
@@ -5166,20 +5450,23 @@ wlDeinit(struct net_device *netdev)
 	{
 		int stream;
 		for (stream = 0; stream < MAX_SUPPORT_AMPDU_TX_STREAM_RUNNING;
-		     stream++)
+			 stream++)
 			TimerRemove(&wlpptr->wlpd_p->Ampdu_tx[stream].timer);
 	}
 #ifdef MRVL_DFS
 	DfsDeInit(wlpptr->wlpd_p);
 #endif
 
-	if (wlpd_p->downloadSuccessful == TRUE) {
+	if (wlpd_p->downloadSuccessful == TRUE)
+	{
 		SendResetCmd(wlpptr->vmacSta_p, 1);
 	}
-	if (netdev->flags & IFF_RUNNING) {
-		if (wlstop(netdev)) {
+	if (netdev->flags & IFF_RUNNING)
+	{
+		if (wlstop(netdev))
+		{
 			printk(KERN_ERR "%s: failed to stop device\n",
-			       DRV_NAME);
+				   DRV_NAME);
 		}
 	}
 	wlInterruptDisable(netdev);
@@ -5208,35 +5495,38 @@ wlDeinit(struct net_device *netdev)
 	tasklet_kill(&wlpptr->wlpd_p->txtask);
 	tasklet_kill(&wlpptr->wlpd_p->MUtask);
 	tasklet_kill(&wlpptr->wlpd_p->buf_rel_task);
-	for (i = 0; i < sta_num; i++) {
+	for (i = 0; i < sta_num; i++)
+	{
 		for (j = 0; j < MAX_UP; j++)
-			tasklet_kill(&wlpptr->wlpd_p->AmpduPckReorder[i].ba[j].
-				     BArodertask);
+			tasklet_kill(&wlpptr->wlpd_p->AmpduPckReorder[i].ba[j].BArodertask);
 
-		if (wlpptr->wlpd_p->txRateHistogram[i]) {
+		if (wlpptr->wlpd_p->txRateHistogram[i])
+		{
 			wl_kfree(wlpptr->wlpd_p->txRateHistogram[i]);
 			wlpptr->wlpd_p->txRateHistogram[i] = NULL;
 		}
-		if (wlpptr->wlpd_p->scheHistogram[i]) {
+		if (wlpptr->wlpd_p->scheHistogram[i])
+		{
 			wl_kfree(wlpptr->wlpd_p->scheHistogram[i]);
 			wlpptr->wlpd_p->scheHistogram[i] = NULL;
 		}
 	}
-	if (IS_PLATFORM(A390) || IS_PLATFORM(A380)) {
+	if (IS_PLATFORM(A390) || IS_PLATFORM(A380))
+	{
 		tasklet_kill(&wlpptr->wlpd_p->intrtask);
 	}
-#if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(ACNT_REC) && defined(SOC_W906X)
 	mthread_deinit(&wlpptr->wlpd_p->rxinfotask);
-#endif //#if defined(ACNT_REC) && defined (SOC_W906X)
-#if defined (RXACNT_REC) && defined (SOC_W906X)
+#endif // #if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(RXACNT_REC) && defined(SOC_W906X)
 	mthread_deinit(&wlpptr->wlpd_p->racnttask);
-#endif //RXACNT_REC
-#if defined(TXACNT_REC) && defined (SOC_W906X)
+#endif // RXACNT_REC
+#if defined(TXACNT_REC) && defined(SOC_W906X)
 	mthread_deinit(&wlpptr->wlpd_p->tacnttask);
-#endif //#if defined(ACNT_REC) && defined (SOC_W906X)
+#endif // #if defined(ACNT_REC) && defined (SOC_W906X)
 	tasklet_kill(&wlpptr->wlpd_p->rx_refill_task);
 
-#endif //USE_TASKLET
+#endif // USE_TASKLET
 
 #ifdef WTP_SUPPORT
 	netlink_kernel_release(wlpptr->nl_socket);
@@ -5244,9 +5534,10 @@ wlDeinit(struct net_device *netdev)
 
 	flush_scheduled_work();
 
-	//Free the quequed txpkt
+	// Free the quequed txpkt
 	wlFreeQueueTxPkt(netdev);
-	if (wlpptr->vmacSta_p != NULL) {
+	if (wlpptr->vmacSta_p != NULL)
+	{
 		DisableMacMgmtTimers(wlpptr->vmacSta_p);
 		MacMgmtMemCleanup(wlpptr->vmacSta_p);
 #ifdef AUTOCHANNEL
@@ -5260,7 +5551,8 @@ wlDeinit(struct net_device *netdev)
 #endif /* IEEE80211K */
 	}
 	wlTxRingFree(netdev);
-	if (wlpptr->vmacSta_p != NULL) {
+	if (wlpptr->vmacSta_p != NULL)
+	{
 		wlDestroySysCfg(wlpptr->vmacSta_p);
 		wlpptr->vmacSta_p = NULL;
 	}
@@ -5268,30 +5560,31 @@ wlDeinit(struct net_device *netdev)
 	wl_free_scheHistogram(netdev);
 	wl_unregister_dump_func(wlpptr->wlpd_p);
 	unregister_netdev(netdev);
-	if (wlinitcnt == 1) {	//last one
+	if (wlinitcnt == 1)
+	{ // last one
 		ap8x_remove_folder();
 		mib_Free();
 	}
 	wlinitcnt--;
 	wl_dma_free_coherent(wlpptr->wlpd_p->dev, CMD_BUF_SIZE,
-			     (caddr_t) wlpptr->pCmdBuf,
-			     wlpptr->wlpd_p->pPhysCmdBuf);
+						 (caddr_t)wlpptr->pCmdBuf,
+						 wlpptr->wlpd_p->pPhysCmdBuf);
 #ifdef SOC_W906X
 	wl_dma_free_coherent(wlpptr->wlpd_p->dev, CMD_BUF_SIZE,
-			     (caddr_t) wlpptr->pFwDlBuf,
-			     wlpptr->wlpd_p->pPhysFwDlBuf);
+						 (caddr_t)wlpptr->pFwDlBuf,
+						 wlpptr->wlpd_p->pPhysFwDlBuf);
 #endif /*SOC_W906X */
 #ifdef SSU_SUPPORT
 	if (wlpptr->pSsuBuf)
 		wl_dma_free_coherent(wlpptr->wlpd_p->dev, wlpptr->ssuSize,
-				     wlpptr->pSsuBuf,
-				     wlpptr->wlpd_p->pPhysSsuBuf);
+							 wlpptr->pSsuBuf,
+							 wlpptr->wlpd_p->pPhysSsuBuf);
 #endif
 #ifdef DSP_COMMAND
 	if (wlpptr->pDspBuf)
 		wl_dma_free_coherent(wlpptr->wlpd_p->dev, wlpptr->dspSize,
-				     wlpptr->pDspBuf,
-				     wlpptr->wlpd_p->pPhysDspBuf);
+							 wlpptr->pDspBuf,
+							 wlpptr->wlpd_p->pPhysDspBuf);
 #endif
 #ifdef WLS_FTM_SUPPORT
 	{
@@ -5311,7 +5604,8 @@ wlDeinit(struct net_device *netdev)
 	del_timer(&wlpptr->cck_des.loadcfg.polltimer);
 #endif /* CCK_DESENSE */
 
-	if (smeCmdBuf_q) {
+	if (smeCmdBuf_q)
+	{
 		wl_vfree(smeCmdBuf_q);
 		smeCmdBuf_q = NULL;
 	}
@@ -5320,8 +5614,7 @@ wlDeinit(struct net_device *netdev)
 	return SUCCESS;
 }
 #else
-int
-wlDeinit(struct net_device *netdev)
+int wlDeinit(struct net_device *netdev)
 {
 
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
@@ -5338,7 +5631,7 @@ wlDeinit(struct net_device *netdev)
 	{
 		int stream;
 		for (stream = 0; stream < MAX_SUPPORT_AMPDU_TX_STREAM_RUNNING;
-		     stream++)
+			 stream++)
 			TimerRemove(&wlpptr->wlpd_p->Ampdu_tx[stream].timer);
 	}
 #ifdef MRVL_DFS
@@ -5346,10 +5639,12 @@ wlDeinit(struct net_device *netdev)
 #endif
 
 	SendResetCmd(wlpptr->vmacSta_p, 1);
-	if (netdev->flags & IFF_RUNNING) {
-		if (wlstop(netdev)) {
+	if (netdev->flags & IFF_RUNNING)
+	{
+		if (wlstop(netdev))
+		{
 			printk(KERN_ERR "%s: failed to stop device\n",
-			       DRV_NAME);
+				   DRV_NAME);
 		}
 	}
 #ifdef SINGLE_DEV_INTERFACE
@@ -5384,18 +5679,18 @@ wlDeinit(struct net_device *netdev)
 	wlpptr->vmacSta_p = NULL;
 	unregister_netdev(netdev);
 
-	if (wlinitcnt == 1)	//last one
+	if (wlinitcnt == 1) // last one
 		ap8x_remove_folder();
 	wlinitcnt--;
 	pci_free_consistent(wlpptr->pPciDev, CMD_BUF_SIZE,
-			    (caddr_t) wlpptr->pCmdBuf,
-			    wlpptr->wlpd_p->pPhysCmdBuf);
+						(caddr_t)wlpptr->pCmdBuf,
+						wlpptr->wlpd_p->pPhysCmdBuf);
 	//      free(wlpptr->wlpd_p);
 	WLDBG_EXIT(DBG_LEVEL_2);
 	return SUCCESS;
 }
 #endif /* SOC_W906X */
-#if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(ACNT_REC) && defined(SOC_W906X)
 static void
 wlRxInfoHdlr(struct net_device *netdev)
 {
@@ -5404,8 +5699,8 @@ wlRxInfoHdlr(struct net_device *netdev)
 	mthread_run(&wlpptr->wlpd_p->rxinfotask);
 	return;
 }
-#endif //defined(ACNT_REC) && defined (SOC_W906X)
-#if defined(RXACNT_REC) && defined (SOC_W906X)
+#endif // defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(RXACNT_REC) && defined(SOC_W906X)
 static void
 wlRAcntHdlr(struct net_device *netdev)
 {
@@ -5414,7 +5709,7 @@ wlRAcntHdlr(struct net_device *netdev)
 	mthread_run(&wlpptr->wlpd_p->racnttask);
 	return;
 }
-#endif //defined(ACNT_REC) && defined (SOC_W906X)
+#endif // defined(ACNT_REC) && defined (SOC_W906X)
 
 #ifndef NAPI
 static void
@@ -5432,37 +5727,39 @@ wlRecvHdlr(struct net_device *netdev)
 #endif
 
 #ifdef MRVL_DFS
-int
-wlRadarDetection(struct net_device *netdev, UINT8 from)
+int wlRadarDetection(struct net_device *netdev, UINT8 from)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	smeQ_MgmtMsg_t *toSmeMsg = NULL;
-	vmacApInfo_t *syscfg = (vmacApInfo_t *) wlpptr->vmacSta_p;
+	vmacApInfo_t *syscfg = (vmacApInfo_t *)wlpptr->vmacSta_p;
 	MIB_802DOT11 *mib = syscfg->Mib802dot11;
 	MIB_PHY_DSSS_TABLE *PhyDSSSTable = mib->PhyDSSSTable;
 
 #ifdef CONCURRENT_DFS_SUPPORT
-	if (from == DFS_AUX) {
+	if (from == DFS_AUX)
+	{
 		WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-			 WLSYSLOG_MSG_GEN_RADARDETECTION_AUX);
+				 WLSYSLOG_MSG_GEN_RADARDETECTION_AUX);
 		WLSNDEVT(netdev, IWEVCUSTOM,
-			 (IEEEtypes_MacAddr_t *) & wlpptr->hwData.macAddr[0],
-			 WLSYSLOG_MSG_GEN_RADARDETECTION_AUX);
-	} else
+				 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+				 WLSYSLOG_MSG_GEN_RADARDETECTION_AUX);
+	}
+	else
 #endif
 	{
 		WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-			 WLSYSLOG_MSG_GEN_RADARDETECTION);
+				 WLSYSLOG_MSG_GEN_RADARDETECTION);
 		WLSNDEVT(netdev, IWEVCUSTOM,
-			 (IEEEtypes_MacAddr_t *) & wlpptr->hwData.macAddr[0],
-			 WLSYSLOG_MSG_GEN_RADARDETECTION);
+				 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+				 WLSYSLOG_MSG_GEN_RADARDETECTION);
 	}
 	/* Send Radar detection indication to SME layer */
 	if ((toSmeMsg =
-	     (smeQ_MgmtMsg_t *) wl_kmalloc(sizeof(smeQ_MgmtMsg_t),
-					   GFP_ATOMIC)) == NULL) {
+			 (smeQ_MgmtMsg_t *)wl_kmalloc(sizeof(smeQ_MgmtMsg_t),
+										  GFP_ATOMIC)) == NULL)
+	{
 		WLDBG_INFO(DBG_LEVEL_2,
-			   "wlChannelSet: failed to alloc msg buffer\n");
+				   "wlChannelSet: failed to alloc msg buffer\n");
 		return 1;
 	}
 
@@ -5480,16 +5777,15 @@ wlRadarDetection(struct net_device *netdev, UINT8 from)
 	toSmeMsg->Msg.RadarDetectionInd.chInfo.channel = PhyDSSSTable->CurrChan;
 #endif
 	memcpy(&toSmeMsg->Msg.RadarDetectionInd.chInfo.chanflag,
-	       &PhyDSSSTable->Chanflag, sizeof(CHNL_FLAGS));
+		   &PhyDSSSTable->Chanflag, sizeof(CHNL_FLAGS));
 
 	smeQ_MgmtWriteNoBlock(toSmeMsg);
-	wl_kfree((UINT8 *) toSmeMsg);
+	wl_kfree((UINT8 *)toSmeMsg);
 
 	return 0;
 }
 
-void
-radarDetectionHdlr(struct net_device *netdev)
+void radarDetectionHdlr(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
@@ -5498,8 +5794,7 @@ radarDetectionHdlr(struct net_device *netdev)
 }
 
 #ifdef CONCURRENT_DFS_SUPPORT
-void
-radarAuxChDetectionHdlr(struct net_device *netdev)
+void radarAuxChDetectionHdlr(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
@@ -5507,17 +5802,15 @@ radarAuxChDetectionHdlr(struct net_device *netdev)
 	return;
 }
 #endif /* CONCURRENT_DFS_SUPPORT */
-void
-SimulateRadarDetect(struct net_device *netdev)
+void SimulateRadarDetect(struct net_device *netdev)
 {
 	radarDetectionHdlr(netdev);
 }
 
-int
-wlApplyCSAChannel(struct net_device *netdev)
+int wlApplyCSAChannel(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
-	vmacApInfo_t *syscfg = (vmacApInfo_t *) wlpptr->vmacSta_p;
+	vmacApInfo_t *syscfg = (vmacApInfo_t *)wlpptr->vmacSta_p;
 	MIB_802DOT11 *mib = syscfg->Mib802dot11;
 	MIB_PHY_DSSS_TABLE *PhyDSSSTable = mib->PhyDSSSTable;
 
@@ -5535,9 +5828,9 @@ dfsChanSwitchHdlr(struct net_device *netdev)
 	return;
 }
 
-#endif //MRVL_DFS
+#endif // MRVL_DFS
 
-//NOTE: the flag is off default. need to remove for verification later when fw ready.
+// NOTE: the flag is off default. need to remove for verification later when fw ready.
 static void
 AcntRdyIsrHdlr(struct net_device *netdev)
 {
@@ -5570,21 +5863,23 @@ AtfDataRdyIsrHdrl(struct net_device *netdev)
 #endif /* AIRTIME_FAIRNESS */
 
 /*Function to kick out client when consecutive tx failure count > limit*/
-int
-wlConsecTxFail(struct net_device *netdev)
+int wlConsecTxFail(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
-	vmacApInfo_t *syscfg = (vmacApInfo_t *) wlpptr->vmacSta_p;
+	vmacApInfo_t *syscfg = (vmacApInfo_t *)wlpptr->vmacSta_p;
 
-	IEEEtypes_MacAddr_t addr = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+	IEEEtypes_MacAddr_t addr = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
 	if ((syscfg->OpMode == WL_OP_MODE_VSTA) ||
-	    (syscfg->OpMode == WL_OP_MODE_STA)) {
+		(syscfg->OpMode == WL_OP_MODE_STA))
+	{
 		ClientModeTxMonitor = 0;
-	} else {
-		wlFwGetConsecTxFailAddr(netdev, (IEEEtypes_MacAddr_t *) addr);
+	}
+	else
+	{
+		wlFwGetConsecTxFailAddr(netdev, (IEEEtypes_MacAddr_t *)addr);
 		extStaDb_RemoveStaNSendDeauthMsg(syscfg,
-						 (IEEEtypes_MacAddr_t *) addr);
+										 (IEEEtypes_MacAddr_t *)addr);
 	}
 
 	return 0;
@@ -5603,36 +5898,37 @@ ConsecTxFailHdlr(struct net_device *netdev)
 #endif /* SOC_W8964 */
 
 #ifdef SOC_W906X
-int
-wlOffChanTask(struct net_device *netdev)
+int wlOffChanTask(struct net_device *netdev)
 {
 	wlFwNewDP_handle_OffChan_event(netdev);
 	return 0;
 }
 
-void
-offChanDoneHdlr(struct net_device *netdev, offchan_status next_state)
+void offChanDoneHdlr(struct net_device *netdev, offchan_status next_state)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
 	if ((wlpptr->offchan_state == OFFCHAN_STARTED) &&
-	    (next_state == OFFCHAN_CH_CHANGE)) {
+		(next_state == OFFCHAN_CH_CHANGE))
+	{
 		wlpptr->offchan_state = OFFCHAN_CH_CHANGE;
 		schedule_work(&wlpptr->wlpd_p->offchantask);
-	} else if ((wlpptr->offchan_state == OFFCHAN_CH_CHANGE) &&
-		   (next_state == OFFCHAN_DONE)) {
+	}
+	else if ((wlpptr->offchan_state == OFFCHAN_CH_CHANGE) &&
+			 (next_state == OFFCHAN_DONE))
+	{
 		wlpptr->offchan_state = OFFCHAN_DONE;
 		schedule_work(&wlpptr->wlpd_p->offchantask);
-	} else {
+	}
+	else
+	{
 		printk("offChanDoneHdlr() err, offchan_state = %d, next_state = %d\n", wlpptr->offchan_state, next_state);
 	}
 
 	return;
-
 }
-#else //906X off-channel
-int
-wlOffChanDone(struct net_device *netdev)
+#else // 906X off-channel
+int wlOffChanDone(struct net_device *netdev)
 {
 
 	wlFwNewDP_handle_OffChan_event(netdev);
@@ -5647,10 +5943,9 @@ OffChanDoneHdlr(struct net_device *netdev)
 	schedule_work(&wlpptr->wlpd_p->offchandonetask);
 
 	return;
-
 }
 #endif /* SOC_W8964 */
-#endif //906X off-channel
+#endif // 906X off-channel
 
 extern void wlHandleAcnt(struct net_device *netdev);
 
@@ -5658,7 +5953,7 @@ extern void wlHandleAcnt(struct net_device *netdev);
 
 extern void wllpRx(struct net_device *netdev);
 
-#if defined(ACNT_REC) && defined (SOC_W906X)
+#if defined(ACNT_REC) && defined(SOC_W906X)
 irqreturn_t
 wlSC5MSIX_RxInfo(int irq, void *dev_id)
 {
@@ -5675,38 +5970,43 @@ wlSC5MSIX_RxInfo(int irq, void *dev_id)
 	qid = msg_id >> 1;
 	intStatus = 1 << qid;
 	WLDBG_INFO(DBG_LEVEL_3,
-		   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
-		   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
-		   wlpptr->wlpd_p->intr_shift);
+			   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
+			   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
+			   wlpptr->wlpd_p->intr_shift);
 
 	spin_lock(&wlpptr->wlpd_p->locks.intLock);
 	wlpptr->RAcntQId |= intStatus;
 	spin_unlock(&wlpptr->wlpd_p->locks.intLock);
 
 	intStatus &= ~SC5_RX_MSIX_MASK;
-	if ((msg_id & 0x01) == 1) {	//SQ = 1
+	if ((msg_id & 0x01) == 1)
+	{ // SQ = 1
 		// ACNT handler...
-//printk("%s(), calling wlRxInfoHdlr()\n", __func__);
+		// printk("%s(), calling wlRxInfoHdlr()\n", __func__);
 		wlRxInfoHdlr(netdev);
 	}
 	retVal = IRQ_HANDLED;
 
 	return retVal;
 }
-#endif //defined(ACNT_REC) && defined (SOC_W906X)
+#endif // defined(ACNT_REC) && defined (SOC_W906X)
 
 boolean quiet_enable = FALSE;
-void
-quiet_stop_allInf(struct net_device *netdev, boolean quiet)
+void quiet_stop_allInf(struct net_device *netdev, boolean quiet)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	int i = 0;
 
-	while (i <= bss_num) {
-		if (wlpptr->vdev[i]) {
-			if (quiet) {
+	while (i <= bss_num)
+	{
+		if (wlpptr->vdev[i])
+		{
+			if (quiet)
+			{
 				netif_stop_queue(wlpptr->vdev[i]);
-			} else {
+			}
+			else
+			{
 				netif_wake_queue(wlpptr->vdev[i]);
 			}
 		}
@@ -5716,7 +6016,7 @@ quiet_stop_allInf(struct net_device *netdev, boolean quiet)
 	return;
 }
 
-UINT32 rx_r7_intr[6] = { 0 };
+UINT32 rx_r7_intr[6] = {0};
 
 irqreturn_t
 wlSC5MSIX_r7(int irq, void *dev_id)
@@ -5736,50 +6036,56 @@ wlSC5MSIX_r7(int irq, void *dev_id)
 	qid = msg_id >> 1;
 	intStatus = 1 << qid;
 	WLDBG_INFO(DBG_LEVEL_3,
-		   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
-		   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
-		   wlpptr->wlpd_p->intr_shift);
-	if ((msg_id & 0x01) == 0) {	//RQ = 0
-#if 1				//Notify host to stop/resume tx
-		//printk("intStatus = 0x%x\n", intStatus);
-		if (intStatus & SC5_EVENT_QUIET) {
-			//extern UINT32 quiet_dbg[10];
-			//printk("SC5_EVENT_QUIET, quiet_enable = %x -> ", quiet_enable);
+			   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
+			   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
+			   wlpptr->wlpd_p->intr_shift);
+	if ((msg_id & 0x01) == 0)
+	{ // RQ = 0
+#if 1 // Notify host to stop/resume tx
+		// printk("intStatus = 0x%x\n", intStatus);
+		if (intStatus & SC5_EVENT_QUIET)
+		{
+			// extern UINT32 quiet_dbg[10];
+			// printk("SC5_EVENT_QUIET, quiet_enable = %x -> ", quiet_enable);
 
-			if (quiet_enable == FALSE) {
+			if (quiet_enable == FALSE)
+			{
 				quiet_enable = TRUE;
-			} else {
+			}
+			else
+			{
 				quiet_enable = FALSE;
 			}
 			quiet_stop_allInf(netdev, quiet_enable);
-			//printk("%x, quiet_dbg: %d\n", quiet_enable, quiet_dbg[0]);
+			// printk("%x, quiet_dbg: %d\n", quiet_enable, quiet_dbg[0]);
 
 			intStatus &= ~SC5_EVENT_QUIET;
 			retVal = IRQ_HANDLED;
 			rx_r7_intr[4]++;
 		}
 #endif
-		if (intStatus & SC5_EVENT_RADAR_DETECTED) {
+		if (intStatus & SC5_EVENT_RADAR_DETECTED)
+		{
 			char evBuf[64];
 			u32 dfs_freq;
 
 			WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-				 WLSYSLOG_MSG_GEN_RADARDETECTION);
-			dfs_freq =
-				((drv_fw_shared_t *) wlpptr->wlpd_p->
-				 MrvlPriSharedMem.data)->dfs_freg;
-			if (dfs_freq != 0) {
-				sprintf(evBuf,
-					"DFS radar detection Freq = %d\n",
-					ENDIAN_SWAP32(dfs_freq));
-				WLSNDEVT(netdev, IWEVCUSTOM,
-					 (IEEEtypes_MacAddr_t *) & wlpptr->
-					 hwData.macAddr[0], evBuf);
-			} else {
-				WLSNDEVT(netdev, IWEVCUSTOM,
-					 (IEEEtypes_MacAddr_t *) & wlpptr->
-					 hwData.macAddr[0],
 					 WLSYSLOG_MSG_GEN_RADARDETECTION);
+			dfs_freq =
+				((drv_fw_shared_t *)wlpptr->wlpd_p->MrvlPriSharedMem.data)->dfs_freg;
+			if (dfs_freq != 0)
+			{
+				sprintf(evBuf,
+						"DFS radar detection Freq = %d\n",
+						ENDIAN_SWAP32(dfs_freq));
+				WLSNDEVT(netdev, IWEVCUSTOM,
+						 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0], evBuf);
+			}
+			else
+			{
+				WLSNDEVT(netdev, IWEVCUSTOM,
+						 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+						 WLSYSLOG_MSG_GEN_RADARDETECTION);
 			}
 			radarDetectionHdlr(netdev);
 
@@ -5788,19 +6094,21 @@ wlSC5MSIX_r7(int irq, void *dev_id)
 			rx_r7_intr[0]++;
 		}
 #ifdef CONCURRENT_DFS_SUPPORT
-		if (intStatus & SC5_EVENT_RADAR_DETECTED_AUX) {
-			//printk("SC5_EVENT_RADAR_DETECTED_AUX ::: intStatus = 0x%x\n", intStatus);
-			// Add handler here         
+		if (intStatus & SC5_EVENT_RADAR_DETECTED_AUX)
+		{
+			// printk("SC5_EVENT_RADAR_DETECTED_AUX ::: intStatus = 0x%x\n", intStatus);
+			//  Add handler here
 			WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-				 WLSYSLOG_MSG_GEN_RADARDETECTION_AUX);
+					 WLSYSLOG_MSG_GEN_RADARDETECTION_AUX);
 			radarAuxChDetectionHdlr(netdev);
 			intStatus &= ~SC5_EVENT_RADAR_DETECTED_AUX;
 			retVal = IRQ_HANDLED;
 			rx_r7_intr[5]++;
-			//printk("SC5_EVENT_RADAR_DETECTED_AUX received %d\n", rx_r7_intr[5]);                      
+			// printk("SC5_EVENT_RADAR_DETECTED_AUX received %d\n", rx_r7_intr[5]);
 		}
 #endif /* CONCURRENT_DFS_SUPPORT */
-		if (intStatus & SC5_EVENT_CHAN_SWITCHED) {
+		if (intStatus & SC5_EVENT_CHAN_SWITCHED)
+		{
 
 			dfsChanSwitchHdlr(netdev);
 
@@ -5808,21 +6116,23 @@ wlSC5MSIX_r7(int irq, void *dev_id)
 			retVal = IRQ_HANDLED;
 			rx_r7_intr[1]++;
 		}
-		if ((intStatus & SC5_EVENT_FW) && (wlpptr->event_bufq_vaddr)) {
+		if ((intStatus & SC5_EVENT_FW) && (wlpptr->event_bufq_vaddr))
+		{
 			UINT32 wrptr, rdptr;
 			rdptr = readl(wlpptr->ioBase1 + reg_evt_rdptr);
 			wrptr = readl(wlpptr->ioBase1 + reg_evt_wrptr);
 
-			//printk("%s: SC5_EVENT_FW received rdptr=%d wrptr=%d\n", __func__, rdptr, wrptr);
-			while (rdptr != wrptr) {
+			// printk("%s: SC5_EVENT_FW received rdptr=%d wrptr=%d\n", __func__, rdptr, wrptr);
+			while (rdptr != wrptr)
+			{
 				rx_r7_intr[3]++;
 				/*
 				   Do NOT use phy_to_virt()/virt_to_phy() for memory allocated by wl_dma_alloc_coherent()
 				   The address translation is wrong. Just give Eventhandler Virtual addr directly
 				 */
 				wlEventHandler(vmacSta_p,
-					       wlpptr->event_bufq_vaddr +
-					       rdptr * EVENT_BUFFQ_SIZE);
+							   wlpptr->event_bufq_vaddr +
+								   rdptr * EVENT_BUFFQ_SIZE);
 
 				rdptr = (rdptr + 1) % EVENT_BUFFQ_NUM;
 				writel(rdptr, wlpptr->ioBase1 + reg_evt_rdptr);
@@ -5831,15 +6141,16 @@ wlSC5MSIX_r7(int irq, void *dev_id)
 			retVal = IRQ_HANDLED;
 			rx_r7_intr[2]++;
 		}
-//NOTE: the flag default is off, need to remove this flag when doing the verification.
-		if (intStatus & SC5_EVENT_ACNT_HEAD_READY) {
+		// NOTE: the flag default is off, need to remove this flag when doing the verification.
+		if (intStatus & SC5_EVENT_ACNT_HEAD_READY)
+		{
 
-			//printk("%s: W906x_EVENT_ACNT_HEAD_READY received\n", __func__);
+			// printk("%s: W906x_EVENT_ACNT_HEAD_READY received\n", __func__);
 			intStatus &= ~SC5_EVENT_ACNT_HEAD_READY;
 			if (!wfa_11ax_pf)
 				AcntRdyIsrHdlr(netdev);
 			retVal = IRQ_HANDLED;
-			//rx_r7_intr[1]++;
+			// rx_r7_intr[1]++;
 		}
 	}
 
@@ -5861,9 +6172,9 @@ wlSC5MSIX_rx(int irq, void *dev_id)
 	qid = msg_id >> 1;
 	intStatus = 1 << qid;
 	WLDBG_INFO(DBG_LEVEL_3,
-		   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
-		   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
-		   wlpd_p->intr_shift);
+			   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
+			   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
+			   wlpd_p->intr_shift);
 	wlpd_p->drv_stats_val.rxq_intr_cnt[qid - SC5_RXQ_START_INDEX]++;
 
 	spin_lock(&wlpptr->wlpd_p->locks.intLock);
@@ -5894,10 +6205,11 @@ wlSC5MSIX_rel(int irq, void *dev_id)
 	qid = msg_id >> 1;
 	intStatus = 1 << qid;
 	WLDBG_INFO(DBG_LEVEL_3,
-		   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
-		   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
-		   wlpd_p->intr_shift);
-	if (intStatus & pbqm_args->buf_release_msix_mask) {
+			   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
+			   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
+			   wlpd_p->intr_shift);
+	if (intStatus & pbqm_args->buf_release_msix_mask)
+	{
 		spin_lock(&wlpptr->wlpd_p->locks.intLock);
 		wlpptr->BQRelId |= intStatus;
 		spin_unlock(&wlpptr->wlpd_p->locks.intLock);
@@ -5927,16 +6239,19 @@ wlSC5MSIX_tx(int irq, void *dev_id)
 	qid = msg_id >> 1;
 	intStatus = 1 << qid;
 	WLDBG_INFO(DBG_LEVEL_3,
-		   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
-		   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
-		   wlpd_p->intr_shift);
-	if ((msg_id & 0x01) == 0) {	//RQ = 0
-		if (intStatus & pbqm_args->tx_msix_mask) {
+			   "ISR: %s: qid %d %s, msg_id=%d, INTR_SHIFT=%d\n", __func__,
+			   qid, (msg_id & 0x01) ? "SQ" : "RQ", msg_id,
+			   wlpd_p->intr_shift);
+	if ((msg_id & 0x01) == 0)
+	{ // RQ = 0
+		if (intStatus & pbqm_args->tx_msix_mask)
+		{
 			WLDBG_INFO(DBG_LEVEL_3, "ISR: TXQ: qid %d \n", qid);
 			intStatus &= ~pbqm_args->tx_msix_mask;
 			retVal = IRQ_HANDLED;
 		}
-		if (intStatus & SC5_BUF_MSIX_MASK) {
+		if (intStatus & SC5_BUF_MSIX_MASK)
+		{
 			WLDBG_INFO(DBG_LEVEL_3, "ISR: BMQ qid %d \n", qid);
 			tasklet_hi_schedule(&wlpptr->wlpd_p->rx_refill_task);
 			intStatus &= ~SC5_BUF_MSIX_MASK;
@@ -5949,7 +6264,7 @@ wlSC5MSIX_tx(int irq, void *dev_id)
 	return retVal;
 }
 
-//#endif
+// #endif
 
 irqreturn_t
 wlISR(int irq, void *dev_id)
@@ -5965,37 +6280,43 @@ wlISR(int irq, void *dev_id)
 
 	irqreturn_t retVal = IRQ_NONE;
 
-	do {
+	do
+	{
 		intStatus =
-			(readl
-			 (wlpptr->ioBase1 + SC5_MACREG_REG_INTERRUPT_CAUSE));
-		if (intStatus != 0x00000000) {
-			if (intStatus == 0xffffffff) {
+			(readl(wlpptr->ioBase1 + SC5_MACREG_REG_INTERRUPT_CAUSE));
+		if (intStatus != 0x00000000)
+		{
+			if (intStatus == 0xffffffff)
+			{
 				WLDBG_INFO(DBG_LEVEL_2, "card plugged out???");
 				retVal = IRQ_HANDLED;
-				break;	/* card plugged out -> do not handle any IRQ */
+				break; /* card plugged out -> do not handle any IRQ */
 			}
 
-			if (!wlpptr->wlpd_p->pPciDev->msi_enabled) {
+			if (!wlpptr->wlpd_p->pPciDev->msi_enabled)
+			{
 				writel((MACREG_A2HRIC_BIT_MASK_MSI &
-					~intStatus),
-				       wlpptr->ioBase1 +
-				       SC5_MACREG_REG_INTERRUPT_CAUSE);
+						~intStatus),
+					   wlpptr->ioBase1 +
+						   SC5_MACREG_REG_INTERRUPT_CAUSE);
 			}
 		}
 
-		if (intStatus & SC5_RX_INTR_MASK) {
+		if (intStatus & SC5_RX_INTR_MASK)
+		{
 			spin_lock(&wlpptr->wlpd_p->locks.intLock);
 			wlpptr->RxQId |=
 				(intStatus & SC5_RX_INTR_MASK) >>
-				SC5_RX_INTR_START;;
+				SC5_RX_INTR_START;
+			;
 			spin_unlock(&wlpptr->wlpd_p->locks.intLock);
 			intStatus &= ~SC5_RX_INTR_MASK;
 			wlRecvHdlr(netdev);
 			retVal = IRQ_HANDLED;
 		}
 
-		if (intStatus & SC5_BUF_RELEASE_MASK) {
+		if (intStatus & SC5_BUF_RELEASE_MASK)
+		{
 			if (intStatus & BIT(30))
 				qid = 13;
 			else if (intStatus & BIT(29))
@@ -6004,7 +6325,7 @@ wlISR(int irq, void *dev_id)
 				qid = 11;
 			else if (intStatus & BIT(27))
 				qid = 10;
-			else if (intStatus & BIT(22))	/* SC5 */
+			else if (intStatus & BIT(22)) /* SC5 */
 				qid = 14;
 
 			spin_lock(&wlpptr->wlpd_p->locks.intLock);
@@ -6014,17 +6335,20 @@ wlISR(int irq, void *dev_id)
 			intStatus &= ~SC5_BUF_RELEASE_MASK;
 			retVal = IRQ_HANDLED;
 		}
-		if (intStatus & SC5_TX_INTR_MASK) {
+		if (intStatus & SC5_TX_INTR_MASK)
+		{
 			intStatus &= ~SC5_TX_INTR_MASK;
 			retVal = IRQ_HANDLED;
 		}
-		if (intStatus & SC5_BUF_INTR_MASK) {
+		if (intStatus & SC5_BUF_INTR_MASK)
+		{
 			tasklet_hi_schedule(&wlpptr->wlpd_p->rx_refill_task);
 			intStatus &= ~SC5_BUF_INTR_MASK;
 			retVal = IRQ_HANDLED;
 		}
-#if defined(ACNT_REC) && defined (SOC_W906X)
-		if (intStatus & SC5_RXINFO_INTR_MASK) {
+#if defined(ACNT_REC) && defined(SOC_W906X)
+		if (intStatus & SC5_RXINFO_INTR_MASK)
+		{
 			if (intStatus & BIT(31))
 				qid = 15;
 
@@ -6037,47 +6361,52 @@ wlISR(int irq, void *dev_id)
 			retVal = IRQ_HANDLED;
 		}
 #endif
-		//R7 handler
-#if 1				//Notify host to stop/resume tx
-		//printk("intStatus = 0x%x\n", intStatus);
-		if (intStatus & SC5_EVENT_QUIET) {
-			//extern UINT32 quiet_dbg[10];
-			//printk("SC5_EVENT_QUIET, quiet_enable = %x -> ", quiet_enable);
+		// R7 handler
+#if 1 // Notify host to stop/resume tx
+		// printk("intStatus = 0x%x\n", intStatus);
+		if (intStatus & SC5_EVENT_QUIET)
+		{
+			// extern UINT32 quiet_dbg[10];
+			// printk("SC5_EVENT_QUIET, quiet_enable = %x -> ", quiet_enable);
 
-			if (quiet_enable == FALSE) {
+			if (quiet_enable == FALSE)
+			{
 				quiet_enable = TRUE;
-			} else {
+			}
+			else
+			{
 				quiet_enable = FALSE;
 			}
 			quiet_stop_allInf(netdev, quiet_enable);
-			//printk("%x, quiet_dbg: %d\n", quiet_enable, quiet_dbg[0]);
+			// printk("%x, quiet_dbg: %d\n", quiet_enable, quiet_dbg[0]);
 
 			intStatus &= ~SC5_EVENT_QUIET;
 			retVal = IRQ_HANDLED;
 			rx_r7_intr[4]++;
 		}
 #endif
-		if (intStatus & SC5_EVENT_RADAR_DETECTED) {
+		if (intStatus & SC5_EVENT_RADAR_DETECTED)
+		{
 			char evBuf[64];
 			u32 dfs_freq;
 
 			WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-				 WLSYSLOG_MSG_GEN_RADARDETECTION);
-			dfs_freq =
-				((drv_fw_shared_t *) wlpptr->wlpd_p->
-				 MrvlPriSharedMem.data)->dfs_freg;
-			if (dfs_freq != 0) {
-				sprintf(evBuf,
-					"DFS radar detection Freq = %d\n",
-					ENDIAN_SWAP32(dfs_freq));
-				WLSNDEVT(netdev, IWEVCUSTOM,
-					 (IEEEtypes_MacAddr_t *) & wlpptr->
-					 hwData.macAddr[0], evBuf);
-			} else {
-				WLSNDEVT(netdev, IWEVCUSTOM,
-					 (IEEEtypes_MacAddr_t *) & wlpptr->
-					 hwData.macAddr[0],
 					 WLSYSLOG_MSG_GEN_RADARDETECTION);
+			dfs_freq =
+				((drv_fw_shared_t *)wlpptr->wlpd_p->MrvlPriSharedMem.data)->dfs_freg;
+			if (dfs_freq != 0)
+			{
+				sprintf(evBuf,
+						"DFS radar detection Freq = %d\n",
+						ENDIAN_SWAP32(dfs_freq));
+				WLSNDEVT(netdev, IWEVCUSTOM,
+						 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0], evBuf);
+			}
+			else
+			{
+				WLSNDEVT(netdev, IWEVCUSTOM,
+						 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+						 WLSYSLOG_MSG_GEN_RADARDETECTION);
 			}
 			radarDetectionHdlr(netdev);
 
@@ -6086,19 +6415,21 @@ wlISR(int irq, void *dev_id)
 			rx_r7_intr[0]++;
 		}
 #ifdef CONCURRENT_DFS_SUPPORT
-		if (intStatus & SC5_EVENT_RADAR_DETECTED_AUX) {
+		if (intStatus & SC5_EVENT_RADAR_DETECTED_AUX)
+		{
 			WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-				 WLSYSLOG_MSG_GEN_RADARDETECTION_AUX);
-			//printk("SC5_EVENT_RADAR_DETECTED_AUX ::: intStatus = 0x%x\n", intStatus);
-			// Add handler here
+					 WLSYSLOG_MSG_GEN_RADARDETECTION_AUX);
+			// printk("SC5_EVENT_RADAR_DETECTED_AUX ::: intStatus = 0x%x\n", intStatus);
+			//  Add handler here
 			radarAuxChDetectionHdlr(netdev);
 			intStatus &= ~SC5_EVENT_RADAR_DETECTED_AUX;
 			retVal = IRQ_HANDLED;
 			rx_r7_intr[5]++;
-			//printk("SC5_EVENT_RADAR_DETECTED_AUX received %d\n", rx_r7_intr[5]);
+			// printk("SC5_EVENT_RADAR_DETECTED_AUX received %d\n", rx_r7_intr[5]);
 		}
 #endif /* CONCURRENT_DFS_SUPPORT */
-		if (intStatus & SC5_EVENT_CHAN_SWITCHED) {
+		if (intStatus & SC5_EVENT_CHAN_SWITCHED)
+		{
 
 			dfsChanSwitchHdlr(netdev);
 
@@ -6106,21 +6437,23 @@ wlISR(int irq, void *dev_id)
 			retVal = IRQ_HANDLED;
 			rx_r7_intr[1]++;
 		}
-		if ((intStatus & SC5_EVENT_FW) && (wlpptr->event_bufq_vaddr)) {
+		if ((intStatus & SC5_EVENT_FW) && (wlpptr->event_bufq_vaddr))
+		{
 			UINT32 wrptr, rdptr;
 			rdptr = readl(wlpptr->ioBase1 + reg_evt_rdptr);
 			wrptr = readl(wlpptr->ioBase1 + reg_evt_wrptr);
 
-			//printk("%s: SC5_EVENT_FW received rdptr=%d wrptr=%d\n", __func__, rdptr, wrptr);
-			while (rdptr != wrptr) {
+			// printk("%s: SC5_EVENT_FW received rdptr=%d wrptr=%d\n", __func__, rdptr, wrptr);
+			while (rdptr != wrptr)
+			{
 				rx_r7_intr[3]++;
 				/*
 				   Do NOT use phy_to_virt()/virt_to_phy() for memory allocated by wl_dma_alloc_coherent()
 				   The address translation is wrong. Just give Eventhandler Virtual addr directly
 				 */
 				wlEventHandler(vmacSta_p,
-					       wlpptr->event_bufq_vaddr +
-					       rdptr * EVENT_BUFFQ_SIZE);
+							   wlpptr->event_bufq_vaddr +
+								   rdptr * EVENT_BUFFQ_SIZE);
 
 				rdptr = (rdptr + 1) % EVENT_BUFFQ_NUM;
 				writel(rdptr, wlpptr->ioBase1 + reg_evt_rdptr);
@@ -6129,14 +6462,15 @@ wlISR(int irq, void *dev_id)
 			retVal = IRQ_HANDLED;
 			rx_r7_intr[2]++;
 		}
-//NOTE: the flag default is off, need to remove this flag when doing the verification.
-		if (intStatus & SC5_EVENT_ACNT_HEAD_READY) {
-			//printk("%s: W906x_EVENT_ACNT_HEAD_READY received\n", __func__);
+		// NOTE: the flag default is off, need to remove this flag when doing the verification.
+		if (intStatus & SC5_EVENT_ACNT_HEAD_READY)
+		{
+			// printk("%s: W906x_EVENT_ACNT_HEAD_READY received\n", __func__);
 			intStatus &= ~SC5_EVENT_ACNT_HEAD_READY;
 			if (!wfa_11ax_pf)
 				AcntRdyIsrHdlr(netdev);
 			retVal = IRQ_HANDLED;
-			//rx_r7_intr[1]++;
+			// rx_r7_intr[1]++;
 		}
 
 		currIteration++;
@@ -6159,30 +6493,33 @@ wlISR(int irq, void *dev_id)
 #ifdef NAPI
 	unsigned int mask;
 #endif
-	do {
+	do
+	{
 		intStatus =
-			(readl
-			 (wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_CAUSE));
+			(readl(wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_CAUSE));
 #ifdef NAPI
 		mask = (readl(wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK));
 #endif
-		if (intStatus != 0x00000000) {
-			if (intStatus == 0xffffffff) {
+		if (intStatus != 0x00000000)
+		{
+			if (intStatus == 0xffffffff)
+			{
 				WLDBG_INFO(DBG_LEVEL_2, "card plugged out???");
 				retVal = IRQ_HANDLED;
-				break;	/* card plugged out -> do not handle any IRQ */
+				break; /* card plugged out -> do not handle any IRQ */
 			}
 #ifdef NAPI
 			intStatus &= mask;
 #endif
 			writel((MACREG_A2HRIC_BIT_MASK & ~intStatus),
-			       wlpptr->ioBase1 +
-			       MACREG_REG_A2H_INTERRUPT_CAUSE);
+				   wlpptr->ioBase1 +
+					   MACREG_REG_A2H_INTERRUPT_CAUSE);
 		}
 		if ((intStatus & ISR_SRC_BITS) ||
-		    (currIteration < MAX_ISR_ITERATION)) {
+			(currIteration < MAX_ISR_ITERATION))
+		{
 			/* Eliminate txdone interrupt handling within ISR to reduce cpu util.
-			 * MACREG_A2HRIC_BIT_MASK change, wlTxDone is now executed within transmit path 
+			 * MACREG_A2HRIC_BIT_MASK change, wlTxDone is now executed within transmit path
 			 if (intStatus & MACREG_A2HRIC_BIT_TX_DONE)
 			 {
 			 intStatus &= ~MACREG_A2HRIC_BIT_TX_DONE;
@@ -6191,12 +6528,14 @@ wlISR(int irq, void *dev_id)
 			 }*/
 
 #ifndef NEW_DP
-			if (intStatus & MACREG_A2HRIC_BIT_RX_RDY) {
+			if (intStatus & MACREG_A2HRIC_BIT_RX_RDY)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_RX_RDY;
 #ifdef NAPI
-				if (netdev->flags & IFF_RUNNING) {
+				if (netdev->flags & IFF_RUNNING)
+				{
 					wlInterruptMask(netdev,
-							MACREG_A2HRIC_BIT_RX_RDY);
+									MACREG_A2HRIC_BIT_RX_RDY);
 					napi_schedule(&wlpptr->napi);
 				}
 #else
@@ -6205,13 +6544,15 @@ wlISR(int irq, void *dev_id)
 				retVal = IRQ_HANDLED;
 			}
 #else /* #ifndef NEW_DP */
-			//newdp
-			if (intStatus & MACREG_A2HRIC_RX_DONE_HEAD_RDY) {
+			// newdp
+			if (intStatus & MACREG_A2HRIC_RX_DONE_HEAD_RDY)
+			{
 				intStatus &= ~MACREG_A2HRIC_RX_DONE_HEAD_RDY;
 #ifdef NAPI
-				if (netdev->flags & IFF_RUNNING) {
+				if (netdev->flags & IFF_RUNNING)
+				{
 					wlInterruptMask(netdev,
-							MACREG_A2HRIC_RX_DONE_HEAD_RDY);
+									MACREG_A2HRIC_RX_DONE_HEAD_RDY);
 					napi_schedule(&wlpptr->napi);
 				}
 #else
@@ -6220,82 +6561,90 @@ wlISR(int irq, void *dev_id)
 				retVal = IRQ_HANDLED;
 			}
 
-			if (intStatus & MACREG_A2HRIC_BIT_OPC_DONE) {
+			if (intStatus & MACREG_A2HRIC_BIT_OPC_DONE)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_OPC_DONE;
 				wlFwCmdComplete(netdev);
 				retVal = IRQ_HANDLED;
 			}
 
-			if (intStatus & MACREG_A2HRIC_ACNT_HEAD_RDY) {
+			if (intStatus & MACREG_A2HRIC_ACNT_HEAD_RDY)
+			{
 				intStatus &= ~MACREG_A2HRIC_ACNT_HEAD_RDY;
 				AcntRdyIsrHdlr(netdev);
 				retVal = IRQ_HANDLED;
 			}
 
-			if (intStatus & MACREG_A2HRIC_NEWDP_OFFCHAN) {
+			if (intStatus & MACREG_A2HRIC_NEWDP_OFFCHAN)
+			{
 
 				intStatus &= ~MACREG_A2HRIC_NEWDP_OFFCHAN;
 				OffChanDoneHdlr(netdev);
 
-				//wlFwNewDP_wifiarb_post_req_intr(netdev);
+				// wlFwNewDP_wifiarb_post_req_intr(netdev);
 
 				retVal = IRQ_HANDLED;
 			}
 
-			if (intStatus & MACREG_A2HRIC_NEWDP_SENSORD) {
+			if (intStatus & MACREG_A2HRIC_NEWDP_SENSORD)
+			{
 				intStatus &= ~MACREG_A2HRIC_NEWDP_SENSORD;
 				wlFwNewDP_wifiarb_post_req_intr(netdev);
 				retVal = IRQ_HANDLED;
 			}
 #ifdef SSU_SUPPORT
-			if (intStatus & MACREG_A2HRIC_BIT_SSU_DONE) {
+			if (intStatus & MACREG_A2HRIC_BIT_SSU_DONE)
+			{
 				static UINT32 ssu_counter = 0;
-				//extern void ssu_dump_file(UINT32 pPhyAddr, UINT32 *pSsuPci, UINT32 sizeBytes, UINT32 printFlag);
+				// extern void ssu_dump_file(UINT32 pPhyAddr, UINT32 *pSsuPci, UINT32 sizeBytes, UINT32 printFlag);
 
 				intStatus &= ~MACREG_A2HRIC_BIT_SSU_DONE;
-				//printk("SSU Done counter = %d phyAddr=0x%08x vbase=0x%08x len=%d bytes\n", ssu_counter++,
-				//        wlpptr->wlpd_p->pPhysSsuBuf, wlpptr->pSsuBuf, wlpptr->ssuSize);
-				//ssu_dump_file(wlpptr->wlpd_p->pPhysSsuBuf, wlpptr->pSsuBuf, wlpptr->ssuSize, 1);
+				// printk("SSU Done counter = %d phyAddr=0x%08x vbase=0x%08x len=%d bytes\n", ssu_counter++,
+				//         wlpptr->wlpd_p->pPhysSsuBuf, wlpptr->pSsuBuf, wlpptr->ssuSize);
+				// ssu_dump_file(wlpptr->wlpd_p->pPhysSsuBuf, wlpptr->pSsuBuf, wlpptr->ssuSize, 1);
 				retVal = IRQ_HANDLED;
 			}
 #endif
-			if (intStatus & MACREG_A2HRIC_NEWDP_DFS) {
+			if (intStatus & MACREG_A2HRIC_NEWDP_DFS)
+			{
 				char evBuf[64];
 				u32 dfs_freq;
 
 				intStatus &= ~MACREG_A2HRIC_NEWDP_DFS;
 
 				WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-					 WLSYSLOG_MSG_GEN_RADARDETECTION);
-				dfs_freq =
-					((drv_fw_shared_t *) wlpptr->wlpd_p->
-					 MrvlPriSharedMem.data)->dfs_freg;
-				if (dfs_freq != 0) {
-					sprintf(evBuf,
-						"DFS radar detection Freq = %d\n",
-						ENDIAN_SWAP32(dfs_freq));
-					WLSNDEVT(netdev, IWEVCUSTOM,
-						 (IEEEtypes_MacAddr_t *) &
-						 wlpptr->hwData.macAddr[0],
-						 evBuf);
-				} else {
-					WLSNDEVT(netdev, IWEVCUSTOM,
-						 (IEEEtypes_MacAddr_t *) &
-						 wlpptr->hwData.macAddr[0],
 						 WLSYSLOG_MSG_GEN_RADARDETECTION);
+				dfs_freq =
+					((drv_fw_shared_t *)wlpptr->wlpd_p->MrvlPriSharedMem.data)->dfs_freg;
+				if (dfs_freq != 0)
+				{
+					sprintf(evBuf,
+							"DFS radar detection Freq = %d\n",
+							ENDIAN_SWAP32(dfs_freq));
+					WLSNDEVT(netdev, IWEVCUSTOM,
+							 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+							 evBuf);
+				}
+				else
+				{
+					WLSNDEVT(netdev, IWEVCUSTOM,
+							 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+							 WLSYSLOG_MSG_GEN_RADARDETECTION);
 				}
 				radarDetectionHdlr(netdev);
 				retVal = IRQ_HANDLED;
 			}
-			if (intStatus & MACREG_A2HRIC_NEWDP_CHANNEL_SWITCH) {
+			if (intStatus & MACREG_A2HRIC_NEWDP_CHANNEL_SWITCH)
+			{
 				intStatus &=
 					~MACREG_A2HRIC_NEWDP_CHANNEL_SWITCH;
 				dfsChanSwitchHdlr(netdev);
 				retVal = IRQ_HANDLED;
 			}
 #if defined(MRVL_MUG_ENABLE)
-			if (intStatus & MACREG_A2HRIC_BIT_MUG_DATA_RDY) {
-				//printk("MUG DATA RDY ISR\n");
+			if (intStatus & MACREG_A2HRIC_BIT_MUG_DATA_RDY)
+			{
+				// printk("MUG DATA RDY ISR\n");
 				intStatus &= ~MACREG_A2HRIC_BIT_MUG_DATA_RDY;
 				MugDataRdyIsrHdrl(netdev);
 				retVal = IRQ_HANDLED;
@@ -6303,100 +6652,108 @@ wlISR(int irq, void *dev_id)
 #endif /* #if defined(MRVL_MUG_ENABLE) */
 
 #if defined(AIRTIME_FAIRNESS)
-			if (intStatus & MACREG_A2HRIC_BIT_ATF_DATA_RDY) {
-				//printk("ATF DATA RDY ISR\n");
+			if (intStatus & MACREG_A2HRIC_BIT_ATF_DATA_RDY)
+			{
+				// printk("ATF DATA RDY ISR\n");
 				intStatus &= ~MACREG_A2HRIC_BIT_ATF_DATA_RDY;
 				AtfDataRdyIsrHdrl(netdev);
 				retVal = IRQ_HANDLED;
 			}
 #endif /* AIRTIME_FAIRNESS */
 
-			//no other intr for newDP testing
+			// no other intr for newDP testing
 			break;
 #endif /*  #ifndef NEW_DP */
-			if (intStatus & MACREG_A2HRIC_BIT_OPC_DONE) {
+			if (intStatus & MACREG_A2HRIC_BIT_OPC_DONE)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_OPC_DONE;
 				wlFwCmdComplete(netdev);
 				retVal = IRQ_HANDLED;
 			}
-			if (intStatus & MACREG_A2HRIC_BIT_MAC_EVENT) {
+			if (intStatus & MACREG_A2HRIC_BIT_MAC_EVENT)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_MAC_EVENT;
 				retVal = IRQ_HANDLED;
 			}
-			if (intStatus & MACREG_A2HRIC_BIT_ICV_ERROR) {
+			if (intStatus & MACREG_A2HRIC_BIT_ICV_ERROR)
+			{
 				WLDBG_INFO(DBG_LEVEL_2,
-					   "MACREG_A2HRIC_BIT_ICV_ERROR *************. \n");
+						   "MACREG_A2HRIC_BIT_ICV_ERROR *************. \n");
 				MrvlICVErrorHdl(vmacSta_p);
 				intStatus &= ~MACREG_A2HRIC_BIT_ICV_ERROR;
 				retVal = IRQ_HANDLED;
 			}
-			if (intStatus & MACREG_A2HRIC_BIT_WEAKIV_ERROR) {
+			if (intStatus & MACREG_A2HRIC_BIT_WEAKIV_ERROR)
+			{
 				MIB_802DOT11 *mib =
 					wlpptr->vmacSta_p->ShadowMib802dot11;
 				intStatus &= ~MACREG_A2HRIC_BIT_WEAKIV_ERROR;
 
 				wlpptr->wlpd_p->privStats.weakiv_count++;
-				wlpptr->wlpd_p->privStats.
-					weakiv_threshold_count++;
+				wlpptr->wlpd_p->privStats.weakiv_threshold_count++;
 
-				if ((wlpptr->wlpd_p->privStats.
-				     weakiv_threshold_count) >=
-				    *(mib->mib_weakiv_threshold)) {
-					wlpptr->wlpd_p->privStats.
-						weakiv_threshold_count = 0;
+				if ((wlpptr->wlpd_p->privStats.weakiv_threshold_count) >=
+					*(mib->mib_weakiv_threshold))
+				{
+					wlpptr->wlpd_p->privStats.weakiv_threshold_count = 0;
 					WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-						 WLSYSLOG_MSG_WEP_WEAKIV_ERROR);
+							 WLSYSLOG_MSG_WEP_WEAKIV_ERROR);
 					WLSNDEVT(netdev, IWEVCUSTOM,
-						 (IEEEtypes_MacAddr_t *) &
-						 wlpptr->hwData.macAddr[0],
-						 WLSYSLOG_MSG_WEP_WEAKIV_ERROR);
+							 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+							 WLSYSLOG_MSG_WEP_WEAKIV_ERROR);
 				}
 				retVal = IRQ_HANDLED;
 			}
-			if (intStatus & MACREG_A2HRIC_BIT_QUEUE_EMPTY) {
+			if (intStatus & MACREG_A2HRIC_BIT_QUEUE_EMPTY)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_QUEUE_EMPTY;
-				if (extStaDb_AggrFrameCk(vmacSta_p, 1)) {
-					//interrupt when there are amsdu frames to fw.
+				if (extStaDb_AggrFrameCk(vmacSta_p, 1))
+				{
+					// interrupt when there are amsdu frames to fw.
 					writel(MACREG_H2ARIC_BIT_PPA_READY,
-					       wlpptr->ioBase1 +
-					       MACREG_REG_H2A_INTERRUPT_EVENTS);
+						   wlpptr->ioBase1 +
+							   MACREG_REG_H2A_INTERRUPT_EVENTS);
 				}
 				retVal = IRQ_HANDLED;
 			}
-			if (intStatus & MACREG_A2HRIC_BIT_QUEUE_FULL) {
+			if (intStatus & MACREG_A2HRIC_BIT_QUEUE_FULL)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_QUEUE_FULL;
 				retVal = IRQ_HANDLED;
 			}
 #ifdef IEEE80211_DH
-			if (intStatus & MACREG_A2HRIC_BIT_RADAR_DETECT) {
+			if (intStatus & MACREG_A2HRIC_BIT_RADAR_DETECT)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_RADAR_DETECT;
 				WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-					 WLSYSLOG_MSG_GEN_RADARDETECTION);
+						 WLSYSLOG_MSG_GEN_RADARDETECTION);
 				WLSNDEVT(netdev, IWEVCUSTOM,
-					 (IEEEtypes_MacAddr_t *) & wlpptr->
-					 hwData.macAddr[0],
-					 WLSYSLOG_MSG_GEN_RADARDETECTION);
+						 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+						 WLSYSLOG_MSG_GEN_RADARDETECTION);
 #ifdef MRVL_DFS
 				radarDetectionHdlr(netdev);
 #endif
 				retVal = IRQ_HANDLED;
 			}
-			if (intStatus & MACREG_A2HRIC_BIT_CHAN_SWITCH) {
+			if (intStatus & MACREG_A2HRIC_BIT_CHAN_SWITCH)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_CHAN_SWITCH;
 #ifdef MRVL_DFS
 				dfsChanSwitchHdlr(netdev);
 #endif
 				retVal = IRQ_HANDLED;
 			}
-#endif //IEEE80211_DH
-			if (intStatus & MACREG_A2HRIC_BIT_TX_WATCHDOG) {
+#endif // IEEE80211_DH
+			if (intStatus & MACREG_A2HRIC_BIT_TX_WATCHDOG)
+			{
 				intStatus &= ~MACREG_A2HRIC_BIT_TX_WATCHDOG;
 				wlpptr->netDevStats.tx_heartbeat_errors++;
 				wlResetTask(netdev);
 				retVal = IRQ_HANDLED;
 			}
 #if defined(AMPDU_SUPPORT_SBA) || (BA_WATCHDOG)
-			if (intStatus & MACREG_A2HRIC_BA_WATCHDOG) {
+			if (intStatus & MACREG_A2HRIC_BA_WATCHDOG)
+			{
 #ifdef SOC_W8864
 #define BA_STREAM 4
 #else
@@ -6407,37 +6764,39 @@ wlISR(int irq, void *dev_id)
 				intStatus &= ~MACREG_A2HRIC_BA_WATCHDOG;
 				wlFwGetWatchdogbitmap(netdev, &bitmap);
 				printk("watchdog cause by queue %d\n", bitmap);
-				if (bitmap != INVALID_WATCHDOG) {
+				if (bitmap != INVALID_WATCHDOG)
+				{
 					if (bitmap == BA_STREAM)
 						stream = 0;
 					else if (bitmap > BA_STREAM)
 						stream = bitmap - BA_STREAM;
 					else
 						stream = bitmap + 3;
-								 /** queue 0 is stream 3*/
-					if (bitmap != 0xFF) {
+					/** queue 0 is stream 3*/
+					if (bitmap != 0xFF)
+					{
 						/* Check if the stream is in use before disabling it */
-						if (wlpptr->wlpd_p->
-						    Ampdu_tx[stream].InUse) {
-							disableAmpduTxstream
-								(vmacSta_p,
-								 stream);
+						if (wlpptr->wlpd_p->Ampdu_tx[stream].InUse)
+						{
+							disableAmpduTxstream(vmacSta_p,
+												 stream);
 						}
-					} else
+					}
+					else
 						disableAmpduTxAll(vmacSta_p);
-
 				}
 				retVal = IRQ_HANDLED;
 			}
 #endif /* _AMPDU_SUPPORT_SBA */
 
-			if (intStatus & MACREG_A2HRIC_CONSEC_TXFAIL) {
+			if (intStatus & MACREG_A2HRIC_CONSEC_TXFAIL)
+			{
 				MIB_802DOT11 *mib =
 					vmacSta_p->ShadowMib802dot11;
 				intStatus &= ~MACREG_A2HRIC_CONSEC_TXFAIL;
 				printk("Consecutive tx fail cnt > %d\n",
-				       (u_int32_t) *
-				       (mib->mib_consectxfaillimit));
+					   (u_int32_t) *
+						   (mib->mib_consectxfaillimit));
 				ConsecTxFailHdlr(netdev);
 				retVal = IRQ_HANDLED;
 			}
@@ -6449,27 +6808,26 @@ wlISR(int irq, void *dev_id)
 }
 #endif /* SOC_W906X */
 
-void
-wlInterruptEnable(struct net_device *netdev)
+void wlInterruptEnable(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	unsigned int reg_a2h_intr_mask = wlpptr->wlpd_p->reg.a2h_int_mask;
 
-	if (wlChkAdapter(netdev)) {
+	if (wlChkAdapter(netdev))
+	{
 #ifdef SOC_W906X
 		UINT32 hfctrl =
-			IS_BUS_TYPE_MCI(wlpptr) ? MACREG_HFCTRL_MASK :
-			MACREG_HFCTRL_MASK_MSI;
+			IS_BUS_TYPE_MCI(wlpptr) ? MACREG_HFCTRL_MASK : MACREG_HFCTRL_MASK_MSI;
 		printk("%s(), w_reg(%p)=%xh\n", __func__,
-		       (wlpptr->ioBase1 + reg_a2h_intr_mask), 0);
+			   (wlpptr->ioBase1 + reg_a2h_intr_mask), 0);
 		writel(0x00, wlpptr->ioBase1 + reg_a2h_intr_mask);
-		//writel((MACREG_A2HRIC_BIT_MASK),
+		// writel((MACREG_A2HRIC_BIT_MASK),
 		printk("%s(), w_reg(%p)=%xh\n", __func__,
-		       (wlpptr->ioBase1 + reg_a2h_intr_mask), hfctrl);
+			   (wlpptr->ioBase1 + reg_a2h_intr_mask), hfctrl);
 		writel(hfctrl, wlpptr->ioBase1 + reg_a2h_intr_mask);
 #ifdef WIFI_DATA_OFFLOAD
-#define TXQ_6_EFF_ID  SC5_REG_EFF_ID(6, 0)
-#define RXQ_0_EFF_ID  SC5_REG_EFF_ID(0, 1)
+#define TXQ_6_EFF_ID SC5_REG_EFF_ID(6, 0)
+#define RXQ_0_EFF_ID SC5_REG_EFF_ID(0, 1)
 #define BMQ_10_EFF_ID SC5_REG_EFF_ID(10, 0)
 #define BMQ_11_EFF_ID SC5_REG_EFF_ID(11, 0)
 #define BMQ_12_EFF_ID SC5_REG_EFF_ID(12, 0)
@@ -6478,7 +6836,8 @@ wlInterruptEnable(struct net_device *netdev)
 #define REL_12_EFF_ID SC5_REG_EFF_ID(12, 1)
 #define REL_13_EFF_ID SC5_REG_EFF_ID(13, 1)
 
-		if (!wlpptr->wlpd_p->dol.disable) {
+		if (!wlpptr->wlpd_p->dol.disable)
+		{
 			/* disable interrupts for queues handled by packet engine
 			 * simulator/processor
 			 */
@@ -6497,18 +6856,18 @@ wlInterruptEnable(struct net_device *netdev)
 		writel(0x00, wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK);
 
 		writel((MACREG_A2HRIC_BIT_MASK),
-		       wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK);
+			   wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK);
 #endif /* SOC_W906X */
 	}
 }
 
-void
-wlInterruptDisable(struct net_device *netdev)
+void wlInterruptDisable(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	unsigned int reg_a2h_intr_mask = wlpptr->wlpd_p->reg.a2h_int_mask;
 
-	if (wlChkAdapter(netdev)) {
+	if (wlChkAdapter(netdev))
+	{
 #ifdef SOC_W906X
 		writel(0x00, wlpptr->ioBase1 + reg_a2h_intr_mask);
 #else
@@ -6517,70 +6876,73 @@ wlInterruptDisable(struct net_device *netdev)
 	}
 }
 
-void
-wlInterruptUnMask(struct net_device *netdev, int mask)
+void wlInterruptUnMask(struct net_device *netdev, int mask)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	unsigned int reg_a2h_intr_mask = wlpptr->wlpd_p->reg.a2h_int_mask;
 
-	if (wlChkAdapter(netdev)) {
+	if (wlChkAdapter(netdev))
+	{
 #ifdef SOC_W906X
 		writel((readl(wlpptr->ioBase1 + reg_a2h_intr_mask) | (mask)),
-		       wlpptr->ioBase1 + reg_a2h_intr_mask);
+			   wlpptr->ioBase1 + reg_a2h_intr_mask);
 #else
 		writel((readl(wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK) |
-			(mask)),
-		       wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK);
+				(mask)),
+			   wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK);
 #endif /* SOC_W906X */
 	}
 }
 
-void
-wlInterruptMask(struct net_device *netdev, int mask)
+void wlInterruptMask(struct net_device *netdev, int mask)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	unsigned int reg_a2h_intr_mask = wlpptr->wlpd_p->reg.a2h_int_mask;
 
-	if (wlChkAdapter(netdev)) {
+	if (wlChkAdapter(netdev))
+	{
 #ifdef SOC_W906X
 		writel((readl(wlpptr->ioBase1 + reg_a2h_intr_mask) & (~mask)),
-		       wlpptr->ioBase1 + reg_a2h_intr_mask);
+			   wlpptr->ioBase1 + reg_a2h_intr_mask);
 #else
 		writel((readl(wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK) &
-			(~mask)),
-		       wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK);
+				(~mask)),
+			   wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK);
 #endif /* SOC_W906X */
 	}
 }
 
-void
-wlFwReset(struct net_device *netdev)
+void wlFwReset(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
 #ifdef SOC_W906X
-	if (!IS_BUS_TYPE_MCI(wlpptr)) {
-		if (wlChkAdapter(netdev)) {
+	if (!IS_BUS_TYPE_MCI(wlpptr))
+	{
+		if (wlChkAdapter(netdev))
+		{
 			WLDBG_INFO(DBG_LEVEL_2, "write ISR_RESET to %u\n",
-				   MACREG_REG_H2A_INTERRUPT_EVENTS);
+					   MACREG_REG_H2A_INTERRUPT_EVENTS);
 			writel(ISR_RESET,
-			       wlpptr->ioBase1 +
-			       MACREG_REG_H2A_INTERRUPT_EVENTS);
-		} else {
+				   wlpptr->ioBase1 +
+					   MACREG_REG_H2A_INTERRUPT_EVENTS);
+		}
+		else
+		{
 			WLDBG_INFO(DBG_LEVEL_2, "int_code = %u\n",
-				   wlpptr->wlpd_p->reg.int_code);
+					   wlpptr->wlpd_p->reg.int_code);
 		}
 	}
 #else
-	if (wlChkAdapter(netdev)) {
+	if (wlChkAdapter(netdev))
+	{
 		writel(ISR_RESET,
-		       wlpptr->ioBase1 + MACREG_REG_H2A_INTERRUPT_EVENTS);
+			   wlpptr->ioBase1 + MACREG_REG_H2A_INTERRUPT_EVENTS);
 	}
 #endif
 }
 
-int
-wlChkAdapter(struct net_device *netdev)
+int wlChkAdapter(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	u_int32_t regval;
@@ -6591,7 +6953,8 @@ wlChkAdapter(struct net_device *netdev)
 #else
 	regval = readl(wlpptr->ioBase1 + MACREG_REG_INT_CODE);
 #endif
-	if (regval == 0xffffffff) {
+	if (regval == 0xffffffff)
+	{
 		printk(" wlChkAdapter FALSE  regval = %x \n", regval);
 		return FALSE;
 	}
@@ -6601,8 +6964,7 @@ wlChkAdapter(struct net_device *netdev)
 #ifdef WFA_TKIP_NEGATIVE
 extern int allow_ht_tkip;
 
-int
-wlValidateSettings(struct net_device *netdev)
+int wlValidateSettings(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
@@ -6611,29 +6973,30 @@ wlValidateSettings(struct net_device *netdev)
 
 	/* Perform checks on the validity of configuration combinations */
 	/* Check the validity of the opmode and security mode combination */
-	if (!allow_ht_tkip && (((*(mib->mib_wpaWpa2Mode) & 0x0F) == 1) ||
-			       ((*(mib->mib_wpaWpa2Mode) & 0x0F) == 3)) &&
-	    (IsHTmode(*(mib->mib_ApMode)) || IsVHTmode(*(mib->mib_ApMode)))) {
+	if (!allow_ht_tkip && (((*(mib->mib_wpaWpa2Mode) & 0x0F) == 1) || ((*(mib->mib_wpaWpa2Mode) & 0x0F) == 3)) &&
+		(IsHTmode(*(mib->mib_ApMode)) || IsVHTmode(*(mib->mib_ApMode))))
+	{
 		/*WPA-TKIP or WPA-AES mode */
 		printk("HT mode not supported when WPA is enabled\n");
 		WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-			 "HT mode not supported when WPA is enabled\n");
+				 "HT mode not supported when WPA is enabled\n");
 		WLSNDEVT(netdev, IWEVCUSTOM,
-			 (IEEEtypes_MacAddr_t *) & wlpptr->hwData.macAddr[0],
-			 "HT mode not supported when WPA is enabled\n");
+				 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+				 "HT mode not supported when WPA is enabled\n");
 
 		WLDBG_EXIT_INFO(DBG_LEVEL_0, "settings not valid");
 		retval = FAIL;
 	}
 
 	if ((mib->Privacy->PrivInvoked == 1) &&
-	    (IsHTmode(*(mib->mib_ApMode)) || IsVHTmode(*(mib->mib_ApMode)))) {
+		(IsHTmode(*(mib->mib_ApMode)) || IsVHTmode(*(mib->mib_ApMode))))
+	{
 		printk("HT mode not supported when WEP is enabled\n");
 		WLSYSLOG(netdev, WLSYSLOG_CLASS_ALL,
-			 "HT mode not supported when WEP is enabled\n");
+				 "HT mode not supported when WEP is enabled\n");
 		WLSNDEVT(netdev, IWEVCUSTOM,
-			 (IEEEtypes_MacAddr_t *) & wlpptr->hwData.macAddr[0],
-			 "HT mode not supported when WEP is enabled\n");
+				 (IEEEtypes_MacAddr_t *)&wlpptr->hwData.macAddr[0],
+				 "HT mode not supported when WEP is enabled\n");
 		retval = FAIL;
 	}
 
@@ -6642,10 +7005,9 @@ wlValidateSettings(struct net_device *netdev)
 #endif
 
 #ifdef BAND_STEERING
-void
-sta_track_expire(struct wlprivate *wlpptr, int force)
+void sta_track_expire(struct wlprivate *wlpptr, int force)
 {
-	vmacApInfo_t *vmacSta_p = (vmacApInfo_t *) wlpptr->vmacSta_p;
+	vmacApInfo_t *vmacSta_p = (vmacApInfo_t *)wlpptr->vmacSta_p;
 	MIB_802DOT11 *mib = vmacSta_p->Mib802dot11;
 	struct sta_track_info *info;
 
@@ -6653,14 +7015,15 @@ sta_track_expire(struct wlprivate *wlpptr, int force)
 		return;
 
 	while ((info =
-		list_first_entry(&wlpptr->wlpd_p->bandSteer.sta_track_list,
-				 struct sta_track_info, list)) &&
-	       (wlpptr->wlpd_p->bandSteer.sta_track_num)) {
+				list_first_entry(&wlpptr->wlpd_p->bandSteer.sta_track_list,
+								 struct sta_track_info, list)) &&
+		   (wlpptr->wlpd_p->bandSteer.sta_track_num))
+	{
 		if (!force &&
-		    !((jiffies - info->last_seen) >=
-		      *(mib->mib_bandsteer_sta_track_max_age)) &&
-		    !(wlpptr->wlpd_p->bandSteer.sta_track_num >
-		      *(mib->mib_bandsteer_sta_track_max_num)))
+			!((jiffies - info->last_seen) >=
+			  *(mib->mib_bandsteer_sta_track_max_age)) &&
+			!(wlpptr->wlpd_p->bandSteer.sta_track_num >
+			  *(mib->mib_bandsteer_sta_track_max_num)))
 			break;
 		force = 0;
 
@@ -6671,7 +7034,7 @@ sta_track_expire(struct wlprivate *wlpptr, int force)
 }
 
 struct sta_track_info *
-sta_track_get(struct wlprivate *wlpptr, const u8 * addr)
+sta_track_get(struct wlprivate *wlpptr, const u8 *addr)
 {
 	struct sta_track_info *info;
 
@@ -6679,27 +7042,25 @@ sta_track_get(struct wlprivate *wlpptr, const u8 * addr)
 		return NULL;
 
 	list_for_each_entry(info, &wlpptr->wlpd_p->bandSteer.sta_track_list,
-			    list)
-		if (memcmp(addr, info->addr, ETH_ALEN) == 0)
-		return info;
+						list) if (memcmp(addr, info->addr, ETH_ALEN) == 0) return info;
 
 	return NULL;
 }
 
-void
-sta_track_add(struct wlprivate *wlpptr, const u8 * addr)
+void sta_track_add(struct wlprivate *wlpptr, const u8 *addr)
 {
-	vmacApInfo_t *vmacSta_p = (vmacApInfo_t *) wlpptr->vmacSta_p;
+	vmacApInfo_t *vmacSta_p = (vmacApInfo_t *)wlpptr->vmacSta_p;
 	MIB_802DOT11 *mib = vmacSta_p->Mib802dot11;
 	struct sta_track_info *info;
 
 	info = sta_track_get(wlpptr, addr);
-	if (info) {
+	if (info)
+	{
 		/* Move the most recent entry to the end of the list */
 		list_del(&info->list);
 		info->last_seen = jiffies;
 		list_add_tail(&info->list,
-			      &wlpptr->wlpd_p->bandSteer.sta_track_list);
+					  &wlpptr->wlpd_p->bandSteer.sta_track_list);
 		return;
 	}
 
@@ -6712,7 +7073,8 @@ sta_track_add(struct wlprivate *wlpptr, const u8 * addr)
 	info->last_seen = jiffies;
 
 	if (wlpptr->wlpd_p->bandSteer.sta_track_num >=
-	    *(mib->mib_bandsteer_sta_track_max_num)) {
+		*(mib->mib_bandsteer_sta_track_max_num))
+	{
 		/* Expire oldest entry to make room for a new one */
 		sta_track_expire(wlpptr, 1);
 	}
@@ -6721,8 +7083,7 @@ sta_track_add(struct wlprivate *wlpptr, const u8 * addr)
 	wlpptr->wlpd_p->bandSteer.sta_track_num++;
 }
 
-void
-sta_track_deinit(struct wlprivate *wlpptr)
+void sta_track_deinit(struct wlprivate *wlpptr)
 {
 	struct sta_track_info *info;
 
@@ -6730,9 +7091,10 @@ sta_track_deinit(struct wlprivate *wlpptr)
 		return;
 
 	while ((info =
-		list_first_entry(&wlpptr->wlpd_p->bandSteer.sta_track_list,
-				 struct sta_track_info, list)) &&
-	       (wlpptr->wlpd_p->bandSteer.sta_track_num)) {
+				list_first_entry(&wlpptr->wlpd_p->bandSteer.sta_track_list,
+								 struct sta_track_info, list)) &&
+		   (wlpptr->wlpd_p->bandSteer.sta_track_num))
+	{
 		list_del(&info->list);
 		wlpptr->wlpd_p->bandSteer.sta_track_num--;
 		wl_kfree(info);
@@ -6740,7 +7102,7 @@ sta_track_deinit(struct wlprivate *wlpptr)
 }
 
 struct sta_auth_info *
-sta_auth_get(struct wlprivate *wlpptr, const u8 * addr)
+sta_auth_get(struct wlprivate *wlpptr, const u8 *addr)
 {
 	struct sta_auth_info *info;
 
@@ -6748,20 +7110,18 @@ sta_auth_get(struct wlprivate *wlpptr, const u8 * addr)
 		return NULL;
 
 	list_for_each_entry(info, &wlpptr->wlpd_p->bandSteer.sta_auth_list,
-			    list)
-		if (memcmp(addr, info->addr, ETH_ALEN) == 0)
-		return info;
+						list) if (memcmp(addr, info->addr, ETH_ALEN) == 0) return info;
 
 	return NULL;
 }
 
-void
-sta_auth_add(struct wlprivate *wlpptr, const u8 * addr)
+void sta_auth_add(struct wlprivate *wlpptr, const u8 *addr)
 {
 	struct sta_auth_info *info;
 
 	info = sta_auth_get(wlpptr, addr);
-	if (info) {
+	if (info)
+	{
 		info->count++;
 		return;
 	}
@@ -6779,24 +7139,22 @@ sta_auth_add(struct wlprivate *wlpptr, const u8 * addr)
 
 	list_add_tail(&info->list, &wlpptr->wlpd_p->bandSteer.sta_auth_list);
 	wlpptr->wlpd_p->bandSteer.sta_auth_num++;
-
 }
 
-void
-sta_auth_del(struct wlprivate *wlpptr, const u8 * addr)
+void sta_auth_del(struct wlprivate *wlpptr, const u8 *addr)
 {
 	struct sta_auth_info *info;
 
 	info = sta_auth_get(wlpptr, addr);
-	if (info) {
+	if (info)
+	{
 		list_del(&info->list);
 		wlpptr->wlpd_p->bandSteer.sta_auth_num--;
 		wl_kfree(info);
 	}
 }
 
-void
-sta_auth_deinit(struct wlprivate *wlpptr)
+void sta_auth_deinit(struct wlprivate *wlpptr)
 {
 	struct sta_auth_info *info;
 
@@ -6804,9 +7162,10 @@ sta_auth_deinit(struct wlprivate *wlpptr)
 		return;
 
 	while ((info =
-		list_first_entry(&wlpptr->wlpd_p->bandSteer.sta_auth_list,
-				 struct sta_auth_info, list)) &&
-	       (wlpptr->wlpd_p->bandSteer.sta_auth_num)) {
+				list_first_entry(&wlpptr->wlpd_p->bandSteer.sta_auth_list,
+								 struct sta_auth_info, list)) &&
+		   (wlpptr->wlpd_p->bandSteer.sta_auth_num))
+	{
 		list_del(&info->list);
 		wlpptr->wlpd_p->bandSteer.sta_auth_num--;
 		wl_kfree(info);
@@ -6815,10 +7174,9 @@ sta_auth_deinit(struct wlprivate *wlpptr)
 #endif /* BAND_STEERING */
 
 #ifdef MULTI_AP_SUPPORT
-void
-unassocsta_track_expire(struct wlprivate *wlpptr, int force)
+void unassocsta_track_expire(struct wlprivate *wlpptr, int force)
 {
-	vmacApInfo_t *vmacSta_p = (vmacApInfo_t *) wlpptr->vmacSta_p;
+	vmacApInfo_t *vmacSta_p = (vmacApInfo_t *)wlpptr->vmacSta_p;
 	MIB_802DOT11 *mib = vmacSta_p->Mib802dot11;
 	struct unassocsta_track_info *info;
 
@@ -6826,14 +7184,15 @@ unassocsta_track_expire(struct wlprivate *wlpptr, int force)
 		return;
 
 	while ((info =
-		list_first_entry(&wlpptr->wlpd_p->unassocSTA.sta_track_list,
-				 struct unassocsta_track_info, list)) &&
-	       (wlpptr->wlpd_p->unassocSTA.sta_track_num)) {
+				list_first_entry(&wlpptr->wlpd_p->unassocSTA.sta_track_list,
+								 struct unassocsta_track_info, list)) &&
+		   (wlpptr->wlpd_p->unassocSTA.sta_track_num))
+	{
 		if (!force &&
-		    !((jiffies - info->last_seen) >=
-		      *(mib->mib_unassocsta_track_max_age)) &&
-		    !(wlpptr->wlpd_p->unassocSTA.sta_track_num >
-		      *(mib->mib_unassocsta_track_max_num)))
+			!((jiffies - info->last_seen) >=
+			  *(mib->mib_unassocsta_track_max_age)) &&
+			!(wlpptr->wlpd_p->unassocSTA.sta_track_num >
+			  *(mib->mib_unassocsta_track_max_num)))
 			break;
 		force = 0;
 
@@ -6844,7 +7203,7 @@ unassocsta_track_expire(struct wlprivate *wlpptr, int force)
 }
 
 struct unassocsta_track_info *
-unassocsta_track_get(struct wlprivate *wlpptr, const u8 * addr, u8 channel)
+unassocsta_track_get(struct wlprivate *wlpptr, const u8 *addr, u8 channel)
 {
 	struct unassocsta_track_info *info;
 
@@ -6852,30 +7211,28 @@ unassocsta_track_get(struct wlprivate *wlpptr, const u8 * addr, u8 channel)
 		return NULL;
 
 	list_for_each_entry(info, &wlpptr->wlpd_p->unassocSTA.sta_track_list,
-			    list)
-		if ((memcmp(addr, info->addr, ETH_ALEN) == 0) &&
-		    (info->channel == channel))
-		return info;
+						list) if ((memcmp(addr, info->addr, ETH_ALEN) == 0) &&
+								  (info->channel == channel)) return info;
 
 	return NULL;
 }
 
-void
-unassocsta_track_add(struct wlprivate *wlpptr, const u8 * addr, u8 channel,
-		     u32 rssi)
+void unassocsta_track_add(struct wlprivate *wlpptr, const u8 *addr, u8 channel,
+						  u32 rssi)
 {
-	vmacApInfo_t *vmacSta_p = (vmacApInfo_t *) wlpptr->vmacSta_p;
+	vmacApInfo_t *vmacSta_p = (vmacApInfo_t *)wlpptr->vmacSta_p;
 	MIB_802DOT11 *mib = vmacSta_p->Mib802dot11;
 	struct unassocsta_track_info *info;
 
 	info = unassocsta_track_get(wlpptr, addr, channel);
-	if (info) {
+	if (info)
+	{
 		/* Move the most recent entry to the end of the list */
 		list_del(&info->list);
 		info->rssi = rssi;
 		info->last_seen = jiffies;
 		list_add_tail(&info->list,
-			      &wlpptr->wlpd_p->unassocSTA.sta_track_list);
+					  &wlpptr->wlpd_p->unassocSTA.sta_track_list);
 		return;
 	}
 
@@ -6890,7 +7247,8 @@ unassocsta_track_add(struct wlprivate *wlpptr, const u8 * addr, u8 channel,
 	info->last_seen = jiffies;
 
 	if (wlpptr->wlpd_p->unassocSTA.sta_track_num >=
-	    *(mib->mib_unassocsta_track_max_num)) {
+		*(mib->mib_unassocsta_track_max_num))
+	{
 		/* Expire oldest entry to make room for a new one */
 		unassocsta_track_expire(wlpptr, 1);
 	}
@@ -6899,8 +7257,7 @@ unassocsta_track_add(struct wlprivate *wlpptr, const u8 * addr, u8 channel,
 	wlpptr->wlpd_p->unassocSTA.sta_track_num++;
 }
 
-void
-unassocsta_track_deinit(struct wlprivate *wlpptr)
+void unassocsta_track_deinit(struct wlprivate *wlpptr)
 {
 	struct unassocsta_track_info *info;
 
@@ -6908,9 +7265,10 @@ unassocsta_track_deinit(struct wlprivate *wlpptr)
 		return;
 
 	while ((info =
-		list_first_entry(&wlpptr->wlpd_p->unassocSTA.sta_track_list,
-				 struct unassocsta_track_info, list)) &&
-	       (wlpptr->wlpd_p->unassocSTA.sta_track_num)) {
+				list_first_entry(&wlpptr->wlpd_p->unassocSTA.sta_track_list,
+								 struct unassocsta_track_info, list)) &&
+		   (wlpptr->wlpd_p->unassocSTA.sta_track_num))
+	{
 		list_del(&info->list);
 		wlpptr->wlpd_p->unassocSTA.sta_track_num--;
 		wl_kfree(info);
@@ -6928,21 +7286,23 @@ wlopen(struct net_device *netdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 #ifdef CLIENTONLY
-	//this will handle ifconfig down/up case
+	// this will handle ifconfig down/up case
 	wlpptr->wlreset(netdev);
 	WL_MOD_INC_USE(THIS_MODULE, return -EIO);
 	return 0;
 #else
 	memset(&wlpptr->wlpd_p->privStats, 0x00, sizeof(struct wlpriv_stats));
-	if (wfa_11ax_pf) {
+	if (wfa_11ax_pf)
+	{
 		vmacSta_p->dl_ofdma_para.sta_cnt = 0;
 		memset(vmacSta_p->ofdma_mu_sta_addr, 0x0,
-		       IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
+			   IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
 	}
 
 	netdev->type = ARPHRD_ETHER;
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		vmacSta_p->InfUpFlag = 0;
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
@@ -6966,7 +7326,8 @@ wlopen(struct net_device *netdev)
 #endif
 
 	/* Initialize the STADB timers */
-	if (wlpptr->vmacSta_p->master == NULL) {
+	if (wlpptr->vmacSta_p->master == NULL)
+	{
 		extStaDb_AgingTimerInit(wlpptr->vmacSta_p);
 		extStaDb_ProcessKeepAliveTimerInit(wlpptr->vmacSta_p);
 	}
@@ -6998,18 +7359,21 @@ wlstop(struct net_device *netdev)
 
 	/* Return if any Virtual device  is running */
 #ifdef ENABLE_MONIF
-	numVif = wlpptr->wlpd_p->NumOfAPs + 2;	// VAP + STA + MON
+	numVif = wlpptr->wlpd_p->NumOfAPs + 2; // VAP + STA + MON
 #else
-	numVif = wlpptr->wlpd_p->NumOfAPs + 1;	// VAP + STA
+	numVif = wlpptr->wlpd_p->NumOfAPs + 1; // VAP + STA
 #endif
 
-	for (j = 0; j < numVif; j++) {
+	for (j = 0; j < numVif; j++)
+	{
 		if ((wlpptr->vdev[j] != NULL) &&
-		    (wlpptr->vdev[j]->flags & IFF_RUNNING)) {
-			if (!warnmsg) {
+			(wlpptr->vdev[j]->flags & IFF_RUNNING))
+		{
+			if (!warnmsg)
+			{
 				printk(KERN_INFO
-				       "disable %s will also disable all its virtual net devices.\n",
-				       netdev->name);
+					   "disable %s will also disable all its virtual net devices.\n",
+					   netdev->name);
 				warnmsg = 1;
 			}
 			printk(KERN_INFO "disable %s\n", wlpptr->vdev[j]->name);
@@ -7022,7 +7386,8 @@ wlstop(struct net_device *netdev)
 	/*till Assoc Resp during down process. This can cause GlobalStationCnt in fw to be +1, which is wrong. */
 	vmacSta_p->InfUpFlag = 0;
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
 
@@ -7033,10 +7398,12 @@ wlstop(struct net_device *netdev)
 		ACS_stop_timer(wlpptr->vmacSta_p);
 #endif /* AUTOCHANNEL */
 
-		if (wlFwSetAPBss(netdev, WL_DISABLE)) {
+		if (wlFwSetAPBss(netdev, WL_DISABLE))
+		{
 			WLDBG_WARNING(DBG_LEVEL_2, "disabling AP bss failed");
 		}
-		if (wlFwSetRadio(netdev, WL_DISABLE, WL_AUTO_PREAMBLE)) {
+		if (wlFwSetRadio(netdev, WL_DISABLE, WL_AUTO_PREAMBLE))
+		{
 			WLDBG_WARNING(DBG_LEVEL_2, "disabling rf failed");
 		}
 		wlInterruptDisable(netdev);
@@ -7051,7 +7418,8 @@ wlstop(struct net_device *netdev)
 	SPIN_LOCK_IRQSAVE(&wlpptr->wlpd_p->locks.bandSteerListLock, flags);
 	TimerRemove(&wlpptr->wlpd_p->bandSteer.queued_timer);
 	for (i = 0; i < skb_queue_len(&wlpptr->wlpd_p->bandSteer.skb_queue);
-	     i++) {
+		 i++)
+	{
 		struct sk_buff *skb = NULL;
 
 		skb = skb_dequeue(&wlpptr->wlpd_p->bandSteer.skb_queue);
@@ -7084,8 +7452,7 @@ wlsetMcList(struct net_device *netdev)
 	WLDBG_EXIT(DBG_LEVEL_2);
 }
 
-void
-calculate_err_count(struct net_device *netdev)
+void calculate_err_count(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
@@ -7097,70 +7464,75 @@ calculate_err_count(struct net_device *netdev)
 	SMAC_STA_STATISTICS_st StaStatsTbl;
 	u32 tx_err, rx_err;
 
-	if ((netdev->flags & IFF_RUNNING) == 0) {
+	if ((netdev->flags & IFF_RUNNING) == 0)
+	{
 		return;
 	}
 
 	entries = extStaDb_entries(vmacSta_p, 0);
-	if (entries) {
+	if (entries)
+	{
 		sta_buf = wl_kmalloc(entries * 64, GFP_KERNEL);
 
-		if (sta_buf != NULL) {
+		if (sta_buf != NULL)
+		{
 			extStaDb_list(vmacSta_p, sta_buf, 1);
 			show_buf = sta_buf;
-			for (i = 0; i < entries; i++) {
+			for (i = 0; i < entries; i++)
+			{
 				if ((pStaInfo =
-				     extStaDb_GetStaInfo(vmacSta_p,
-							 (IEEEtypes_MacAddr_t *)
-							 show_buf,
-							 STADB_DONT_UPDATE_AGINGTIME))
-				    == NULL) {
+						 extStaDb_GetStaInfo(vmacSta_p,
+											 (IEEEtypes_MacAddr_t *)
+												 show_buf,
+											 STADB_DONT_UPDATE_AGINGTIME)) == NULL)
+				{
 					break;
 				}
 
 				memset(&StaStatsTbl, 0,
-				       sizeof(SMAC_STA_STATISTICS_st));
-				if (wlFwGetStaStats
-				    (netdev, pStaInfo->StnId,
-				     &StaStatsTbl) != SUCCESS) {
+					   sizeof(SMAC_STA_STATISTICS_st));
+				if (wlFwGetStaStats(netdev, pStaInfo->StnId,
+									&StaStatsTbl) != SUCCESS)
+				{
 					WLDBG_INFO(DBG_LEVEL_11,
-						   "cannot get StnId %d stats from fw%d\n",
-						   StaInfo_p->StnId);
+							   "cannot get StnId %d stats from fw%d\n",
+							   StaInfo_p->StnId);
 					break;
 				}
 
-				if (vmacSta_p->master) {
+				if (vmacSta_p->master)
+				{
 					vmactmp_p = vmacSta_p->master;
 					wlptmpptr =
 						NETDEV_PRIV_P(struct wlprivate,
-							      vmactmp_p->dev);
+									  vmactmp_p->dev);
 				}
 				rx_err = pStaInfo->rx_err;
 				pStaInfo->rx_err =
 					StaStatsTbl.dot11FCSErrorCount;
-				if (pStaInfo->rx_err > rx_err) {
+				if (pStaInfo->rx_err > rx_err)
+				{
 					wlpptr->netDevStats.rx_errors +=
 						pStaInfo->rx_err - rx_err;
 					if (wlptmpptr)
-						wlptmpptr->netDevStats.
-							rx_errors +=
+						wlptmpptr->netDevStats.rx_errors +=
 							pStaInfo->rx_err -
 							rx_err;
 				}
 				tx_err = pStaInfo->tx_err;
 				if (StaStatsTbl.dot11MPDUCount >
-				    (StaStatsTbl.dot11SuccessCount +
-				     StaStatsTbl.dot11RetryCount))
+					(StaStatsTbl.dot11SuccessCount +
+					 StaStatsTbl.dot11RetryCount))
 					pStaInfo->tx_err =
 						StaStatsTbl.dot11MPDUCount -
 						StaStatsTbl.dot11SuccessCount -
 						StaStatsTbl.dot11RetryCount;
-				if (pStaInfo->tx_err > tx_err) {
+				if (pStaInfo->tx_err > tx_err)
+				{
 					wlpptr->netDevStats.tx_errors +=
 						pStaInfo->tx_err - tx_err;
 					if (wlptmpptr)
-						wlptmpptr->netDevStats.
-							tx_errors +=
+						wlptmpptr->netDevStats.tx_errors +=
 							pStaInfo->tx_err -
 							tx_err;
 				}
@@ -7192,9 +7564,10 @@ wlsetMacAddr(struct net_device *netdev, void *addr)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (is_valid_ether_addr(macAddr->sa_data)) {
+	if (is_valid_ether_addr(macAddr->sa_data))
+	{
 		WLDBG_EXIT(DBG_LEVEL_2);
-		return 0;	/* for safety do not allow changes in MAC-ADDR! */
+		return 0; /* for safety do not allow changes in MAC-ADDR! */
 	}
 	WLDBG_EXIT_INFO(DBG_LEVEL_2, "invalid addr");
 	return -EADDRNOTAVAIL;
@@ -7206,9 +7579,11 @@ wlchangeMtu(struct net_device *netdev, int mtu)
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
 	netdev->mtu = mtu;
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		return (wlpptr->wlreset(netdev));
-	} else
+	}
+	else
 		return -EPERM;
 
 	return 0;
@@ -7222,31 +7597,36 @@ wlreset_allInf(struct net_device *netdev)
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	int i = 0, gid;
 	struct wlprivate_data *wlpd_p = wlpptr->wlpd_p;
-	u32 pri_mbssid_map = 0;	//primary mbssid bitmap of all groups 
+	u32 pri_mbssid_map = 0; // primary mbssid bitmap of all groups
 	u32 mask = 0;
 	mbss_set_t *pset = wlpd_p->mbssSet;
 
-	//printk("%s()...\n",__func__);
+	// printk("%s()...\n",__func__);
 
-	//if mbssid set existing. make sure the primary mbssid is the last bssid brought up in its group.
-	for (gid = 0; gid < MAX_MBSSID_SET && pset[gid].mbssid_set; gid++) {
+	// if mbssid set existing. make sure the primary mbssid is the last bssid brought up in its group.
+	for (gid = 0; gid < MAX_MBSSID_SET && pset[gid].mbssid_set; gid++)
+	{
 		pri_mbssid_map |= (1 << pset[gid].primbss);
 	}
 
 	i = 0;
-	while (i <= bss_num) {
-		//bring the vitual interface back if it brought down the routine
-		if (wlpptr->vdev[i]) {
-			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->
-			    vmacSta_p->OpMode == WL_OP_MODE_AP ||
-			    ((NETDEV_PRIV_P
-			      (struct wlprivate,
-			       wlpptr->vdev[i]))->vmacSta_p->OpMode ==
-			     WL_OP_MODE_VAP)) {
-				if (wlpptr->wlpd_p->dev_running[i]) {
+	while (i <= bss_num)
+	{
+		// bring the vitual interface back if it brought down the routine
+		if (wlpptr->vdev[i])
+		{
+			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->vmacSta_p->OpMode == WL_OP_MODE_AP ||
+				((NETDEV_PRIV_P(struct wlprivate,
+								wlpptr->vdev[i]))
+					 ->vmacSta_p->OpMode ==
+				 WL_OP_MODE_VAP))
+			{
+				if (wlpptr->wlpd_p->dev_running[i])
+				{
 
-					//bring up primary mbssids later.
-					if (pri_mbssid_map & (1 << i)) {
+					// bring up primary mbssids later.
+					if (pri_mbssid_map & (1 << i))
+					{
 						mask |= (1 << i);
 						i++;
 						continue;
@@ -7255,9 +7635,10 @@ wlreset_allInf(struct net_device *netdev)
 					wlreset_mbss(wlpptr->vdev[i]);
 				}
 			}
-			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->
-			    vmacSta_p->OpMode == WL_OP_MODE_VSTA) {
-				if (wlpptr->wlpd_p->dev_running[i]) {
+			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->vmacSta_p->OpMode == WL_OP_MODE_VSTA)
+			{
+				if (wlpptr->wlpd_p->dev_running[i])
+				{
 
 					wlreset_client(wlpptr->vdev[i]);
 				}
@@ -7266,10 +7647,12 @@ wlreset_allInf(struct net_device *netdev)
 		i++;
 	}
 
-	//bring up all primary mbssids
+	// bring up all primary mbssids
 	i = 0;
-	while (mask) {
-		if (mask & 0x1) {
+	while (mask)
+	{
+		if (mask & 0x1)
+		{
 			printk("bring up primary bssid: macid:%u\n", i);
 			wlreset_mbss(wlpptr->vdev[i]);
 		}
@@ -7278,12 +7661,12 @@ wlreset_allInf(struct net_device *netdev)
 		i++;
 	}
 
-	//all mbssid_set changed already launched.
+	// all mbssid_set changed already launched.
 	wlpd_p->bss_inupdate = 0;
 
 #endif
 }
-#else //W906X
+#else // W906X
 static void
 wlreset_allInf(struct net_device *netdev)
 {
@@ -7291,23 +7674,27 @@ wlreset_allInf(struct net_device *netdev)
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	int i = 0;
 
-	while (i <= MAX_VMAC_INSTANCE_AP) {
-		//bring the vitual interface back if it brought down the routine
-		if (wlpptr->vdev[i]) {
-			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->
-			    vmacSta_p->OpMode == WL_OP_MODE_AP ||
-			    ((NETDEV_PRIV_P
-			      (struct wlprivate,
-			       wlpptr->vdev[i]))->vmacSta_p->OpMode ==
-			     WL_OP_MODE_VAP)) {
-				if (wlpptr->wlpd_p->dev_running[i]) {
+	while (i <= MAX_VMAC_INSTANCE_AP)
+	{
+		// bring the vitual interface back if it brought down the routine
+		if (wlpptr->vdev[i])
+		{
+			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->vmacSta_p->OpMode == WL_OP_MODE_AP ||
+				((NETDEV_PRIV_P(struct wlprivate,
+								wlpptr->vdev[i]))
+					 ->vmacSta_p->OpMode ==
+				 WL_OP_MODE_VAP))
+			{
+				if (wlpptr->wlpd_p->dev_running[i])
+				{
 
 					wlreset_mbss(wlpptr->vdev[i]);
 				}
 			}
-			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->
-			    vmacSta_p->OpMode == WL_OP_MODE_VSTA) {
-				if (wlpptr->wlpd_p->dev_running[i]) {
+			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->vmacSta_p->OpMode == WL_OP_MODE_VSTA)
+			{
+				if (wlpptr->wlpd_p->dev_running[i])
+				{
 
 					wlreset_client(wlpptr->vdev[i]);
 				}
@@ -7317,49 +7704,46 @@ wlreset_allInf(struct net_device *netdev)
 	}
 #endif
 }
-#endif //W906X
+#endif // W906X
 static void
 wlstop_allInf(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	int i = 0;
 
-	while (i <= bss_num) {
-		//remember the interface up/down status, and bring down it.
-		if (wlpptr->vdev[i]) {
+	while (i <= bss_num)
+	{
+		// remember the interface up/down status, and bring down it.
+		if (wlpptr->vdev[i])
+		{
 			wlpptr->wlpd_p->dev_running[i] = 0;
-			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->
-			    vmacSta_p->OpMode == WL_OP_MODE_AP ||
-			    ((NETDEV_PRIV_P
-			      (struct wlprivate,
-			       wlpptr->vdev[i]))->vmacSta_p->OpMode ==
-			     WL_OP_MODE_VAP)) {
+			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->vmacSta_p->OpMode == WL_OP_MODE_AP ||
+				((NETDEV_PRIV_P(struct wlprivate,
+								wlpptr->vdev[i]))
+					 ->vmacSta_p->OpMode ==
+				 WL_OP_MODE_VAP))
+			{
 
-				if (wlpptr->vdev[i]->flags & IFF_RUNNING) {
+				if (wlpptr->vdev[i]->flags & IFF_RUNNING)
+				{
 
 					wlpptr->wlpd_p->dev_running[i] = 1;
 				}
 #ifdef WIFI_DATA_OFFLOAD
-				if (wlpptr->wlpd_p->dol.
-				    vif_added_to_pe[wlpptr->vmacSta_p->
-						    VMacEntry.macId]) {
+				if (wlpptr->wlpd_p->dol.vif_added_to_pe[wlpptr->vmacSta_p->VMacEntry.macId])
+				{
 					dol_del_vif(wlpptr,
-						    wlpptr->wlpd_p->
-						    ipc_session_id,
-						    wlpptr->vmacSta_p->
-						    VMacEntry.macId);
-					wlpptr->wlpd_p->dol.
-						vif_added_to_pe[wlpptr->
-								vmacSta_p->
-								VMacEntry.
-								macId] = 0;
+								wlpptr->wlpd_p->ipc_session_id,
+								wlpptr->vmacSta_p->VMacEntry.macId);
+					wlpptr->wlpd_p->dol.vif_added_to_pe[wlpptr->vmacSta_p->VMacEntry.macId] = 0;
 				}
 #endif
 				wlstop_mbss(wlpptr->vdev[i]);
 			}
-			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->
-			    vmacSta_p->OpMode == WL_OP_MODE_VSTA) {
-				if (wlpptr->vdev[i]->flags & IFF_RUNNING) {
+			if ((NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]))->vmacSta_p->OpMode == WL_OP_MODE_VSTA)
+			{
+				if (wlpptr->vdev[i]->flags & IFF_RUNNING)
+				{
 
 					wlpptr->wlpd_p->dev_running[i] = 1;
 					wlstop_client(wlpptr->vdev[i]);
@@ -7368,11 +7752,9 @@ wlstop_allInf(struct net_device *netdev)
 		}
 		i++;
 	}
-
 }
 
-void
-wlVirtualInfUp(struct net_device *netdev)
+void wlVirtualInfUp(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
@@ -7381,24 +7763,26 @@ wlVirtualInfUp(struct net_device *netdev)
 	wlrestart_wdsports(netdev);
 #endif
 
-	if (wfa_11ax_pf) {
+	if (wfa_11ax_pf)
+	{
 		memset(&vmacSta_p->dl_ofdma_para, 0x0,
-		       sizeof(struct dl_ofdma_parameter_s));
+			   sizeof(struct dl_ofdma_parameter_s));
 		memset(vmacSta_p->ofdma_mu_sta_addr, 0x0,
-		       IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
-		if (vmacSta_p->master) {
+			   IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
+		if (vmacSta_p->master)
+		{
 			memset(&vmacSta_p->master->dl_ofdma_para, 0x0,
-			       sizeof(struct dl_ofdma_parameter_s));
+				   sizeof(struct dl_ofdma_parameter_s));
 			memset(vmacSta_p->master->ofdma_mu_sta_addr, 0x0,
-			       IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
+				   IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
 		}
 	}
 
-	netif_wake_queue(netdev);	/* restart Q if interface was running */
+	netif_wake_queue(netdev); /* restart Q if interface was running */
 	vmacSta_p->InfUpFlag = 1;
 	netdev->flags |= IFF_RUNNING;
 
-	wlFwApplySettings(netdev);	//ok, no crash
+	wlFwApplySettings(netdev); // ok, no crash
 #ifdef SOC_W8964
 	wlFwRadioStatusNotification(netdev, 1);
 #endif /* SOC_W8964 */
@@ -7412,8 +7796,7 @@ wlVirtualInfUp(struct net_device *netdev)
 	return;
 }
 
-void
-wlVirtualInfDown(struct net_device *netdev)
+void wlVirtualInfDown(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
@@ -7430,12 +7813,14 @@ wlVirtualInfDown(struct net_device *netdev)
 	}
 #endif
 	wlInterruptDisable(netdev);
-#if     defined(CLIENT_SUPPORT)
+#if defined(CLIENT_SUPPORT)
 	{
 		printk(KERN_INFO "[%s]%s Stop client netdev = %p chk1\n",
-		       netdev->name, __FUNCTION__, wlpptr->txNetdev_p);
-		if (wlpptr->txNetdev_p) {
-			if (wlpptr->txNetdev_p->flags & IFF_RUNNING) {
+			   netdev->name, __FUNCTION__, wlpptr->txNetdev_p);
+		if (wlpptr->txNetdev_p)
+		{
+			if (wlpptr->txNetdev_p->flags & IFF_RUNNING)
+			{
 				vmacSta_p->InfUpFlag = 0;
 				netif_stop_queue(wlpptr->txNetdev_p);
 				wlpptr->txNetdev_p->flags &= ~IFF_RUNNING;
@@ -7443,7 +7828,8 @@ wlVirtualInfDown(struct net_device *netdev)
 		}
 	}
 #endif
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		vmacSta_p->InfUpFlag = 0;
 		netif_stop_queue(netdev);
 		netif_carrier_off(netdev);
@@ -7455,10 +7841,9 @@ wlVirtualInfDown(struct net_device *netdev)
 	 * the DFS event dispatcher
 	 */
 	dfsCmd.CmdType = DFS_CMD_WL_RESET;
-	evtDFSMsg(netdev, (UINT8 *) & dfsCmd);
+	evtDFSMsg(netdev, (UINT8 *)&dfsCmd);
 #endif
 	return;
-
 }
 
 static void
@@ -7478,16 +7863,16 @@ wltxwait_txdone(struct net_device *netdev)
 	struct wlprivate *priv = NETDEV_PRIV_P(struct wlprivate, netdev);
 	UINT32 txDoneTail;
 	UINT32 txDoneHead, txDoneHeadnew;
-	do {
+	do
+	{
 		mdelay(10);
 		wlTxDone(netdev);
 		txDoneHeadnew = readl(priv->ioBase1 + MACREG_REG_TxDoneHead);
 		txDoneTail =
-			priv->wlpd_p->descData[0].
-			TxDoneTail & (MAX_TX_RING_DONE_SIZE - 1);
+			priv->wlpd_p->descData[0].TxDoneTail & (MAX_TX_RING_DONE_SIZE - 1);
 		txDoneHead = txDoneHeadnew & (MAX_TX_RING_DONE_SIZE - 1);
 		printk("\n\ntxDoneHead=%d, txDoneTail=%d\n\n", txDoneHead,
-		       txDoneTail);
+			   txDoneTail);
 	} while (txDoneTail != txDoneHead);
 	priv->wlpd_p->descData[0].TxDoneTail = 0;
 #endif /* SOC_W906X */
@@ -7501,38 +7886,43 @@ wlPowerResetFw(struct net_device *netdev)
 	wl_pcie_reset(priv->pPciDev);
 	priv->wlpd_p->bpreresetdone = FALSE;
 #else
-#define GPIO_0_31_DATAOUT_REG    0x18100
+#define GPIO_0_31_DATAOUT_REG 0x18100
 #define GPIO_0_31_DATAOUT_CONTROL_REG 0x18104
-#define GPIO_32_59_DATAOUT_REG   0x18140
+#define GPIO_32_59_DATAOUT_REG 0x18140
 #define GPIO_32_59_DATAOUT_CONTROL_REG 0x18144
 	struct wlprivate *priv = NETDEV_PRIV_P(struct wlprivate, netdev);
 	UINT32 temp;
 	void *ptr1, *ptr2;
 	UINT32 value, mask;
 
-	if (priv->wlpd_p->gpioresetpin < 32) {
+	if (priv->wlpd_p->gpioresetpin < 32)
+	{
 		ptr1 = ioremap(0xf1000000 + GPIO_0_31_DATAOUT_REG, 4);
 		ptr2 = ioremap(0xf1000000 + GPIO_0_31_DATAOUT_CONTROL_REG, 4);
 		value = 1 << priv->wlpd_p->gpioresetpin;
 		mask = ~value;
-	} else if (priv->wlpd_p->gpioresetpin < 60) {
+	}
+	else if (priv->wlpd_p->gpioresetpin < 60)
+	{
 		ptr1 = ioremap(0xf1000000 + GPIO_32_59_DATAOUT_REG, 4);
 		ptr2 = ioremap(0xf1000000 + GPIO_32_59_DATAOUT_CONTROL_REG, 4);
 		value = 1 << (priv->wlpd_p->gpioresetpin - 32);
 		mask = ~value;
-	} else {
+	}
+	else
+	{
 		printk("unknown reset pin\n");
 		return;
 	}
 	printk("%s: power reset by GPIO %d\n", netdev->name,
-	       priv->wlpd_p->gpioresetpin);
+		   priv->wlpd_p->gpioresetpin);
 
 	priv->wlpd_p->bfwreset = TRUE;
 	temp = *((volatile unsigned int *)ptr2);
 	*((volatile unsigned int *)ptr2) = temp & mask;
 	temp = *((volatile unsigned int *)ptr1);
-	*((volatile unsigned int *)ptr1) = temp & mask;	//reset
-	*((volatile unsigned int *)ptr1) = temp | value;	//undo reset
+	*((volatile unsigned int *)ptr1) = temp & mask;	 // reset
+	*((volatile unsigned int *)ptr1) = temp | value; // undo reset
 	priv->wlpd_p->bpreresetdone = FALSE;
 #endif
 }
@@ -7543,14 +7933,15 @@ wlOffChannelReqListFree(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	offChanListItem *offChanListItem_p = NULL;
-	//UINT32 listcnt = 0;
+	// UINT32 listcnt = 0;
 	unsigned long listflags;
 
 	SPIN_LOCK_IRQSAVE(&wlpptr->wlpd_p->locks.offChanListLock, listflags);
 	while ((offChanListItem_p =
-		(offChanListItem *) ListGetItem(&wlpptr->wlpd_p->
-						offChanList)) != NULL) {
-		if (offChanListItem_p->txSkb_p != NULL) {
+				(offChanListItem *)ListGetItem(&wlpptr->wlpd_p->offChanList)) != NULL)
+	{
+		if (offChanListItem_p->txSkb_p != NULL)
+		{
 			wl_free_skb(offChanListItem_p->txSkb_p);
 		}
 		wl_kfree(offChanListItem_p);
@@ -7564,7 +7955,7 @@ wlOffChannelReqListFree(struct net_device *netdev)
 #endif
 	}
 	SPIN_UNLOCK_IRQRESTORE(&wlpptr->wlpd_p->locks.offChanListLock,
-			       listflags);
+						   listflags);
 }
 
 static void
@@ -7575,26 +7966,30 @@ wlOffChannelStop(struct net_device *netdev)
 	struct wlprivate *wlpptr_offchan = NULL;
 	UINT32 retry_cnt = 0;
 
-	if (wlpptr->master) {
-		//This is virtual i/f. We should check its physical i/f.
+	if (wlpptr->master)
+	{
+		// This is virtual i/f. We should check its physical i/f.
 		netdev_offchan = wlpptr->master;
 		wlpptr_offchan =
 			NETDEV_PRIV_P(struct wlprivate, netdev_offchan);
-	} else {
+	}
+	else
+	{
 		netdev_offchan = netdev;
 		wlpptr_offchan = wlpptr;
 	}
-	//Purge offchan queue
+	// Purge offchan queue
 	wlOffChannelReqListFree(netdev_offchan);
-	//Wait for offchan goes back to idle state
-	while (wlpptr_offchan->offchan_state != OFFCHAN_IDLE && retry_cnt < 50) {
+	// Wait for offchan goes back to idle state
+	while (wlpptr_offchan->offchan_state != OFFCHAN_IDLE && retry_cnt < 50)
+	{
 		retry_cnt++;
 		mdelay(10);
 	}
 
 	return;
 }
-#else //906X off-channel
+#else  // 906X off-channel
 static void
 wlOffChannelReqListFree(struct net_device *netdev)
 {
@@ -7603,21 +7998,24 @@ wlOffChannelReqListFree(struct net_device *netdev)
 	UINT32 listcnt = 0;
 
 	while ((ReqIdListItem_p =
-		(ReqIdListItem *) ListGetItem(&wlpptr->wlpd_p->ReqIdList)) !=
-	       NULL) {
-		if (ReqIdListItem_p->txSkb_p != NULL) {
+				(ReqIdListItem *)ListGetItem(&wlpptr->wlpd_p->ReqIdList)) !=
+		   NULL)
+	{
+		if (ReqIdListItem_p->txSkb_p != NULL)
+		{
 			wl_free_skb(ReqIdListItem_p->txSkb_p);
 		}
 		wl_kfree(ReqIdListItem_p);
 
 		/*To prevent going into infinite loop when tail status is 1 and id doesn't match with any in ReqIdList */
 		listcnt++;
-		if (listcnt > wlpptr->wlpd_p->ReqIdList.cnt) {
+		if (listcnt > wlpptr->wlpd_p->ReqIdList.cnt)
+		{
 			break;
 		}
 	}
 }
-#endif //906X off-channel
+#endif // 906X off-channel
 
 static void
 wlFwHardreset(struct net_device *netdev, int firsttime)
@@ -7626,10 +8024,11 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 	struct wlprivate *parent_wlpptr = GET_PARENT_PRIV(priv);
 	UINT32 txSendTail;
 
-	if (!firsttime) {
+	if (!firsttime)
+	{
 		wlVirtualInfDown(netdev);
 		wltxwait_txdone(netdev);
-		//remember the SendTail which is updated by FW before fw gone.
+		// remember the SendTail which is updated by FW before fw gone.
 #ifdef SOC_W906X
 		txSendTail =
 			readl(priv->ioBase1 + priv->wlpd_p->reg.tx_send_tail);
@@ -7644,16 +8043,19 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 		wlPowerResetFw(netdev);
 	}
 #ifdef SOC_W906X
-	else {
+	else
+	{
 #ifdef CONFIG_MARVELL_MOCHI_DRIVER
 		struct wlprivate_data *wlpd_p = priv->wlpd_p;
 		u8 rcnt = 0;
 		int mci_inst = wlpd_p->mci_id;
 		int mci_speed = MCI_LINK_SPEED_8G;
 
-		do {
+		do
+		{
 			int mci_ret = mci_do_reset(mci_inst, mci_speed);
-			if (mci_ret == MCI_FAIL) {
+			if (mci_ret == MCI_FAIL)
+			{
 				pr_info("The Mochi device doesn't present\n");
 				return;
 			}
@@ -7662,20 +8064,22 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 			if (mci_ret == MCI_UNSUPPORTED_SPEED)
 				mci_speed--;
 		} while ((rcnt++ < MAX_BUS_RESET) &&
-			 (mci_speed >= MCI_LINK_SPEED_1G));
+				 (mci_speed >= MCI_LINK_SPEED_1G));
 
-		if (rcnt >= MAX_BUS_RESET) {
+		if (rcnt >= MAX_BUS_RESET)
+		{
 			printk("Failed to reset mochi, after repeating %d times\n", rcnt);
 			return;
 		}
 #else
 		WLDBG_WARNING(DBG_LEVEL_1,
-			      "No mci_do_reset() in system, firmware redownload may fail\n");
-#endif //CONFIG_MARVELL_MOCHI_DRIVER
+					  "No mci_do_reset() in system, firmware redownload may fail\n");
+#endif // CONFIG_MARVELL_MOCHI_DRIVER
 	}
-#endif //SOC_W906X
-	//cleanup tx queue
-	if (!firsttime) {
+#endif // SOC_W906X
+	// cleanup tx queue
+	if (!firsttime)
+	{
 #ifdef SOC_W906X
 		wlTxRingFree(netdev);
 		wlQMCleanUp(netdev);
@@ -7686,8 +8090,8 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 
 		txSendHeadNew = priv->wlpd_p->descData[0].TxSentHead;
 		printk("TxSentHead=%d TxSentTail=%d txQueRecord=%d\n",
-		       txSendHeadNew, txSendTail,
-		       skb_queue_len(&priv->wlpd_p->txQueRecord));
+			   txSendHeadNew, txSendTail,
+			   skb_queue_len(&priv->wlpd_p->txQueRecord));
 		skb_queue_purge(&priv->wlpd_p->txQueRecord);
 		priv->wlpd_p->descData[0].TxSentTail = 0;
 		priv->wlpd_p->descData[0].TxSentHead = 0;
@@ -7698,37 +8102,39 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 #endif /* SOC_W906X */
 	}
 #ifdef SOC_W906X
-	if (!IS_BUS_TYPE_MCI(priv)) {
+	if (!IS_BUS_TYPE_MCI(priv))
+	{
 		pci_free_consistent(priv->pPciDev, SC5_HFRAME_MEM_SIZE,
-				    priv->hframe_virt_addr,
-				    priv->hframe_phy_addr);
+							priv->hframe_virt_addr,
+							priv->hframe_phy_addr);
 #else
 	{
 		pci_free_consistent(priv->pPciDev, 0x4000,
-				    priv->pCmdBuf, priv->wlpd_p->pPhysCmdBuf);
+							priv->pCmdBuf, priv->wlpd_p->pPhysCmdBuf);
 
 #endif /* SOC_W906X */
 
 		mdelay(2000);
 
 #ifdef SOC_W906X
-		if (pci_save_state(priv->pPciDev)) {
+		if (pci_save_state(priv->pPciDev))
+		{
 			dev_err(&priv->pPciDev->dev,
-				"Failed to save pci state\n");
+					"Failed to save pci state\n");
 			return;
 		}
 #else
 		printk("%s: baseaddress0 0x%X \n", netdev->name,
-		       (unsigned int)priv->wlpd_p->baseaddress0);
+			   (unsigned int)priv->wlpd_p->baseaddress0);
 		printk("%s: baseaddress2 0x%X \n", netdev->name,
-		       (unsigned int)priv->wlpd_p->baseaddress2);
+			   (unsigned int)priv->wlpd_p->baseaddress2);
 
 		pci_write_config_dword(priv->wlpd_p->pPciDev,
-				       PCI_BASE_ADDRESS_0,
-				       priv->wlpd_p->baseaddress0);
+							   PCI_BASE_ADDRESS_0,
+							   priv->wlpd_p->baseaddress0);
 		pci_write_config_dword(priv->wlpd_p->pPciDev,
-				       PCI_BASE_ADDRESS_2,
-				       priv->wlpd_p->baseaddress2);
+							   PCI_BASE_ADDRESS_2,
+							   priv->wlpd_p->baseaddress2);
 #endif
 
 		mdelay(1000);
@@ -7736,15 +8142,15 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 #ifdef SOC_W906X
 		iounmap(priv->ioBase2);
 		release_mem_region(pci_resource_start(priv->pPciDev, 4),
-				   pci_resource_len(priv->pPciDev, 4));
+						   pci_resource_len(priv->pPciDev, 4));
 #endif
 		iounmap(priv->ioBase1);
 		iounmap(priv->ioBase0);
 
 		release_mem_region(pci_resource_start(priv->pPciDev, 2),
-				   pci_resource_len(priv->pPciDev, 2));
+						   pci_resource_len(priv->pPciDev, 2));
 		release_mem_region(pci_resource_start(priv->pPciDev, 0),
-				   pci_resource_len(priv->pPciDev, 0));
+						   pci_resource_len(priv->pPciDev, 0));
 		pci_disable_device(priv->pPciDev);
 
 		{
@@ -7753,11 +8159,13 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 			void *physAddr1[2];
 			void *physAddr2[2];
 
-			if (pci_enable_device(priv->pPciDev)) {
+			if (pci_enable_device(priv->pPciDev))
+			{
 				printk("pci enable device fail \n");
 			}
 
-			if (pci_set_dma_mask(priv->pPciDev, 0xffffffff)) {
+			if (pci_set_dma_mask(priv->pPciDev, 0xffffffff))
+			{
 				printk("32-bit PCI DMA not supported");
 			}
 			pci_set_master(priv->pPciDev);
@@ -7765,105 +8173,108 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 			physAddr = pci_resource_start(priv->pPciDev, 0);
 			resourceFlags = pci_resource_flags(priv->pPciDev, 0);
 
-			priv->nextBarNum = 1;	/* 32-bit */
+			priv->nextBarNum = 1; /* 32-bit */
 
 			if (resourceFlags & 0x04)
-				priv->nextBarNum = 2;	/* 64-bit */
+				priv->nextBarNum = 2; /* 64-bit */
 
-			if (!request_mem_region
-			    (physAddr, pci_resource_len(priv->pPciDev, 0),
-			     DRV_NAME)) {
+			if (!request_mem_region(physAddr, pci_resource_len(priv->pPciDev, 0),
+									DRV_NAME))
+			{
 				printk(KERN_ERR
-				       "%s: cannot reserve PCI memory region 0\n",
-				       DRV_NAME);
+					   "%s: cannot reserve PCI memory region 0\n",
+					   DRV_NAME);
 			}
 
 			physAddr1[0] =
 				ioremap(physAddr,
-					pci_resource_len(priv->pPciDev, 0));
+						pci_resource_len(priv->pPciDev, 0));
 			physAddr1[1] = 0;
 			priv->ioBase0 = physAddr1[0];
 
 			printk("wlprobe  wlpptr->ioBase0 = %p \n",
-			       priv->ioBase0);
+				   priv->ioBase0);
 
-			if (!priv->ioBase0) {
+			if (!priv->ioBase0)
+			{
 				printk(KERN_ERR
-				       "%s: cannot remap PCI memory region 0\n",
-				       DRV_NAME);
+					   "%s: cannot remap PCI memory region 0\n",
+					   DRV_NAME);
 			}
 #ifdef SOC_W906X
 			priv->smacCfgAddr =
-				&((SMAC_CTRL_BLK_st *) priv->ioBase0)->config;
+				&((SMAC_CTRL_BLK_st *)priv->ioBase0)->config;
 			priv->smacStatusAddr =
-				&((SMAC_CTRL_BLK_st *) priv->ioBase0)->status;
+				&((SMAC_CTRL_BLK_st *)priv->ioBase0)->status;
 #endif
 
 			physAddr =
 				pci_resource_start(priv->pPciDev,
-						   priv->nextBarNum);
-			if (!request_mem_region
-			    (physAddr,
-			     pci_resource_len(priv->pPciDev, priv->nextBarNum),
-			     DRV_NAME)) {
+								   priv->nextBarNum);
+			if (!request_mem_region(physAddr,
+									pci_resource_len(priv->pPciDev, priv->nextBarNum),
+									DRV_NAME))
+			{
 				printk(KERN_ERR
-				       "%s: cannot reserve PCI memory region 1\n",
-				       DRV_NAME);
+					   "%s: cannot reserve PCI memory region 1\n",
+					   DRV_NAME);
 			}
 			physAddr2[0] =
 				ioremap(physAddr,
-					pci_resource_len(priv->pPciDev,
-							 priv->nextBarNum));
+						pci_resource_len(priv->pPciDev,
+										 priv->nextBarNum));
 			physAddr2[1] = 0;
 			priv->ioBase1 = physAddr2[0];
 
 			printk("wlprobe  wlpptr->ioBase1 = %p\n",
-			       priv->ioBase1);
+				   priv->ioBase1);
 
-			if (!priv->ioBase1) {
+			if (!priv->ioBase1)
+			{
 				printk(KERN_ERR
-				       "%s: cannot remap PCI memory region 1\n",
-				       DRV_NAME);
+					   "%s: cannot remap PCI memory region 1\n",
+					   DRV_NAME);
 			}
 #ifdef SOC_W906X
-			if (resourceFlags & 0x04) {
-				priv->nextBarNum = 4;	/* 64-bit */
+			if (resourceFlags & 0x04)
+			{
+				priv->nextBarNum = 4; /* 64-bit */
 			}
 
 			physAddr =
 				pci_resource_start(priv->pPciDev,
-						   priv->nextBarNum);
-			if (!request_mem_region
-			    (physAddr,
-			     pci_resource_len(priv->pPciDev, priv->nextBarNum),
-			     DRV_NAME)) {
+								   priv->nextBarNum);
+			if (!request_mem_region(physAddr,
+									pci_resource_len(priv->pPciDev, priv->nextBarNum),
+									DRV_NAME))
+			{
 				printk(KERN_ERR
-				       "%s: cannot reserve PCI memory region 2\n",
-				       DRV_NAME);
+					   "%s: cannot reserve PCI memory region 2\n",
+					   DRV_NAME);
 			}
 
 			physAddr2[0] =
 				ioremap(physAddr,
-					pci_resource_len(priv->pPciDev,
-							 priv->nextBarNum));
+						pci_resource_len(priv->pPciDev,
+										 priv->nextBarNum));
 			physAddr2[1] = 0;
 			priv->ioBase2 = physAddr2[0];
 			printk("wlprobe  wlpptr->ioBase2 = %p\n",
-			       priv->ioBase2);
-			if (!priv->ioBase2) {
+				   priv->ioBase2);
+			if (!priv->ioBase2)
+			{
 				printk(KERN_ERR
-				       "%s: cannot remap PCI memory region 2\n",
-				       DRV_NAME);
+					   "%s: cannot remap PCI memory region 2\n",
+					   DRV_NAME);
 			}
 			priv->hframe_virt_addr = (unsigned short *)
 				pci_alloc_consistent(priv->pPciDev,
-						     SC5_HFRAME_MEM_SIZE,
-						     &priv->hframe_phy_addr);
+									 SC5_HFRAME_MEM_SIZE,
+									 &priv->hframe_phy_addr);
 #else
 			priv->pCmdBuf = (unsigned short *)
 				pci_alloc_consistent(priv->pPciDev, 0x4000,
-						     &priv->wlpd_p->
-						     pPhysCmdBuf);
+									 &priv->wlpd_p->pPhysCmdBuf);
 #endif
 
 			priv->netDev->mem_start =
@@ -7876,7 +8287,7 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 			writel(0, priv->ioBase1 + MACREG_REG_TxSendTail);
 			writel(0, priv->ioBase1 + MACREG_REG_TxDoneHead);
 			writel(0, priv->ioBase1 + MACREG_REG_TxDoneTail);
-			//writel(0, priv->ioBase1 + MACREG_REG_RxDescHead);
+			// writel(0, priv->ioBase1 + MACREG_REG_RxDescHead);
 			writel(0, priv->ioBase1 + MACREG_REG_RxDescTail);
 			writel(0, priv->ioBase1 + MACREG_REG_RxDoneHead);
 			writel(0, priv->ioBase1 + MACREG_REG_RxDoneTail);
@@ -7886,41 +8297,52 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 			writel(0, priv->ioBase1 + MACREG_REG_OffchReqHead);
 			writel(0, priv->ioBase1 + MACREG_REG_OffchReqTail);
 
-			if (!firsttime) {
+			if (!firsttime)
+			{
 				int retCode;
 
-				if ((retCode = wlTxRingAlloc(netdev)) == 0) {
+				if ((retCode = wlTxRingAlloc(netdev)) == 0)
+				{
 					if ((retCode =
-					     wlTxRingInit(netdev)) != 0) {
+							 wlTxRingInit(netdev)) != 0)
+					{
 						printk(KERN_ERR
-						       "%s: initializing TX ring failed\n",
-						       netdev->name);
+							   "%s: initializing TX ring failed\n",
+							   netdev->name);
 					}
-				} else {
+				}
+				else
+				{
 					printk(KERN_ERR
-					       "%s: allocating TX ring failed\n",
-					       netdev->name);
+						   "%s: allocating TX ring failed\n",
+						   netdev->name);
 				}
 
-				if ((retCode = wlRxRingAlloc(netdev)) == 0) {
+				if ((retCode = wlRxRingAlloc(netdev)) == 0)
+				{
 					if ((retCode =
-					     wlRxRingReInit(netdev)) != 0) {
+							 wlRxRingReInit(netdev)) != 0)
+					{
 						printk(KERN_ERR
-						       "%s: initializing RX ring failed\n",
-						       netdev->name);
+							   "%s: initializing RX ring failed\n",
+							   netdev->name);
 					}
-				} else {
-					printk(KERN_ERR
-					       "%s: allocating RX ring failed\n",
-					       netdev->name);
 				}
-			} else {
+				else
+				{
+					printk(KERN_ERR
+						   "%s: allocating RX ring failed\n",
+						   netdev->name);
+				}
+			}
+			else
+			{
 				writel(1023,
-				       priv->ioBase1 + MACREG_REG_RxDescHead);
+					   priv->ioBase1 + MACREG_REG_RxDescHead);
 			}
 			AllocSharedMem(priv);
-			AllocMrvlPriSharedMem(priv);	//mrvl private mailbox region
-#endif /* SOC_W8964 */
+			AllocMrvlPriSharedMem(priv); // mrvl private mailbox region
+#endif									 /* SOC_W8964 */
 		}
 	}
 /*
@@ -7940,7 +8362,7 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 */
 #ifdef SOC_W906X
 	AllocSharedMem(priv);
-	AllocMrvlPriSharedMem(priv);	//mrvl private mailbox region
+	AllocMrvlPriSharedMem(priv); // mrvl private mailbox region
 
 	if (priv->intr_type == PCI_INTR_TYPE_MSI)
 		enable_irq(priv->netDev->irq);
@@ -7950,7 +8372,7 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 
 	writel(priv->hframe_phy_addr, priv->ioBase1 + SC5_REG_HFRAME_BASE);
 	printk("hframe base addr %llx \n",
-	       (long long unsigned int)priv->hframe_phy_addr);
+		   (long long unsigned int)priv->hframe_phy_addr);
 
 	/* Clean DMEM */
 	memset_io(priv->ioBase0, 0, sizeof(SMAC_CTRL_BLK_st));
@@ -7958,36 +8380,41 @@ wlFwHardreset(struct net_device *netdev, int firsttime)
 }
 
 #ifdef SOC_W906X
-void
-wlReinit(struct net_device *netdev)
+void wlReinit(struct net_device *netdev)
 {
 	struct wlprivate *priv = NETDEV_PRIV_P(struct wlprivate, netdev);
 	struct wlprivate *parent_wlpptr = GET_PARENT_PRIV(priv);
 	int retCode;
 
-	if ((retCode = wlTxRingAlloc(netdev)) != 0) {
+	if ((retCode = wlTxRingAlloc(netdev)) != 0)
+	{
 		printk(KERN_ERR "%s: allocating TX ring failed\n",
-		       netdev->name);
+			   netdev->name);
 	}
 
-	if ((retCode = wlTxRingInit(netdev)) != 0) {
+	if ((retCode = wlTxRingInit(netdev)) != 0)
+	{
 		printk(KERN_ERR "%s: initializing TX ring failed\n",
-		       netdev->name);
+			   netdev->name);
 	}
 
-	if ((retCode = wlQMInit(netdev)) != 0) {
+	if ((retCode = wlQMInit(netdev)) != 0)
+	{
 		printk(KERN_ERR "%s: initializing BM Q failed\n", netdev->name);
 	}
 
 	memcpy(parent_wlpptr->ioBase0, (void *)&parent_wlpptr->smacconfig,
-	       sizeof(SMAC_CONFIG_st));
+		   sizeof(SMAC_CONFIG_st));
 
 	printk("=> %s(), MAC_STATUS_st->verCtrl[3] = %xh\n", __func__,
-	       0xF0000000);
+		   0xF0000000);
 	writel(0xF0000000, &parent_wlpptr->smacStatusAddr->verCtrl[3]);
-	if (wlInitChkSmacRdy(netdev) == FALSE) {
+	if (wlInitChkSmacRdy(netdev) == FALSE)
+	{
 		WLDBG_ERROR(DBG_LEVEL_0, "Failed to get macRdy at init\n");
-	} else {
+	}
+	else
+	{
 		WLDBG_INFO(DBG_LEVEL_0, "macRdy is ready now\n");
 	}
 	post_init_bq_idx(netdev, true);
@@ -7995,32 +8422,33 @@ wlReinit(struct net_device *netdev)
 #ifdef WIFI_DATA_OFFLOAD
 	/* enable radio without taking care of DFS first */
 	dol_radio_data_ctrl(parent_wlpptr,
-			    parent_wlpptr->wlpd_p->ipc_session_id, true);
+						parent_wlpptr->wlpd_p->ipc_session_id, true);
 #endif
 
-	//because of timing, fw cmd, issued for old fw, still might happen during fw redownloaded, 
-	//so clear flag here to make sure no hit cmdtimout for this new download
+	// because of timing, fw cmd, issued for old fw, still might happen during fw redownloaded,
+	// so clear flag here to make sure no hit cmdtimout for this new download
 	priv->wlpd_p->smon.exceptionAbortCmdExec = 0;
 
-	if (wlFwGetHwSpecs(netdev)) {
+	if (wlFwGetHwSpecs(netdev))
+	{
 		printk(KERN_ERR "%s: failed to get HW specs\n", netdev->name);
 	}
 	wlInterruptDisable(netdev);
-	if (wlFwSetHwSpecs(netdev)) {
+	if (wlFwSetHwSpecs(netdev))
+	{
 		WLDBG_ERROR(DBG_LEVEL_2, "failed to set HW specs");
 	}
 	return;
 }
 #endif /* SOC_W906X */
 
-//halt=0, do hw reset
-void
-wlFwHardResetAndReInit(struct net_device *netdev, U8 halt)
+// halt=0, do hw reset
+void wlFwHardResetAndReInit(struct net_device *netdev, U8 halt)
 {
 	struct wlprivate *priv = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = priv->vmacSta_p;
 
-	priv->wlpd_p->downloadSuccessful = FALSE;	// Firmware has been resetted
+	priv->wlpd_p->downloadSuccessful = FALSE; // Firmware has been resetted
 #ifdef SOC_W906X
 	// "bfwreset" will show that the firmware may have been dead that it won't reply events, (HOST_EVT_STA_DEL)
 	// => Driver should call FreeStnId_newdp() to free the StnId in extStaDb_DelSta()
@@ -8033,8 +8461,7 @@ wlFwHardResetAndReInit(struct net_device *netdev, U8 halt)
 	printk("Stopping RX path\n");
 	{
 		U32 regval;
-		*(u32 *) (&((SMAC_CTRL_BLK_st *) priv->ioBase0)->config.
-			  rxEnable) = 0;
+		*(u32 *)(&((SMAC_CTRL_BLK_st *)priv->ioBase0)->config.rxEnable) = 0;
 		regval = readl(priv->ioBase1 + BBRX_CFG);
 		if (regval & 0x01)
 			writel((regval & 0xFFFFFFFE), priv->ioBase1 + BBRX_CFG);
@@ -8045,7 +8472,7 @@ wlFwHardResetAndReInit(struct net_device *netdev, U8 halt)
 	/* disable all interrupts from device */
 	wldisable_intr(netdev);
 	msleep(100);
-#endif //SOC_W906X
+#endif // SOC_W906X
 
 	if (halt)
 		return;
@@ -8070,29 +8497,36 @@ wlFwReDownload(struct net_device *netdev)
 #ifdef FS_CAL_FILE_SUPPORT
 	wlDownloadMFGFile(netdev);
 #endif
-	if (wlPrepareFwFile(netdev)) {
+	if (wlPrepareFwFile(netdev))
+	{
 		/* No external fw .bin, assume fw downoaded from debuggger */
 		printk("%s: No firmware download, pleaes make sure fw has been loaded by debugger!!!!!\n", netdev->name);
-	} else {
-		if (wlFwDownload(netdev)) {
+	}
+	else
+	{
+		if (wlFwDownload(netdev))
+		{
 			printk(KERN_ERR "%s: firmware downloading failed\n",
-			       netdev->name);
+				   netdev->name);
 		}
 		wl_kfree(priv->FwPointer);
 	}
 #ifdef FS_CAL_FILE_SUPPORT
-	if (wlFreeMFGFileBuffer(netdev)) {
+	if (wlFreeMFGFileBuffer(netdev))
+	{
 		WLDBG_WARNING(DBG_LEVEL_3, "%s: MFG file free buffer failed\n",
-			      netdev->name);
+					  netdev->name);
 	}
 #endif
 #ifdef SOC_W8964
-	if (wlFwGetHwSpecs(netdev)) {
+	if (wlFwGetHwSpecs(netdev))
+	{
 		printk(KERN_ERR "%s: failed to get HW specs\n", netdev->name);
 	}
 	memcpy(netdev->dev_addr, &priv->hwData.macAddr[0], 6);
 	printk("Mac address = %s \n", mac_display(&priv->hwData.macAddr[0]));
-	if (wlFwSetHwSpecs(netdev)) {
+	if (wlFwSetHwSpecs(netdev))
+	{
 		printk("failed to set HW specs\n");
 	}
 #endif /* SOC_W8964 */
@@ -8103,13 +8537,16 @@ wlFwReDownload(struct net_device *netdev)
 
 #ifdef ENABLE_MONIF
 		// VAP + STA + MON
-		for (index = 0; index <= bss_num + 1; index++) {
+		for (index = 0; index <= bss_num + 1; index++)
+		{
 #else
-		for (index = 0; index <= bss_num; index++) {
+		for (index = 0; index <= bss_num; index++)
+		{
 #endif
-			if (priv->vdev[index]) {
+			if (priv->vdev[index])
+			{
 				wlpptr = NETDEV_PRIV_P(struct wlprivate,
-						       priv->vdev[index]);
+									   priv->vdev[index]);
 				wlpptr->ioBase0 = priv->ioBase0;
 				wlpptr->ioBase1 = priv->ioBase1;
 				wlpptr->netDev->mem_start =
@@ -8126,8 +8563,7 @@ wlFwReDownload(struct net_device *netdev)
 #endif /* SOC_W8964 */
 }
 
-int
-wlreset(struct net_device *netdev)
+int wlreset(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
@@ -8146,21 +8582,26 @@ wlreset(struct net_device *netdev)
 	vmacSta_p->download = TRUE;
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlpptr->wlpd_p->inReset) {
+	if (wlpptr->wlpd_p->inReset)
+	{
 		return 0;
-	} else {
+	}
+	else
+	{
 		wlpptr->wlpd_p->inReset = WL_TRUE;
 	}
 #ifdef WIFI_DATA_OFFLOAD
 	dol_suspend_radio(wlpptr, wlpptr->wlpd_p->ipc_session_id, true);
 #endif
 	wlpptr->wlpd_p->bBssStartEnable = 0;
-#if     defined(CLIENT_SUPPORT)
+#if defined(CLIENT_SUPPORT)
 	{
 		printk(KERN_INFO "[%s]%s Stop client netdev = %p \n",
-		       netdev->name, __FUNCTION__, wlpptr->txNetdev_p);
-		if (wlpptr->txNetdev_p) {
-			if (wlpptr->txNetdev_p->flags & IFF_RUNNING) {
+			   netdev->name, __FUNCTION__, wlpptr->txNetdev_p);
+		if (wlpptr->txNetdev_p)
+		{
+			if (wlpptr->txNetdev_p->flags & IFF_RUNNING)
+			{
 				vmacSta_p->InfUpFlag = 0;
 				netif_stop_queue(wlpptr->txNetdev_p);
 				wlpptr->txNetdev_p->flags &= ~IFF_RUNNING;
@@ -8168,7 +8609,8 @@ wlreset(struct net_device *netdev)
 		}
 	}
 #endif
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		vmacSta_p->InfUpFlag = 0;
 		netif_stop_queue(netdev);
 		netif_carrier_off(netdev);
@@ -8179,22 +8621,24 @@ wlreset(struct net_device *netdev)
 	macMgmtMlme_ResetProbeRspBuf(vmacSta_p);
 	wlOffChannelStop(netdev);
 #endif
-	if (wlFwSetAPBss(netdev, WL_DISABLE)) {
+	if (wlFwSetAPBss(netdev, WL_DISABLE))
+	{
 		WLDBG_EXIT_INFO(DBG_LEVEL_2, "disable AP bss failed");
-		//if fw stop responding, do not block fw download
-		//goto err_fw_cmd;
+		// if fw stop responding, do not block fw download
+		// goto err_fw_cmd;
 	}
-	if (wlFwSetRadio(netdev, WL_DISABLE, WL_AUTO_PREAMBLE)) {
+	if (wlFwSetRadio(netdev, WL_DISABLE, WL_AUTO_PREAMBLE))
+	{
 		WLDBG_EXIT_INFO(DBG_LEVEL_2, "disable rf failed");
-		//if fw stop responding, do not block fw download
-		//goto err_fw_cmd;
+		// if fw stop responding, do not block fw download
+		// goto err_fw_cmd;
 	}
 	wlInterruptDisable(netdev);
 
 #ifdef SINGLE_DEV_INTERFACE
 	wlrestart_wdsports(netdev);
 #endif
-	netif_wake_queue(netdev);	/* restart Q if interface was running */
+	netif_wake_queue(netdev); /* restart Q if interface was running */
 	vmacSta_p->InfUpFlag = 1;
 	netdev->flags |= IFF_RUNNING;
 
@@ -8207,7 +8651,8 @@ wlreset(struct net_device *netdev)
 	wlpptr->vmacSta_p->download = FALSE;
 	wlpptr->wlpd_p->inReset = WL_FALSE;
 #ifdef MFG_SUPPORT
-	if (wlpptr->mfgEnable) {
+	if (wlpptr->mfgEnable)
+	{
 		return 0;
 	}
 #endif
@@ -8225,7 +8670,7 @@ wlreset(struct net_device *netdev)
 	 * the DFS event dispatcher
 	 */
 	dfsCmd.CmdType = DFS_CMD_WL_RESET;
-	evtDFSMsg(netdev, (UINT8 *) & dfsCmd);
+	evtDFSMsg(netdev, (UINT8 *)&dfsCmd);
 
 #endif
 	wlpptr->wlpd_p->BcnAddHtOpMode = 0;
@@ -8242,43 +8687,40 @@ wlreset(struct net_device *netdev)
 	{
 		MIB_802DOT11 *mib = vmacSta_p->ShadowMib802dot11;
 		MIB_PHY_DSSS_TABLE *PhyDSSSTable = mib->PhyDSSSTable;
-		extern int wlFwSet11N_20_40_Switch(struct net_device *netdev,
-						   UINT8 mode);
+		extern int wlFwSet11N_20_40_Switch(struct net_device * netdev,
+										   UINT8 mode);
 		extern void Check20_40_Channel_switch(int option, int *mode);
 		extern void Disable_StartCoexisTimer(vmacApInfo_t * vmacSta_p);
 
 		if ((*(mib->USER_ChnlWidth) & 0xf0) &&
-		    ((*(vmacSta_p->Mib802dot11->mib_ApMode) & AP_MODE_BAND_MASK)
-		     < AP_MODE_A_ONLY)) {
+			((*(vmacSta_p->Mib802dot11->mib_ApMode) & AP_MODE_BAND_MASK) < AP_MODE_A_ONLY))
+		{
 			wlFwSet11N_20_40_Switch(vmacSta_p->dev, 0);
 			*(mib->USER_ChnlWidth) = 0;
-		} else
-		 if ((PhyDSSSTable->Chanflag.ChnlWidth == CH_AUTO_WIDTH)
-			     || (PhyDSSSTable->Chanflag.ChnlWidth ==
-					 CH_160_MHz_WIDTH) ||
-			     (PhyDSSSTable->Chanflag.ChnlWidth ==
-				      CH_40_MHz_WIDTH) ||
-			     (PhyDSSSTable->Chanflag.ChnlWidth ==
-				      CH_80_MHz_WIDTH)) {
+		}
+		else if ((PhyDSSSTable->Chanflag.ChnlWidth == CH_AUTO_WIDTH) || (PhyDSSSTable->Chanflag.ChnlWidth == CH_160_MHz_WIDTH) ||
+				 (PhyDSSSTable->Chanflag.ChnlWidth ==
+				  CH_40_MHz_WIDTH) ||
+				 (PhyDSSSTable->Chanflag.ChnlWidth ==
+				  CH_80_MHz_WIDTH))
+		{
 
 			if (PhyDSSSTable->CurrChan == 14)
 				*(mib->USER_ChnlWidth) = 0;
 			else
 				*(mib->USER_ChnlWidth) = 1;
 			Disable_StartCoexisTimer(vmacSta_p);
-
 		}
-
 	}
 #endif
 
 	return 0;
-/*
-   err_fw_cmd:
-        wlpptr->vmacSta_p->download = FALSE;
-        wlpptr->wlpd_p->inReset = WL_FALSE;
-        wlpptr->wlpd_p->inResetQ = WL_FALSE;
-        return -EFAULT;*/
+	/*
+	   err_fw_cmd:
+			wlpptr->vmacSta_p->download = FALSE;
+			wlpptr->wlpd_p->inReset = WL_FALSE;
+			wlpptr->wlpd_p->inResetQ = WL_FALSE;
+			return -EFAULT;*/
 }
 
 static void
@@ -8288,11 +8730,13 @@ wltxTimeout(struct net_device *netdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlpptr->wlpd_p->inReset) {
+	if (wlpptr->wlpd_p->inReset)
+	{
 		return;
 	}
 #ifdef MRVL_DFS
-	if ((netdev->flags & IFF_RUNNING) == 0) {
+	if ((netdev->flags & IFF_RUNNING) == 0)
+	{
 		return;
 	}
 #endif
@@ -8303,9 +8747,8 @@ wltxTimeout(struct net_device *netdev)
 	WLDBG_EXIT(DBG_LEVEL_2);
 }
 
-void
-wlSendEvent(struct net_device *dev, int cmd, IEEEtypes_MacAddr_t * Addr,
-	    const char *info)
+void wlSendEvent(struct net_device *dev, int cmd, IEEEtypes_MacAddr_t *Addr,
+				 const char *info)
 {
 	union iwreq_data wrqu;
 	char buf[128];
@@ -8315,20 +8758,22 @@ wlSendEvent(struct net_device *dev, int cmd, IEEEtypes_MacAddr_t * Addr,
 	if ((dev->flags & IFF_RUNNING) == 0)
 		return;
 
-	if (cmd == IWEVCUSTOM) {
+	if (cmd == IWEVCUSTOM)
+	{
 		snprintf(buf, sizeof(buf), "%02x:%02x:%02x:%02x:%02x:%02x:%s",
-			 *((unsigned char *)Addr), *((unsigned char *)Addr + 1),
-			 *((unsigned char *)Addr + 2),
-			 *((unsigned char *)Addr + 3),
-			 *((unsigned char *)Addr + 4),
-			 *((unsigned char *)Addr + 5), info);
+				 *((unsigned char *)Addr), *((unsigned char *)Addr + 1),
+				 *((unsigned char *)Addr + 2),
+				 *((unsigned char *)Addr + 3),
+				 *((unsigned char *)Addr + 4),
+				 *((unsigned char *)Addr + 5), info);
 		wrqu.data.length = strlen(buf);
-	} else {
+	}
+	else
+	{
 		wrqu.data.length = 0;
 		memcpy(wrqu.ap_addr.sa_data, (unsigned char *)Addr,
-		       sizeof(IEEEtypes_MacAddr_t));
+			   sizeof(IEEEtypes_MacAddr_t));
 		wrqu.ap_addr.sa_family = ARPHRD_ETHER;
-
 	}
 	/* Send event to user space */
 	wireless_send_event(dev, cmd, &wrqu, buf);
@@ -8352,18 +8797,18 @@ static const struct net_device_ops wlwds_netdev_ops = {
 	.ndo_get_stats = wlgetStats,
 };
 
-int
-wlInit_wds(struct wlprivate *wlpptr)
+int wlInit_wds(struct wlprivate *wlpptr)
 {
 	UINT16 i;
 	struct net_device *dev;
-	char temp_name[32] = { 0 };
+	char temp_name[32] = {0};
 	int name_len = 0;
 	//      char devName[16];
-	for (i = 0; i < MAX_WDS_PORT; i++) {
+	for (i = 0; i < MAX_WDS_PORT; i++)
+	{
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)
 		dev = alloc_netdev(0, DRV_NAME_WDS, NET_NAME_UNKNOWN,
-				   wlwlan_setup);
+						   wlwlan_setup);
 #else
 		dev = alloc_netdev(0, DRV_NAME_WDS, wlwlan_setup);
 #endif
@@ -8393,13 +8838,13 @@ wlInit_wds(struct wlprivate *wlpptr)
 		name_len = strlen(temp_name);
 		if (name_len <= IFNAMSIZ)
 			memcpy(wlpptr->vmacSta_p->wdsPort[i].netDevWds->name,
-			       temp_name, name_len);
-		//setWdsPeerInfo(&wlpptr->vmacSta_p->wdsPeerInfo[i], AP_MODE_G_ONLY); // Set to default G.
+				   temp_name, name_len);
+		// setWdsPeerInfo(&wlpptr->vmacSta_p->wdsPeerInfo[i], AP_MODE_G_ONLY); // Set to default G.
 
 		wlpptr->vmacSta_p->wdsActive[i] = FALSE;
 		wlpptr->vmacSta_p->wdsPort[i].active = FALSE;
 		memcpy(wlpptr->vmacSta_p->wdsPort[i].netDevWds->dev_addr,
-		       wlpptr->vmacSta_p->macStaAddr, 6);
+			   wlpptr->vmacSta_p->macStaAddr, 6);
 		ether_setup(wlpptr->vmacSta_p->wdsPort[i].netDevWds);
 
 		/* register cfg80211 virtual interface to wiphy wdev */
@@ -8411,12 +8856,12 @@ wlInit_wds(struct wlprivate *wlpptr)
 		wlpptr->vmacSta_p->wdsPort[i].netDevWds->ieee80211_ptr =
 			&wlpptr->vmacSta_p->wdsPort[i].wdev;
 		SET_NETDEV_DEV(wlpptr->vmacSta_p->wdsPort[i].netDevWds,
-			       wiphy_dev(wlpptr->vmacSta_p->wdsPort[i].wdev.
-					 wiphy));
+					   wiphy_dev(wlpptr->vmacSta_p->wdsPort[i].wdev.wiphy));
 #endif
-		if (register_netdev(wlpptr->vmacSta_p->wdsPort[i].netDevWds)) {
+		if (register_netdev(wlpptr->vmacSta_p->wdsPort[i].netDevWds))
+		{
 			printk(KERN_ERR "%s: failed to register WDS device\n",
-			       wlpptr->vmacSta_p->wdsPort[i].netDevWds->name);
+				   wlpptr->vmacSta_p->wdsPort[i].netDevWds->name);
 			return FALSE;
 		}
 		wlpptr->vmacSta_p->wdsPort[i].wdsPortRegistered = TRUE;
@@ -8425,12 +8870,12 @@ wlInit_wds(struct wlprivate *wlpptr)
 	return SUCCESS;
 }
 
-int
-wlStop_wdsDevs(struct wlprivate *wlpptr)
+int wlStop_wdsDevs(struct wlprivate *wlpptr)
 {
 	UINT16 i;
 
-	for (i = 0; i < MAX_WDS_PORT; i++) {
+	for (i = 0; i < MAX_WDS_PORT; i++)
+	{
 		wlstop_wds(wlpptr->vmacSta_p->wdsPort[i].netDevWds);
 	}
 
@@ -8449,23 +8894,25 @@ wlopen_wds(struct net_device *netdev)
 
 	netdev->type = ARPHRD_ETHER;
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		vmacSta_p->InfUpFlag = 0;
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
-	} else {
+	}
+	else
+	{
 		WL_MOD_INC_USE(THIS_MODULE, return -EIO);
 	}
 
-	netif_wake_queue(netdev);	/* Start/Restart Q if stopped. */
+	netif_wake_queue(netdev); /* Start/Restart Q if stopped. */
 	vmacSta_p->InfUpFlag = 1;
 	netdev->flags |= IFF_RUNNING;
 	WLDBG_EXIT(DBG_LEVEL_2);
 	return 0;
 }
 
-int
-wlstop_wds(struct net_device *netdev)
+int wlstop_wds(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
@@ -8473,7 +8920,8 @@ wlstop_wds(struct net_device *netdev)
 	vmacSta_p->InfUpFlag = 0;
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
 		WL_MOD_DEC_USE(THIS_MODULE);
@@ -8491,7 +8939,8 @@ wltxTimeout_wds(struct net_device *netdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlpptr->wlpd_p->inReset) {
+	if (wlpptr->wlpd_p->inReset)
+	{
 		return;
 	}
 
@@ -8506,9 +8955,10 @@ wlsetMacAddr_wds(struct net_device *netdev, void *addr)
 	struct sockaddr *macAddr = (struct sockaddr *)addr;
 
 	WLDBG_ENTER(DBG_LEVEL_2);
-	if (is_valid_ether_addr(macAddr->sa_data)) {
-		//memcpy(netdev->dev_addr, addr, 6);
-		setWdsPortMacAddr(netdev, (UINT8 *) addr);
+	if (is_valid_ether_addr(macAddr->sa_data))
+	{
+		// memcpy(netdev->dev_addr, addr, 6);
+		setWdsPortMacAddr(netdev, (UINT8 *)addr);
 		WLDBG_EXIT(DBG_LEVEL_2);
 		return 0;
 	}
@@ -8520,40 +8970,42 @@ static int
 wlchangeMtu_wds(struct net_device *netdev, int mtu)
 {
 	netdev->mtu = mtu;
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		return (wlreset_wds(netdev));
-	} else
+	}
+	else
 		return -EPERM;
 
 	return 0;
 }
 
-int
-wlreset_wds(struct net_device *netdev)
+int wlreset_wds(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlpptr->wlpd_p->inReset) {
+	if (wlpptr->wlpd_p->inReset)
+	{
 		return 0;
 	}
 	disableAmpduTxAll(wlpptr->vmacSta_p);
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		vmacSta_p->InfUpFlag = 0;
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
 	}
 
-	netif_wake_queue(netdev);	/* restart Q if interface was running */
+	netif_wake_queue(netdev); /* restart Q if interface was running */
 	vmacSta_p->InfUpFlag = 1;
 	netdev->flags |= IFF_RUNNING;
 
 	WLDBG_EXIT(DBG_LEVEL_2);
 	return 0;
-
 }
 
 #endif
@@ -8567,54 +9019,63 @@ wlopen_mbss(struct net_device *netdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 	if ((vmacSta_p->VMacEntry.macId == (bss_num - 1)) &&
-	    (wlpd_p->SharedBssState == SHARE_STA)) {
+		(wlpd_p->SharedBssState == SHARE_STA))
+	{
 		printk("BSS_%u alreay occupied by STA\n",
-		       vmacSta_p->VMacEntry.macId);
+			   vmacSta_p->VMacEntry.macId);
 		return -EIO;
 	}
 
-	if (wfa_11ax_pf) {
+	if (wfa_11ax_pf)
+	{
 		vmacSta_p->dl_ofdma_para.sta_cnt = 0;
 		memset(vmacSta_p->ofdma_mu_sta_addr, 0x0,
-		       IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
-		if (vmacSta_p->master) {
+			   IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
+		if (vmacSta_p->master)
+		{
 			vmacSta_p->master->dl_ofdma_para.sta_cnt = 0;
 			memset(vmacSta_p->master->ofdma_mu_sta_addr, 0x0,
-			       IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
+				   IEEEtypes_ADDRESS_SIZE * MAX_OFDMADL_STA);
 		}
 	}
 	netdev->type = ARPHRD_ETHER;
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		vmacSta_p->InfUpFlag = 0;
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
-	} else {
+	}
+	else
+	{
 		WL_MOD_INC_USE(THIS_MODULE, return -EIO);
 	}
 #ifdef CB_SUPPORT
-	if (wlpptr->cb_enable == TRUE) {
+	if (wlpptr->cb_enable == TRUE)
+	{
 		TimerInit(&wlpptr->bnc_timer);
 		TimerFireIn(&wlpptr->bnc_timer,
-			    1, &bcn_timer_routine, (void *)wlpptr->netDev, 1);
-		//init_timer(&wlpptr->bnc_timer);
-		//wlpptr->bnc_timer.function = bcn_timer_routine;
-		//wlpptr->bnc_timer.data = (unsigned long)wlpptr->netDev;
-		//HZ => 1 sec
-		//wlpptr->bnc_timer.expires = jiffies + HZ;
-		//add_timer(&wlpptr->bnc_timer);
+					1, &bcn_timer_routine, (void *)wlpptr->netDev, 1);
+		// init_timer(&wlpptr->bnc_timer);
+		// wlpptr->bnc_timer.function = bcn_timer_routine;
+		// wlpptr->bnc_timer.data = (unsigned long)wlpptr->netDev;
+		// HZ => 1 sec
+		// wlpptr->bnc_timer.expires = jiffies + HZ;
+		// add_timer(&wlpptr->bnc_timer);
 	}
-#endif //CB_SUPPORT
+#endif // CB_SUPPORT
 #ifdef WFA_TKIP_NEGATIVE
 	if (wlValidateSettings(netdev))
 		return -EIO;
 #endif
 
-	if (vmacSta_p->master) {
+	if (vmacSta_p->master)
+	{
 		MIB_802DOT11 *rootmib = vmacSta_p->master->ShadowMib802dot11;
 		MIB_802DOT11 *mib = vmacSta_p->ShadowMib802dot11;
 		if (Is5GBand(*(rootmib->mib_ApMode)) !=
-		    (Is5GBand(*(mib->mib_ApMode)))) {
+			(Is5GBand(*(mib->mib_ApMode))))
+		{
 			/* Correct the opmode and supported rate if the band of each vap is different from root radio device
 			 */
 			*(mib->mib_ApMode) = *(rootmib->mib_ApMode);
@@ -8629,37 +9090,39 @@ wlopen_mbss(struct net_device *netdev)
 	}
 
 	wlFwMultiBssApplySettings(netdev);
-	if (wlpptr->master) {
-		//set wdev0 OpMode to follow wdev0apX's opmode
+	if (wlpptr->master)
+	{
+		// set wdev0 OpMode to follow wdev0apX's opmode
 		if (vmacSta_p->master)
 			vmacSta_p->master->OpMode = vmacSta_p->OpMode;
 	}
 
-	netif_wake_queue(netdev);	/* Start/Restart Q if stopped. */
+	netif_wake_queue(netdev); /* Start/Restart Q if stopped. */
 	vmacSta_p->InfUpFlag = 1;
 	netdev->flags |= IFF_RUNNING;
 
 	if ((wlpptr->devid == SC5 || wlpptr->devid == SCBT) &&
-	    (vmacSta_p->VMacEntry.macId == (bss_num - 1)))
+		(vmacSta_p->VMacEntry.macId == (bss_num - 1)))
 		wlpd_p->SharedBssState = SHARE_VAP;
 
 #ifdef SOC_W906X
-	//Notice mbsset of this bss is down
+	// Notice mbsset of this bss is down
 	update_mbss_status(wlpptr, 1);
 #endif
 	ap8xLnxStat_clients_init(netdev, 1);
 
 #ifdef WIFI_DATA_OFFLOAD
 	dol_vif_data_ctrl(wlpptr, wlpptr->wlpd_p->ipc_session_id,
-			  wlpptr->vmacSta_p->VMacEntry.macId, true);
+					  wlpptr->vmacSta_p->VMacEntry.macId, true);
 #endif
 
-	//SMAC might not ready here, so get BssTsfBase here is not reliable. 
-	//clear the BssTsfBse and let it be retrieved at sending the first prob Resp frame. 
+	// SMAC might not ready here, so get BssTsfBase here is not reliable.
+	// clear the BssTsfBse and let it be retrieved at sending the first prob Resp frame.
 	vmacSta_p->BssTsfBase = 0;
 
 #ifdef CCK_DESENSE
-	if (wlpptr->master) {
+	if (wlpptr->master)
+	{
 		cck_desense_timer_start(wlpptr->master);
 	}
 #endif /* CCK_DESENSE */
@@ -8690,17 +9153,20 @@ wlstop_mbss(struct net_device *netdev)
 	wlStop_wdsDevs(wlpptr);
 #endif
 #ifdef CB_SUPPORT
-	if (wlpptr->cb_enable == TRUE) {
-		while (timer_pending(&wlpptr->bnc_timer)) {
+	if (wlpptr->cb_enable == TRUE)
+	{
+		while (timer_pending(&wlpptr->bnc_timer))
+		{
 			msleep(1);
 		}
 		TimerRemove(&wlpptr->bnc_timer);
 	}
-#endif //CB_SUPPORT
+#endif // CB_SUPPORT
 	if (wlpptr->vmacSta_p != NULL)
 		SendResetCmd(wlpptr->vmacSta_p, 0);
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 #ifdef SOC_W906X
 		wlOffChannelStop(netdev);
 #endif
@@ -8709,44 +9175,48 @@ wlstop_mbss(struct net_device *netdev)
 		if (wlpptr->wlpd_p->downloadSuccessful == TRUE)
 #endif /* SOC_W906X */
 		{
-			if (wlFwSetAPBss(netdev, WL_DISABLE_VMAC)) {
+			if (wlFwSetAPBss(netdev, WL_DISABLE_VMAC))
+			{
 				WLDBG_EXIT_INFO(DBG_LEVEL_2,
-						"disable AP bss failed");
+								"disable AP bss failed");
 			}
 		}
 		netif_stop_queue(netdev);
 		netif_carrier_off(netdev);
 		netdev->flags &= ~IFF_RUNNING;
 #ifdef SOC_W906X
-		//Notice mbsset of this bss is down
+		// Notice mbsset of this bss is down
 		update_mbss_status(wlpptr, 0);
 #endif
 
 		WL_MOD_DEC_USE(THIS_MODULE);
 	}
-	if (wlpptr->vmacSta_p != NULL) {
+	if (wlpptr->vmacSta_p != NULL)
+	{
 		DisableMacMgmtTimers(wlpptr->vmacSta_p);
 		if ((wlpptr->devid == SC5 || wlpptr->devid == SCBT) &&
-		    vmacSta_p->VMacEntry.macId == (bss_num - 1) &&
-		    wlpd_p->SharedBssState == SHARE_VAP)
+			vmacSta_p->VMacEntry.macId == (bss_num - 1) &&
+			wlpd_p->SharedBssState == SHARE_VAP)
 			wlpd_p->SharedBssState = SHARE_NONE;
 	}
 #ifdef WIFI_DATA_OFFLOAD
-#if 0				/* dlin */
+#if 0 /* dlin */
 	dol_vif_data_ctrl(wlpptr, wlpptr->wlpd_p->ipc_session_id,
 			  wlpptr->vmacSta_p->VMacEntry.macId, false);
 #endif
 #endif
 
 #ifdef CCK_DESENSE
-	if (wlpptr->master) {
+	if (wlpptr->master)
+	{
 		cck_desense_timer_stop(wlpptr->master);
 	}
 #endif /* CCK_DESENSE */
 
 #ifdef SOC_W906X
-	if (vmacSta_p != NULL) {
-		//clear BssTsfBase and let it refresh at the first prob Resp sending.
+	if (vmacSta_p != NULL)
+	{
+		// clear BssTsfBase and let it refresh at the first prob Resp sending.
 		vmacSta_p->BssTsfBase = 0;
 
 		macMgmtMlme_ResetProbeRspBuf(vmacSta_p);
@@ -8761,32 +9231,32 @@ wlstop_mbss(struct net_device *netdev)
 	return 0;
 }
 
-int
-wlreset_mbss(struct net_device *netdev)
+int wlreset_mbss(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	//clear BssTsfBase and let it refresh at the first prob Resp sending. 
+	// clear BssTsfBase and let it refresh at the first prob Resp sending.
 	vmacSta_p->BssTsfBase = 0;
 
-	if (wlpptr->wlpd_p->inReset) {
+	if (wlpptr->wlpd_p->inReset)
+	{
 		return 0;
 	}
 #ifdef CONFIG_IEEE80211W
 	{
-		extern IEEEtypes_MacAddr_t bcast;	// = {0xff,0xff,0xff,0xff,0xff,0xff};
+		extern IEEEtypes_MacAddr_t bcast; // = {0xff,0xff,0xff,0xff,0xff,0xff};
 		extStaDb_RemoveAllStns(vmacSta_p,
-				       IEEEtypes_REASON_DEAUTH_LEAVING);
+							   IEEEtypes_REASON_DEAUTH_LEAVING);
 #ifdef SOC_W906X
 		macMgmtMlme_SendDeauthenticateMsg(vmacSta_p, &bcast, 0,
-						  IEEEtypes_REASON_DEAUTH_LEAVING,
-						  FALSE);
+										  IEEEtypes_REASON_DEAUTH_LEAVING,
+										  FALSE);
 #else
 		macMgmtMlme_SendDeauthenticateMsg(vmacSta_p, &bcast, 0,
-						  IEEEtypes_REASON_DEAUTH_LEAVING);
+										  IEEEtypes_REASON_DEAUTH_LEAVING);
 #endif /* SOC_W906X */
 	}
 #endif
@@ -8795,24 +9265,26 @@ wlreset_mbss(struct net_device *netdev)
 	{
 		int i;
 		// Stop any wds port queues that are active.
-		for (i = 0; i < MAX_WDS_PORT; i++) {
-			if (wdsPortActive(netdev, i)) {
+		for (i = 0; i < MAX_WDS_PORT; i++)
+		{
+			if (wdsPortActive(netdev, i))
+			{
 				vmacSta_p->InfUpFlag = 0;
-				netif_stop_queue(wlpptr->vmacSta_p->wdsPort[i].
-						 netDevWds);
-				wlpptr->vmacSta_p->wdsPort[i].netDevWds->
-					flags &= ~IFF_RUNNING;
+				netif_stop_queue(wlpptr->vmacSta_p->wdsPort[i].netDevWds);
+				wlpptr->vmacSta_p->wdsPort[i].netDevWds->flags &= ~IFF_RUNNING;
 			}
 		}
 	}
 #endif
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 #ifdef SOC_W906X
 		wlOffChannelStop(netdev);
 #endif
 		vmacSta_p->InfUpFlag = 0;
-		if (wlFwSetAPBss(netdev, WL_DISABLE_VMAC)) {
+		if (wlFwSetAPBss(netdev, WL_DISABLE_VMAC))
+		{
 			WLDBG_EXIT_INFO(DBG_LEVEL_2, "disable AP bss failed");
 		}
 		netif_stop_queue(netdev);
@@ -8822,7 +9294,7 @@ wlreset_mbss(struct net_device *netdev)
 		WL_MOD_DEC_USE(THIS_MODULE);
 	}
 	wlFwMultiBssApplySettings(netdev);
-	netif_wake_queue(netdev);	/* restart Q if interface was running */
+	netif_wake_queue(netdev); /* restart Q if interface was running */
 	vmacSta_p->InfUpFlag = 1;
 	netdev->flags |= IFF_RUNNING;
 	/* If phy_radio commit, decrease "isIfUsed" in wlstop_mbss() and must increase it here. */
@@ -8831,28 +9303,27 @@ wlreset_mbss(struct net_device *netdev)
 	{
 		int i;
 		/* wake any wds port queues that are active. */
-		for (i = 0; i < MAX_WDS_PORT; i++) {
+		for (i = 0; i < MAX_WDS_PORT; i++)
+		{
 			if (wdsPortActive(netdev, i) &&
-			    netif_running(wlpptr->vmacSta_p->wdsPort[i].
-					  netDevWds)) {
-				netif_wake_queue(wlpptr->vmacSta_p->wdsPort[i].
-						 netDevWds);
-				wlpptr->vmacSta_p->wdsPort[i].netDevWds->
-					flags |= IFF_RUNNING;
+				netif_running(wlpptr->vmacSta_p->wdsPort[i].netDevWds))
+			{
+				netif_wake_queue(wlpptr->vmacSta_p->wdsPort[i].netDevWds);
+				wlpptr->vmacSta_p->wdsPort[i].netDevWds->flags |= IFF_RUNNING;
 			}
 		}
 	}
 #endif
 
 #ifdef WIFI_DATA_OFFLOAD
-	if (!wlpptr->wlpd_p->dol.vif_added_to_pe[vmacSta_p->VMacEntry.macId]) {
+	if (!wlpptr->wlpd_p->dol.vif_added_to_pe[vmacSta_p->VMacEntry.macId])
+	{
 		dol_add_vif(wlpptr, wlpptr->wlpd_p->ipc_session_id,
-			    vmacSta_p->VMacEntry.macId,
-			    (u8 *) & vmacSta_p->macStaAddr);
+					vmacSta_p->VMacEntry.macId,
+					(u8 *)&vmacSta_p->macStaAddr);
 		dol_vif_data_ctrl(wlpptr, wlpptr->wlpd_p->ipc_session_id,
-				  vmacSta_p->VMacEntry.macId, true);
-		wlpptr->wlpd_p->dol.vif_added_to_pe[vmacSta_p->VMacEntry.
-						    macId] = 1;
+						  vmacSta_p->VMacEntry.macId, true);
+		wlpptr->wlpd_p->dol.vif_added_to_pe[vmacSta_p->VMacEntry.macId] = 1;
 	}
 #endif
 
@@ -8863,7 +9334,6 @@ wlreset_mbss(struct net_device *netdev)
 
 	WLDBG_EXIT(DBG_LEVEL_2);
 	return 0;
-
 }
 
 static void
@@ -8873,11 +9343,12 @@ wltxTimeout_mbss(struct net_device *netdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlpptr->wlpd_p->inReset) {
+	if (wlpptr->wlpd_p->inReset)
+	{
 		return;
 	}
-//Dont do anything here to trigger wlreset_mbss
-	//wlreset_mbss(netdev);
+	// Dont do anything here to trigger wlreset_mbss
+	// wlreset_mbss(netdev);
 	printk("wltxTimeout_mbss(%s) happened****\n", netdev->name);
 	WLDBG_EXIT(DBG_LEVEL_2);
 }
@@ -8889,7 +9360,8 @@ wlsetMacAddr_mbss(struct net_device *netdev, void *addr)
 	struct sockaddr *macAddr = (struct sockaddr *)addr;
 
 	WLDBG_ENTER(DBG_LEVEL_2);
-	if (is_valid_ether_addr(macAddr->sa_data)) {
+	if (is_valid_ether_addr(macAddr->sa_data))
+	{
 		memcpy(netdev->dev_addr, addr, 6);
 		WLDBG_EXIT(DBG_LEVEL_2);
 		return 0;
@@ -8903,10 +9375,12 @@ wlchangeMtu_mbss(struct net_device *netdev, int mtu)
 {
 	WLDBG_ENTER(DBG_LEVEL_2);
 	netdev->mtu = mtu;
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		WLDBG_EXIT(DBG_LEVEL_2);
 		return (wlreset_mbss(netdev));
-	} else
+	}
+	else
 		WLDBG_EXIT(DBG_LEVEL_2);
 	return -EPERM;
 	WLDBG_EXIT(DBG_LEVEL_2);
@@ -8914,8 +9388,7 @@ wlchangeMtu_mbss(struct net_device *netdev, int mtu)
 }
 
 #ifdef ENABLE_MONIF
-int
-wlmonif_tx(struct sk_buff *skb, struct net_device *netdev)
+int wlmonif_tx(struct sk_buff *skb, struct net_device *netdev)
 {
 	wl_free_skb(skb);
 	return 0;
@@ -8936,13 +9409,15 @@ wlopen_monif(struct net_device *netdev)
 	PromCnf.PromCtrlMask = 1;
 	wlFwNewDP_config_prom(wlpptr->master, &PromCnf);
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
-	} else
+	}
+	else
 		WL_MOD_INC_USE(THIS_MODULE, return -EIO);
 
-	netif_wake_queue(netdev);	/* Start/Restart Q if stopped. */
+	netif_wake_queue(netdev); /* Start/Restart Q if stopped. */
 	netdev->flags |= IFF_RUNNING;
 
 	WLDBG_EXIT(DBG_LEVEL_2);
@@ -8962,7 +9437,8 @@ wlstop_monif(struct net_device *netdev)
 	PromCnf.PromCtrlMask = 0;
 	wlFwNewDP_config_prom(wlpptr->master, &PromCnf);
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
 		WL_MOD_DEC_USE(THIS_MODULE);
@@ -8973,17 +9449,17 @@ wlstop_monif(struct net_device *netdev)
 	return 0;
 }
 
-int
-wlreset_monif(struct net_device *netdev)
+int wlreset_monif(struct net_device *netdev)
 {
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
 	}
 
-	netif_wake_queue(netdev);	/* restart Q if interface was running */
+	netif_wake_queue(netdev); /* restart Q if interface was running */
 	netdev->flags |= IFF_RUNNING;
 
 	WLDBG_EXIT(DBG_LEVEL_2);
@@ -8994,7 +9470,7 @@ static const struct net_device_ops wlmonif_netdev_ops = {
 	.ndo_open = wlopen_monif,
 	.ndo_stop = wlstop_monif,
 	.ndo_start_xmit = wlmonif_tx,
-	.ndo_do_ioctl = NULL,	//wlIoctl_monif,
+	.ndo_do_ioctl = NULL, // wlIoctl_monif,
 	.ndo_set_mac_address = wlsetMacAddr_mbss,
 	.ndo_tx_timeout = NULL,
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 2, 0)
@@ -9006,25 +9482,26 @@ static const struct net_device_ops wlmonif_netdev_ops = {
 	.ndo_get_stats = wlgetStats,
 };
 
-int
-wlInit_monif(struct wlprivate *wlp, unsigned char *macAddr)
+int wlInit_monif(struct wlprivate *wlp, unsigned char *macAddr)
 {
 	struct wlprivate *wlpptr = NULL;
 	struct net_device *dev;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)
 	dev = alloc_netdev(sizeof(struct wlprivate), DEV_NAME_MON_INTF,
-			   NET_NAME_UNKNOWN, wlwlan_setup);
+					   NET_NAME_UNKNOWN, wlwlan_setup);
 #else
 	dev = alloc_netdev(sizeof(struct wlprivate), DEV_NAME_MON_INTF,
-			   wlwlan_setup);
+					   wlwlan_setup);
 #endif
-	if (dev) {
+	if (dev)
+	{
 		wlpptr = NETDEV_PRIV(struct wlprivate, dev);
 		NETDEV_PRIV_S(dev) = wlpptr;
 	}
 
-	if (wlpptr == NULL) {
+	if (wlpptr == NULL)
+	{
 		printk("%s: no mem for private driver context\n", DRV_NAME);
 		goto err_out;
 	}
@@ -9034,7 +9511,7 @@ wlInit_monif(struct wlprivate *wlp, unsigned char *macAddr)
 	wlpptr->ioBase0 = wlp->ioBase0;
 	wlpptr->ioBase1 = wlp->ioBase1;
 	sprintf(wlpptr->netDev->name, "%s%1d%s%1d", DRV_NAME, wlinitcnt,
-		DEV_NAME_MON_INTF, 0);
+			DEV_NAME_MON_INTF, 0);
 	wlpptr->netDev->irq = wlp->netDev->irq;
 	wlpptr->netDev->mem_start = wlp->netDev->mem_start;
 	wlpptr->netDev->mem_end = wlp->netDev->mem_end;
@@ -9045,13 +9522,14 @@ wlInit_monif(struct wlprivate *wlp, unsigned char *macAddr)
 	memcpy(wlpptr->netDev->dev_addr, &macAddr[0], 6);
 	memcpy(&wlpptr->hwData.macAddr[0], &macAddr[0], 6);
 
-	//wlpptr->vmacSta_p = NULL; //no need?
+	// wlpptr->vmacSta_p = NULL; //no need?
 	wlpptr->vmacSta_p =
 		Mac_Init((void *)wlp, wlpptr->netDev, &macAddr[0],
-			 WL_OP_MODE_MONIF, wlinitcnt);
-	if (wlpptr->vmacSta_p == NULL) {
+				 WL_OP_MODE_MONIF, wlinitcnt);
+	if (wlpptr->vmacSta_p == NULL)
+	{
 		printk(KERN_ERR "%s: failed to init driver mac\n",
-		       wlpptr->netDev->name);
+			   wlpptr->netDev->name);
 		goto err_out;
 	}
 
@@ -9071,7 +9549,7 @@ wlInit_monif(struct wlprivate *wlp, unsigned char *macAddr)
 	wlpptr->wlpd_p = wlp->wlpd_p;
 	wlpptr->master = wlp->netDev;
 	printk("[%s] wlinitcnt=%d, vmacIndex=%d\n", __func__, wlinitcnt,
-	       wlp->wlpd_p->vmacIndex);
+		   wlp->wlpd_p->vmacIndex);
 	wlp->vdev[wlp->wlpd_p->vmacIndex++] = wlpptr->netDev;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 0, 6)
 #else
@@ -9088,7 +9566,8 @@ wlInit_monif(struct wlprivate *wlp, unsigned char *macAddr)
 	SET_NETDEV_DEV(wlpptr->netDev, wiphy_dev(wlpptr->wdev.wiphy));
 #endif
 	wlpptr->bgscan_period = DEF_BGSCAN_PERIOD;
-	if (register_netdev(wlpptr->netDev)) {
+	if (register_netdev(wlpptr->netDev))
+	{
 		printk("%s: failed to register device\n", wlpptr->netDev->name);
 		goto err_register_netdev;
 	}
@@ -9121,29 +9600,30 @@ static const struct net_device_ops wlmbss_netdev_ops = {
 	.ndo_get_stats = wlgetStats,
 };
 
-int
-wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr)
+int wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr)
 {
 	//      int retCode;
 	struct wlprivate *wlpptr = NULL;
 	UINT8 i;
 	struct net_device *dev;
-	char temp_name[32] = { 0 };
+	char temp_name[32] = {0};
 	int name_len = 0;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)
 	dev = alloc_netdev(sizeof(struct wlprivate), DRV_NAME_VMAC,
-			   NET_NAME_UNKNOWN, wlwlan_setup);
+					   NET_NAME_UNKNOWN, wlwlan_setup);
 #else
 	dev = alloc_netdev(sizeof(struct wlprivate), DRV_NAME_VMAC,
-			   wlwlan_setup);
+					   wlwlan_setup);
 #endif
-	if (dev) {
+	if (dev)
+	{
 		wlpptr = NETDEV_PRIV(struct wlprivate, dev);
 		NETDEV_PRIV_S(dev) = wlpptr;
 	}
 
-	if (wlpptr == NULL) {
+	if (wlpptr == NULL)
+	{
 		printk("%s: no mem for private driver context\n", DRV_NAME);
 		goto err_out;
 	}
@@ -9151,13 +9631,13 @@ wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr)
 	memcpy(wlpptr, wlp, sizeof(struct wlprivate));
 	wlpptr->netDev = dev;
 
-	//from probe
+	// from probe
 	wlpptr->ioBase0 = wlp->ioBase0;
 	wlpptr->ioBase1 = wlp->ioBase1;
 
-	//sprintf(wlpptr->netDev->name, "ap%1d", wlp->wlpd_p->vmacIndex);
+	// sprintf(wlpptr->netDev->name, "ap%1d", wlp->wlpd_p->vmacIndex);
 	sprintf(temp_name, "%s%1d%s%1d", DRV_NAME, wlinitcnt, DRV_NAME_VMAC,
-		wlp->wlpd_p->vmacIndex);
+			wlp->wlpd_p->vmacIndex);
 	name_len = strlen(temp_name);
 
 	if (name_len <= IFNAMSIZ)
@@ -9173,16 +9653,17 @@ wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr)
 
 	//      pci_set_drvdata(wlpptr->pPciDev, (wlpptr->netDev));
 
-	//from init
+	// from init
 	memcpy(wlpptr->netDev->dev_addr, &macAddr[0], 6);
 	memcpy(&wlpptr->hwData.macAddr[0], &macAddr[0], 6);
 	wlpptr->vmacSta_p =
 		Mac_Init((void *)wlp, wlpptr->netDev, &macAddr[0],
-			 WL_OP_MODE_VAP, wlinitcnt);
+				 WL_OP_MODE_VAP, wlinitcnt);
 
-	if (wlpptr->vmacSta_p == NULL) {
+	if (wlpptr->vmacSta_p == NULL)
+	{
 		printk(KERN_ERR "%s: failed to init driver mac\n",
-		       wlpptr->netDev->name);
+			   wlpptr->netDev->name);
 		goto err_out;
 	}
 
@@ -9207,8 +9688,8 @@ wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr)
 #ifdef CB_SUPPORT
 	wlpptr->is_resp_mgmt = TRUE;
 	wlpptr->vap_id = wlp->wlpd_p->vmacIndex;
-	//printk("%s(), [%s], vap_id: %u\n", __func__, wlpptr->netDev->name, wlpptr->vap_id);
-#endif //#ifdef CB_SUPPORT
+	// printk("%s(), [%s], vap_id: %u\n", __func__, wlpptr->netDev->name, wlpptr->vap_id);
+#endif // #ifdef CB_SUPPORT
 	wlp->vdev[wlp->wlpd_p->vmacIndex++] = wlpptr->netDev;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 0, 6)
 #else
@@ -9226,7 +9707,8 @@ wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr)
 #endif
 	wlpptr->bgscan_period = DEF_BGSCAN_PERIOD;
 
-	if (register_netdev(wlpptr->netDev)) {
+	if (register_netdev(wlpptr->netDev))
+	{
 		printk("%s: failed to register device\n", wlpptr->netDev->name);
 		goto err_register_netdev;
 	}
@@ -9240,10 +9722,10 @@ wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr)
 	SPIN_LOCK_INIT(&wlpptr->vmacSta_p->MUStaListLock);
 
 	for (i = 0; i < ARRAY_SIZE(wlpptr->vmacSta_p->MUStaList); i++)
-		MUStaListInit((MU_Sta_List *) & wlpptr->vmacSta_p->
-			      MUStaList[i]);
+		MUStaListInit((MU_Sta_List *)&wlpptr->vmacSta_p->MUStaList[i]);
 
-	switch (wlpptr->devid) {
+	switch (wlpptr->devid)
+	{
 	case SC4:
 		wlpptr->vmacSta_p->MUSet_Prefer_UsrCnt = 3;
 		break;
@@ -9260,12 +9742,11 @@ wlInit_mbss(struct wlprivate *wlp, unsigned char *macAddr)
 	ap8xLnxStat_vap_init(dev);
 
 #ifdef WIFI_DATA_OFFLOAD
-	if (!wlpptr->wlpd_p->dol.
-	    vif_added_to_pe[wlpptr->vmacSta_p->VMacEntry.macId]) {
+	if (!wlpptr->wlpd_p->dol.vif_added_to_pe[wlpptr->vmacSta_p->VMacEntry.macId])
+	{
 		dol_add_vif(wlpptr, wlpptr->wlpd_p->ipc_session_id,
-			    wlpptr->vmacSta_p->VMacEntry.macId, &macAddr[0]);
-		wlpptr->wlpd_p->dol.vif_added_to_pe[wlpptr->vmacSta_p->
-						    VMacEntry.macId] = 1;
+					wlpptr->vmacSta_p->VMacEntry.macId, &macAddr[0]);
+		wlpptr->wlpd_p->dol.vif_added_to_pe[wlpptr->vmacSta_p->VMacEntry.macId] = 1;
 	}
 #endif
 
@@ -9278,8 +9759,7 @@ err_register_netdev:
 	return -EIO;
 }
 
-void
-wlDeinit_mbss(struct net_device *netdev)
+void wlDeinit_mbss(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	struct wlprivate *wlp;
@@ -9299,20 +9779,21 @@ wlDeinit_mbss(struct net_device *netdev)
 #endif
 	{
 #ifdef WIFI_DATA_OFFLOAD
-		if (wlpptr->wlpd_p->dol.
-		    vif_added_to_pe[wlpptr->vmacSta_p->VMacEntry.macId]) {
+		if (wlpptr->wlpd_p->dol.vif_added_to_pe[wlpptr->vmacSta_p->VMacEntry.macId])
+		{
 			dol_del_vif(wlpptr, wlpptr->wlpd_p->ipc_session_id,
-				    wlpptr->vmacSta_p->VMacEntry.macId);
-			wlpptr->wlpd_p->dol.vif_added_to_pe[wlpptr->vmacSta_p->
-							    VMacEntry.macId] =
+						wlpptr->vmacSta_p->VMacEntry.macId);
+			wlpptr->wlpd_p->dol.vif_added_to_pe[wlpptr->vmacSta_p->VMacEntry.macId] =
 				0;
 		}
 #endif
 		wds_wlDeinit(wlpptr->vdev[i]);
-		if (wlpptr->vdev[i]->flags & IFF_RUNNING) {
-			if (wlstop_mbss(wlpptr->vdev[i])) {
+		if (wlpptr->vdev[i]->flags & IFF_RUNNING)
+		{
+			if (wlstop_mbss(wlpptr->vdev[i]))
+			{
 				printk(KERN_ERR "%s: failed to stop device\n",
-				       wlpptr->vdev[i]->name);
+					   wlpptr->vdev[i]->name);
 			}
 		}
 		wlp = NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]);
@@ -9330,8 +9811,7 @@ wlDeinit_mbss(struct net_device *netdev)
 	return;
 }
 
-int
-wlResetTask(struct net_device *dev)
+int wlResetTask(struct net_device *dev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, dev);
 
@@ -9344,13 +9824,9 @@ wlResetTask(struct net_device *dev)
 
 #ifdef CLIENT_SUPPORT
 /* Temporary declaration until suitable MIBs is made available */
-UINT8 tmpClientBSSID[NUM_OF_WLMACS][6] = { {0xff, 0xff, 0xff, 0xff, 0xff, 0xff}
-, {0xff, 0xff, 0xff, 0xff, 0xff, 0xff}
-, {0xff, 0xff, 0xff, 0xff, 0xff, 0xff}
-};
+UINT8 tmpClientBSSID[NUM_OF_WLMACS][6] = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, {0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, {0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
 
-void
-wlLinkMgt(struct net_device *netdev, UINT8 phyIndex)
+void wlLinkMgt(struct net_device *netdev, UINT8 phyIndex)
 {
 	UINT8 ieBuf[256];
 	UINT16 ieBufLen = 0;
@@ -9370,16 +9846,17 @@ wlLinkMgt(struct net_device *netdev, UINT8 phyIndex)
 	vmacStaInfo_t *vStaInfo_p;
 
 	vStaInfo_p =
-		(vmacStaInfo_t *) vmacGetVMacStaInfo(parentGetVMacId(phyIndex));
+		(vmacStaInfo_t *)vmacGetVMacStaInfo(parentGetVMacId(phyIndex));
 	if (!vStaInfo_p)
 		return;
 
 	memset(&chnlScanList[0], 0,
-	       (IEEEtypes_MAX_CHANNELS + IEEEtypes_MAX_CHANNELS_A));
+		   (IEEEtypes_MAX_CHANNELS + IEEEtypes_MAX_CHANNELS_A));
 	memset(&vStaInfo_p->linkInfo, 0, sizeof(iw_linkInfo_t));
 
 	/* Get VMAC structure of the master and host client. */
-	if (wlpptr->master) {
+	if (wlpptr->master)
+	{
 		/* Get Primary info. */
 		wlMPrvPtr = NETDEV_PRIV_P(struct wlprivate, wlpptr->master);
 		primary_vmacSta_p = wlMPrvPtr->vmacSta_p;
@@ -9390,7 +9867,8 @@ wlLinkMgt(struct net_device *netdev, UINT8 phyIndex)
 		wlSPrvPtr = NETDEV_PRIV_P(struct wlprivate, wlpptr->netDev);
 		vmacSta_p = wlSPrvPtr->vmacSta_p;
 		mib = vmacSta_p->Mib802dot11;
-	} else
+	}
+	else
 		return;
 	/* Setup the mode,filter registers appropriate for station operation */
 	Disable_extStaDb_ProcessKeepAliveTimer(primary_vmacSta_p);
@@ -9404,52 +9882,66 @@ wlLinkMgt(struct net_device *netdev, UINT8 phyIndex)
 	/* Pass the channel list */
 	/* if autochannel is enabled then pass in the channel list */
 	/* else if autochannel is disabled only pass in a single ch */
-	if (*(primary_mib->mib_autochannel)) {
+	if (*(primary_mib->mib_autochannel))
+	{
 		/* Stop Autochannel on AP first */
 		StopAutoChannel(primary_vmacSta_p);
 
 		/* get range to scan */
 		domainGetInfo(mainChnlList);
 
-		if (*(vmacSta_p->Mib802dot11->mib_STAMode) == CLIENT_MODE_AUTO) {	// ||
+		if (*(vmacSta_p->Mib802dot11->mib_STAMode) == CLIENT_MODE_AUTO)
+		{ // ||
 			//(*(vmacSta_p->Mib802dot11->mib_STAMode) == CLIENT_MODE_N))
-			for (i = 0; i < IEEEtypes_MAX_CHANNELS; i++) {
-				if (mainChnlList[i] > 0) {
+			for (i = 0; i < IEEEtypes_MAX_CHANNELS; i++)
+			{
+				if (mainChnlList[i] > 0)
+				{
 					chnlScanList[currChnlIndex] =
 						mainChnlList[i];
 					currChnlIndex++;
 				}
 			}
 
-			for (i = 0; i < IEEEtypes_MAX_CHANNELS_A; i++) {
+			for (i = 0; i < IEEEtypes_MAX_CHANNELS_A; i++)
+			{
 				if (mainChnlList[i + IEEEtypes_MAX_CHANNELS] >
-				    0) {
+					0)
+				{
 					chnlScanList[currChnlIndex] =
 						mainChnlList[i +
-							     IEEEtypes_MAX_CHANNELS];
+									 IEEEtypes_MAX_CHANNELS];
 					currChnlIndex++;
 				}
 			}
 			chnlListLen = currChnlIndex;
-		} else if ((*(vmacSta_p->Mib802dot11->mib_STAMode) <
-			    CLIENT_MODE_A) ||
-			   (*(vmacSta_p->Mib802dot11->mib_STAMode) ==
-			    CLIENT_MODE_N_24)) {
-			for (i = 0; i < IEEEtypes_MAX_CHANNELS; i++) {
+		}
+		else if ((*(vmacSta_p->Mib802dot11->mib_STAMode) <
+				  CLIENT_MODE_A) ||
+				 (*(vmacSta_p->Mib802dot11->mib_STAMode) ==
+				  CLIENT_MODE_N_24))
+		{
+			for (i = 0; i < IEEEtypes_MAX_CHANNELS; i++)
+			{
 				chnlScanList[i] = mainChnlList[i];
 			}
 			chnlScanList[i] = 0;
 			chnlListLen = IEEEtypes_MAX_CHANNELS;
-		} else {
-			for (i = 0; i < IEEEtypes_MAX_CHANNELS_A; i++) {
+		}
+		else
+		{
+			for (i = 0; i < IEEEtypes_MAX_CHANNELS_A; i++)
+			{
 				chnlScanList[i] =
 					mainChnlList[i +
-						     IEEEtypes_MAX_CHANNELS];
+								 IEEEtypes_MAX_CHANNELS];
 			}
 			chnlScanList[i] = 0;
 			chnlListLen = IEEEtypes_MAX_CHANNELS_A;
 		}
-	} else {
+	}
+	else
+	{
 		chnlScanList[0] = PhyDSSSTable->CurrChan;
 		chnlListLen = 1;
 	}
@@ -9459,22 +9951,22 @@ wlLinkMgt(struct net_device *netdev, UINT8 phyIndex)
 
 	ieBufLen = 0;
 	/* Build IE Buf */
-	IE_p = (IEEEtypes_InfoElementHdr_t *) & ieBuf[ieBufLen];
+	IE_p = (IEEEtypes_InfoElementHdr_t *)&ieBuf[ieBufLen];
 
 	/* SSID element */
 	/* Pick SSID from station net device */
 #ifdef RSN_RESOLVE
 	strncpy((char *)&tmpClientSSID[phyIndex][0],
-		(const char *)&(mib->StationConfig->DesiredSsId[0]), 32);
+			(const char *)&(mib->StationConfig->DesiredSsId[0]), 32);
 #endif /* RSN_RESOLVE */
 	ssidLen = strlen((const char *)&(mib->StationConfig->DesiredSsId[0]));
 	IE_p->ElementId = SSID;
 	IE_p->Len = ssidLen;
 	ieBufLen += sizeof(IEEEtypes_InfoElementHdr_t);
 	strncpy((char *)&ieBuf[ieBufLen],
-		(const char *)&(mib->StationConfig->DesiredSsId[0]), 32);
+			(const char *)&(mib->StationConfig->DesiredSsId[0]), 32);
 	ieBufLen += IE_p->Len;
-	IE_p = (IEEEtypes_InfoElementHdr_t *) & ieBuf[ieBufLen];
+	IE_p = (IEEEtypes_InfoElementHdr_t *)&ieBuf[ieBufLen];
 
 	/* DS_PARAM_SET element */
 	IE_p->ElementId = DS_PARAM_SET;
@@ -9482,7 +9974,7 @@ wlLinkMgt(struct net_device *netdev, UINT8 phyIndex)
 	ieBufLen += sizeof(IEEEtypes_InfoElementHdr_t);
 	memcpy((char *)&ieBuf[ieBufLen], &chnlScanList[0], chnlListLen);
 	ieBufLen += IE_p->Len;
-	IE_p = (IEEEtypes_InfoElementHdr_t *) & ieBuf[ieBufLen];
+	IE_p = (IEEEtypes_InfoElementHdr_t *)&ieBuf[ieBufLen];
 
 	// link Mgt might need a MIBs to control funct call
 #ifdef RSN_RESOLVE
@@ -9492,16 +9984,15 @@ wlLinkMgt(struct net_device *netdev, UINT8 phyIndex)
 #ifdef MRVL_WPS_CLIENT
 	if (!is_zero_ether_addr(mib->StationConfig->DesiredBSSId))
 		memcpy(&tmpClientBSSID[phyIndex][0],
-		       &(mib->StationConfig->DesiredBSSId[0]), 6);
+			   &(mib->StationConfig->DesiredBSSId[0]), 6);
 #endif
 	/* If user initiated a scan and it is in progress then do not start link mgt */
-	if (((vmacApInfo_t *) (wlpptr->vmacSta_p))->gUserInitScan != TRUE)
+	if (((vmacApInfo_t *)(wlpptr->vmacSta_p))->gUserInitScan != TRUE)
 		linkMgtStart(phyIndex, &tmpClientBSSID[phyIndex][0], &ieBuf[0],
-			     ieBufLen);
+					 ieBufLen);
 }
 
-void
-wlInitClientLink(struct net_device *netdev)
+void wlInitClientLink(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p;
@@ -9509,150 +10000,151 @@ wlInitClientLink(struct net_device *netdev)
 
 	/* Get VMAC structure of the client.                       */
 	/* If master pointer zero, then this is the master device. */
-	if (wlpptr->master) {
+	if (wlpptr->master)
+	{
 		vmacSta_p = wlpptr->vmacSta_p;
 		mib = vmacSta_p->Mib802dot11;
-		//set wdev0 OpMode to follow wdev0staX's opmode
+		// set wdev0 OpMode to follow wdev0staX's opmode
 		vmacSta_p->master->OpMode = vmacSta_p->OpMode;
-	} else {
-		//printk("wlInitClientLink: ERROR -cannot get master mib from netdev = %x \n", netdev);
+	}
+	else
+	{
+		// printk("wlInitClientLink: ERROR -cannot get master mib from netdev = %x \n", netdev);
 		return;
 	}
 
-	if (!(*(mib->mib_STAMacCloneEnable) == 1)) {
+	if (!(*(mib->mib_STAMacCloneEnable) == 1))
+	{
 		vmacEntry_t *vmacEntry_p;
 		if ((vmacEntry_p =
-		     sme_GetParentVMacEntry(vmacSta_p->VMacEntry.
-					    phyHwMacIndx)) != NULL) {
+				 sme_GetParentVMacEntry(vmacSta_p->VMacEntry.phyHwMacIndx)) != NULL)
+		{
 			wlFwSetMacAddr_Client(netdev,
-					      &vmacEntry_p->vmacAddr[0]);
+								  &vmacEntry_p->vmacAddr[0]);
 		}
 		wlLinkMgt(netdev, vmacSta_p->VMacEntry.phyHwMacIndx);
 	}
-
 }
 
-void
-wlUpdateMibsWithBssProfile(struct wlprivate *wlpptr, vmacStaInfo_t * vStaInfo_p)
+void wlUpdateMibsWithBssProfile(struct wlprivate *wlpptr, vmacStaInfo_t *vStaInfo_p)
 {
 	UINT32 ch_bw_changed_to = 0;
 	MIB_802DOT11 *mib = wlpptr->vmacSta_p->ShadowMib802dot11;
 
-	if (IsVHTmode(*(mib->mib_ApMode))) {
+	if (IsVHTmode(*(mib->mib_ApMode)))
+	{
 
-		if (vStaInfo_p->bssDescProfile_p->VHTOp.len) {
-			if (vStaInfo_p->bssDescProfile_p->VHTOp.ch_width == 2) {
+		if (vStaInfo_p->bssDescProfile_p->VHTOp.len)
+		{
+			if (vStaInfo_p->bssDescProfile_p->VHTOp.ch_width == 2)
+			{
 				ch_bw_changed_to = CH_160_MHz_WIDTH;
-			} else if (vStaInfo_p->bssDescProfile_p->VHTOp.
-				   ch_width == 1) {
+			}
+			else if (vStaInfo_p->bssDescProfile_p->VHTOp.ch_width == 1)
+			{
 
 #ifdef SUPPORTED_EXT_NSS_BW
 				int ret = 0;
 				printk("%s ", __FUNCTION__);
 
 				if (1 ==
-				    (ret =
-				     isSupport160MhzByCenterFreq(wlpptr,
-								 VHT_EXTENDED_NSS_BW_CAPABLE,
-								 vStaInfo_p->
-								 bssDescProfile_p->
-								 VHTOp.
-								 center_freq0,
-								 vStaInfo_p->
-								 bssDescProfile_p->
-								 VHTOp.
-								 center_freq1,
-								 vStaInfo_p->
-								 bssDescProfile_p->
-								 ADDHTElement.
-								 OpMode.
-								 center_freq2)))
+					(ret =
+						 isSupport160MhzByCenterFreq(wlpptr,
+													 VHT_EXTENDED_NSS_BW_CAPABLE,
+													 vStaInfo_p->bssDescProfile_p->VHTOp.center_freq0,
+													 vStaInfo_p->bssDescProfile_p->VHTOp.center_freq1,
+													 vStaInfo_p->bssDescProfile_p->ADDHTElement.OpMode.center_freq2)))
 				{
 
 					ch_bw_changed_to = CH_160_MHz_WIDTH;
-
-				} else if (0 == ret) {
+				}
+				else if (0 == ret)
+				{
 
 					ch_bw_changed_to = CH_80_MHz_WIDTH;
 					printk("80MHz or less\n");
 				}
 #else
-				if (vStaInfo_p->bssDescProfile_p->VHTOp.
-				    center_freq1 == 0) {
+				if (vStaInfo_p->bssDescProfile_p->VHTOp.center_freq1 == 0)
+				{
 					ch_bw_changed_to = CH_80_MHz_WIDTH;
-				} else {
+				}
+				else
+				{
 					UINT8 diff;
-					if (vStaInfo_p->bssDescProfile_p->VHTOp.
-					    center_freq1 >
-					    vStaInfo_p->bssDescProfile_p->VHTOp.
-					    center_freq0) {
-						diff = vStaInfo_p->
-							bssDescProfile_p->VHTOp.
-							center_freq1 -
-							vStaInfo_p->
-							bssDescProfile_p->VHTOp.
-							center_freq0;
-					} else {
-						diff = vStaInfo_p->
-							bssDescProfile_p->VHTOp.
-							center_freq0 -
-							vStaInfo_p->
-							bssDescProfile_p->VHTOp.
-							center_freq1;
+					if (vStaInfo_p->bssDescProfile_p->VHTOp.center_freq1 >
+						vStaInfo_p->bssDescProfile_p->VHTOp.center_freq0)
+					{
+						diff = vStaInfo_p->bssDescProfile_p->VHTOp.center_freq1 -
+							   vStaInfo_p->bssDescProfile_p->VHTOp.center_freq0;
 					}
-					if (diff == 8) {
+					else
+					{
+						diff = vStaInfo_p->bssDescProfile_p->VHTOp.center_freq0 -
+							   vStaInfo_p->bssDescProfile_p->VHTOp.center_freq1;
+					}
+					if (diff == 8)
+					{
 						ch_bw_changed_to =
 							CH_160_MHz_WIDTH;
-					} else if (diff > 8) {
+					}
+					else if (diff > 8)
+					{
 #ifdef SOC_W906X
 						isSupport80plus80Mhz(wlpptr);
 #else
 						WLDBG_ERROR(DBG_LEVEL_1,
-							    "80MHz + 80MHz, not support\n");
+									"80MHz + 80MHz, not support\n");
 #endif
-					} else {
+					}
+					else
+					{
 						printk("%s reserved\n",
-						       __FUNCTION__);
+							   __FUNCTION__);
 					}
 				}
 #endif /* SUPPORTED_EXT_NSS_BW */
-			} else {
-				if (vStaInfo_p->bssDescProfile_p->HTElement.
-				    HTCapabilitiesInfo.SupChanWidth)
+			}
+			else
+			{
+				if (vStaInfo_p->bssDescProfile_p->HTElement.HTCapabilitiesInfo.SupChanWidth)
 					ch_bw_changed_to = CH_40_MHz_WIDTH;
 				else
 					ch_bw_changed_to = CH_20_MHz_WIDTH;
 			}
-		} else {
-			if (vStaInfo_p->bssDescProfile_p->HTElement.
-			    HTCapabilitiesInfo.SupChanWidth)
+		}
+		else
+		{
+			if (vStaInfo_p->bssDescProfile_p->HTElement.HTCapabilitiesInfo.SupChanWidth)
 				ch_bw_changed_to = CH_40_MHz_WIDTH;
 			else
 				ch_bw_changed_to = CH_20_MHz_WIDTH;
 		}
-		if (ch_bw_changed_to) {
+		if (ch_bw_changed_to)
+		{
 			if (mib->PhyDSSSTable->Chanflag.ChnlWidth ==
-			    CH_AUTO_WIDTH) {
+				CH_AUTO_WIDTH)
+			{
 				wlpptr->wlpd_p->repeaterUpdateChannelWidth =
 					ch_bw_changed_to;
-			} else if (mib->PhyDSSSTable->Chanflag.ChnlWidth >
-				   ch_bw_changed_to) {
+			}
+			else if (mib->PhyDSSSTable->Chanflag.ChnlWidth >
+					 ch_bw_changed_to)
+			{
 				wlpptr->wlpd_p->repeaterUpdateChannelWidth =
 					ch_bw_changed_to;
 			}
 		}
-
 	}
 }
 
 extern int WlLoadRateGrp(struct net_device *netdev);
 /* Client Parent Session Callback function */
-void
-wlStatusUpdate_clientParent(UINT32 data1, UINT8 * info_p, UINT32 data2)
+void wlStatusUpdate_clientParent(UINT32 data1, UINT8 *info_p, UINT32 data2)
 {
 	UINT32 statusId = data1;
 	UINT32 linkUp = data2;
-	vmacEntry_t *vmacEntry_p = (vmacEntry_t *) info_p;
+	vmacEntry_t *vmacEntry_p = (vmacEntry_t *)info_p;
 	struct net_device *dev_p;
 	struct wlprivate *priv;
 	UINT8 mlmeAssociatedFlag;
@@ -9663,28 +10155,32 @@ wlStatusUpdate_clientParent(UINT32 data1, UINT8 * info_p, UINT32 data2)
 	MIB_802DOT11 *mib = NULL;
 	vmacApInfo_t *vmacSta_p = NULL;
 
-	if (info_p == NULL) {
+	if (info_p == NULL)
+	{
 		return;
 	}
 	dev_p = (struct net_device *)vmacEntry_p->privInfo_p;
 	priv = NETDEV_PRIV_P(struct wlprivate, dev_p);
 	mib = priv->vmacSta_p->Mib802dot11;
 	vmacSta_p = priv->vmacSta_p;
-	switch (statusId) {
+	switch (statusId)
+	{
 	case MmgtIndicationSignals:
 		if (!smeGetStaLinkInfo(vmacEntry_p->id,
-				       &mlmeAssociatedFlag, &mlmeBssid[0])) {
+							   &mlmeAssociatedFlag, &mlmeBssid[0]))
+		{
 			return;
 		}
 
-		if (linkUp && mlmeAssociatedFlag) {
+		if (linkUp && mlmeAssociatedFlag)
+		{
 
 			wlFwSetAid(dev_p, mlmeBssid, 0);
 
 			printk("**** %s: LINK UP to %02x%02x%02x%02x%02x%02x\n",
-			       dev_p->name, mlmeBssid[0], mlmeBssid[1],
-			       mlmeBssid[2], mlmeBssid[3], mlmeBssid[4],
-			       mlmeBssid[5]);
+				   dev_p->name, mlmeBssid[0], mlmeBssid[1],
+				   mlmeBssid[2], mlmeBssid[3], mlmeBssid[4],
+				   mlmeBssid[5]);
 
 #ifdef MRVL_WPS_CLIENT
 			/* Send event to user space */
@@ -9692,46 +10188,47 @@ wlStatusUpdate_clientParent(UINT32 data1, UINT8 * info_p, UINT32 data2)
 #ifdef CFG80211
 #ifdef CFG80211_COMPATIABLE
 			mwl_cfg80211_connect_result_event(dev_p,
-							  (uint8_t *) &
-							  mlmeBssid,
-							  WLAN_STATUS_SUCCESS);
+											  (uint8_t *)&mlmeBssid,
+											  WLAN_STATUS_SUCCESS);
 #else
 #ifdef SOC_W906X
 			mwl_cfg80211_connect_result_event(dev_p,
-							  (uint8_t *) &
-							  mlmeBssid,
-							  WLAN_STATUS_SUCCESS);
+											  (uint8_t *)&mlmeBssid,
+											  WLAN_STATUS_SUCCESS);
 #else
 			mwl_send_vendor_assoc_event(dev_p,
-						    (uint8_t *) & mlmeBssid);
-#endif //SOC_W906X
+										(uint8_t *)&mlmeBssid);
+#endif // SOC_W906X
 #endif /* CFG80211_COMPATIABLE */
 #endif /* CFG80211 */
 #endif
 			WLSYSLOG(dev_p, WLSYSLOG_CLASS_ALL,
-				 WLSYSLOG_MSG_CLIENT_CONNECTED
-				 "%02x%02x%02x%02x%02x%02x\n", mlmeBssid[0],
-				 mlmeBssid[1], mlmeBssid[2], mlmeBssid[3],
-				 mlmeBssid[4], mlmeBssid[5]);
+					 WLSYSLOG_MSG_CLIENT_CONNECTED
+					 "%02x%02x%02x%02x%02x%02x\n",
+					 mlmeBssid[0],
+					 mlmeBssid[1], mlmeBssid[2], mlmeBssid[3],
+					 mlmeBssid[4], mlmeBssid[5]);
 
 #ifndef MRVL_WPS_CLIENT
 			WLSNDEVT(dev_p, IWEVCUSTOM, &vmacEntry_p->vmacAddr,
-				 WLSYSLOG_MSG_CLIENT_CONNECTED);
+					 WLSYSLOG_MSG_CLIENT_CONNECTED);
 #endif
 			memcpy(priv->hwData.macAddr, mlmeBssid, 6);
 
-			if (WlLoadRateGrp(dev_p)) {
+			if (WlLoadRateGrp(dev_p))
+			{
 				WLDBG_WARNING(DBG_LEVEL_0,
-					      "set per rate power fail");
-
+							  "set per rate power fail");
 			}
 			/* If Mac cloneing disabled, set vmacEntry to active here. */
 			if (!(*(mib->mib_STAMacCloneEnable) == 1))
 				vmacEntry_p->active = 1;
 			wlUpdateMibsWithBssProfile(priv,
-						   (vmacStaInfo_t *)
-						   vmacEntry_p->info_p);
-		} else {
+									   (vmacStaInfo_t *)
+										   vmacEntry_p->info_p);
+		}
+		else
+		{
 			priv->wlpd_p->repeaterUpdateChannelWidth = 0;
 			printk("**** %s: LINK NOT UP\n", dev_p->name);
 #ifdef WPA_STA
@@ -9739,50 +10236,48 @@ wlStatusUpdate_clientParent(UINT32 data1, UINT8 * info_p, UINT32 data2)
 			sme_DisableKeyMgmtTimer(vmacEntry_p);
 #endif /* WPA_STA */
 
-#if 1				//enable if you want to use link mgt to connect
+#if 1 // enable if you want to use link mgt to connect
 			/* do not restart linkmgt if user started a scan */
 			/* scan complete will trigger a link Mgt restart */
 			if (vmacSta_p->gUserInitScan != TRUE)
 				linkMgtReStart(vmacEntry_p->phyHwMacIndx,
-					       vmacEntry_p);
-#endif //end link mgt
+							   vmacEntry_p);
+#endif // end link mgt
 
 			if (*(mib->mib_STAMacCloneEnable) == 2)
 				ethStaDb_RemoveAllStns(vmacSta_p);
 
 			/* Remove client and remote ap from Fw and driver databases. */
-			RemoveRemoteAPFw((UINT8 *) & mlmeBssid[0], vmacEntry_p);
+			RemoveRemoteAPFw((UINT8 *)&mlmeBssid[0], vmacEntry_p);
 			WLSYSLOG(dev_p, WLSYSLOG_CLASS_ALL,
-				 WLSYSLOG_MSG_CLIENT_DISCONNECTED);
+					 WLSYSLOG_MSG_CLIENT_DISCONNECTED);
 
 #ifndef MRVL_WPS_CLIENT
 			WLSNDEVT(dev_p, IWEVCUSTOM, &vmacEntry_p->vmacAddr,
-				 WLSYSLOG_MSG_CLIENT_DISCONNECTED);
+					 WLSYSLOG_MSG_CLIENT_DISCONNECTED);
 #endif
 #ifdef MRVL_WPS_CLIENT
 			/* Send event to user space */
 			if ((mlmeBssid[0] && mlmeBssid[1] && mlmeBssid[2] &&
-			     mlmeBssid[3] && mlmeBssid[4] && mlmeBssid[5])) {
+				 mlmeBssid[3] && mlmeBssid[4] && mlmeBssid[5]))
+			{
 				WLSNDEVT(dev_p, IWEVEXPIRED,
-					 (IEEEtypes_MacAddr_t *) & mlmeBssid[0],
-					 NULL);
+						 (IEEEtypes_MacAddr_t *)&mlmeBssid[0],
+						 NULL);
 #ifdef CFG80211
 #ifdef CFG80211_COMPATIABLE
 				mwl_cfg80211_connect_result_event(dev_p,
-								  (uint8_t *) &
-								  mlmeBssid,
-								  WLAN_STATUS_UNSPECIFIED_FAILURE);
+												  (uint8_t *)&mlmeBssid,
+												  WLAN_STATUS_UNSPECIFIED_FAILURE);
 #else
 #ifdef SOC_W906X
 				mwl_cfg80211_connect_result_event(dev_p,
-								  (uint8_t *) &
-								  mlmeBssid,
-								  WLAN_STATUS_UNSPECIFIED_FAILURE);
+												  (uint8_t *)&mlmeBssid,
+												  WLAN_STATUS_UNSPECIFIED_FAILURE);
 #else
 				mwl_send_vendor_disassoc_event(dev_p,
-							       (uint8_t *) &
-							       mlmeBssid[0]);
-#endif //SOC_W906X
+											   (uint8_t *)&mlmeBssid[0]);
+#endif // SOC_W906X
 #endif /* CFG80211_COMPATIABLE */
 #endif /* CFG80211 */
 			}
@@ -9794,41 +10289,42 @@ wlStatusUpdate_clientParent(UINT32 data1, UINT8 * info_p, UINT32 data2)
 
 	case MlmeScan_Cnfm:
 		/* If enable IEEE80211K, log will be printed frequently */
-//              printk("***** %s SCAN completed\n", dev_p->name);
+		//              printk("***** %s SCAN completed\n", dev_p->name);
 
-//              WLSYSLOG(dev_p, WLSYSLOG_CLASS_ALL, WLSYSLOG_MSG_CLIENT_SCAN_DONE);
+		//              WLSYSLOG(dev_p, WLSYSLOG_CLASS_ALL, WLSYSLOG_MSG_CLIENT_SCAN_DONE);
 
 #ifdef WMON
 		if (!gScan)
 #endif
 		{
 			/* If user initiated a scan */
-			if (vmacSta_p->gUserInitScan == TRUE) {
+			if (vmacSta_p->gUserInitScan == TRUE)
+			{
 				vmacSta_p->gUserInitScan = FALSE;
 
 #ifdef MRVL_WPS_CLIENT
 				/* Send event to user space */
 				WLSNDEVT(dev_p, IWEVCUSTOM,
-					 &vmacEntry_p->vmacAddr,
-					 WLSYSLOG_MSG_CLIENT_SCAN_DONE);
+						 &vmacEntry_p->vmacAddr,
+						 WLSYSLOG_MSG_CLIENT_SCAN_DONE);
 #endif
 
 				/* handle the case where a scan completed and link management restarted */
-				if (smeGetScanResults
-				    (vmacEntry_p->phyHwMacIndx, &numDescpt,
-				     &bufSize, &buf_p) == MLME_SUCCESS) {
-					tmpNumScanDesc[vmacEntry_p->
-						       phyHwMacIndx] =
+				if (smeGetScanResults(vmacEntry_p->phyHwMacIndx, &numDescpt,
+									  &bufSize, &buf_p) == MLME_SUCCESS)
+				{
+					tmpNumScanDesc[vmacEntry_p->phyHwMacIndx] =
 						numDescpt;
-					if (numDescpt > 0) {
+					if (numDescpt > 0)
+					{
 						memset(tmpScanResults
-						       [vmacEntry_p->
-							phyHwMacIndx], 0,
-						       MAX_SCAN_BUF_SIZE);
+								   [vmacEntry_p->phyHwMacIndx],
+							   0,
+							   MAX_SCAN_BUF_SIZE);
 						memcpy(tmpScanResults
-						       [vmacEntry_p->
-							phyHwMacIndx], buf_p,
-						       bufSize);
+								   [vmacEntry_p->phyHwMacIndx],
+							   buf_p,
+							   bufSize);
 					}
 				}
 
@@ -9836,26 +10332,28 @@ wlStatusUpdate_clientParent(UINT32 data1, UINT8 * info_p, UINT32 data2)
 				priv->vmacSta_p->busyScanning = 0;
 
 				/*Restart link management */
-				if (dev_p->flags & IFF_RUNNING) {
+				if (dev_p->flags & IFF_RUNNING)
+				{
 					smeGetStaLinkInfo(vmacEntry_p->id,
-							  &mlmeAssociatedFlag,
-							  &mlmeBssid[0]);
+									  &mlmeAssociatedFlag,
+									  &mlmeBssid[0]);
 
-					if (mlmeAssociatedFlag) {
+					if (mlmeAssociatedFlag)
+					{
 #ifdef AMPDU_SUPPORT_TX_CLIENT
 						cleanupAmpduTx(vmacSta_p,
-							       (UINT8 *) &
-							       mlmeBssid[0]);
+									   (UINT8 *)&mlmeBssid[0]);
 #endif
-						linkMgtReStart(vmacEntry_p->
-							       phyHwMacIndx,
-							       vmacEntry_p);
-					} else {
-						if (*(mib->mib_STAAutoScan)) {
+						linkMgtReStart(vmacEntry_p->phyHwMacIndx,
+									   vmacEntry_p);
+					}
+					else
+					{
+						if (*(mib->mib_STAAutoScan))
+						{
 #ifndef MRVL_WPS_CLIENT
 							wlLinkMgt(dev_p,
-								  vmacEntry_p->
-								  phyHwMacIndx);
+									  vmacEntry_p->phyHwMacIndx);
 #endif
 						}
 					}
@@ -9864,42 +10362,43 @@ wlStatusUpdate_clientParent(UINT32 data1, UINT8 * info_p, UINT32 data2)
 #ifdef IEEE80211K
 				/* update neighbor report list */
 				MSAN_update_neighbor_list(dev_p);
-#endif //IEEE80211K
-#endif //OFFCHANNEL_SUPPORT
-			} else {
+#endif // IEEE80211K
+#endif // OFFCHANNEL_SUPPORT
+			}
+			else
+			{
 				// linkMgtParseScanResult() might need a MIBs to control funct call
-				linkMgtParseScanResult(vmacEntry_p->
-						       phyHwMacIndx);
+				linkMgtParseScanResult(vmacEntry_p->phyHwMacIndx);
 			}
 		}
 		break;
 	case MlmeReset_Cnfm:
+	{
+		struct net_device *apdev_p = priv->master;
+		struct wlprivate *appriv =
+							 NETDEV_PRIV_P(struct wlprivate, apdev_p),
+						 *appriv1;
+		vmacApInfo_t *vap_p;
+		int i;
+		for (i = 0; i < appriv->wlpd_p->vmacIndex; i++)
 		{
-			struct net_device *apdev_p = priv->master;
-			struct wlprivate *appriv =
-				NETDEV_PRIV_P(struct wlprivate, apdev_p),
-				*appriv1;
-			vmacApInfo_t *vap_p;
-			int i;
-			for (i = 0; i < appriv->wlpd_p->vmacIndex; i++) {
-				appriv1 =
-					NETDEV_PRIV_P(struct wlprivate,
-						      appriv->vdev[i]);
-				vap_p = appriv1->vmacSta_p;
-				if ((appriv->vdev[i]->flags & IFF_RUNNING) &&
-				    (vap_p->VMacEntry.modeOfService ==
-				     VMAC_MODE_AP))
-					wlreset_mbss(appriv->vdev[i]);
-			}
+			appriv1 =
+				NETDEV_PRIV_P(struct wlprivate,
+							  appriv->vdev[i]);
+			vap_p = appriv1->vmacSta_p;
+			if ((appriv->vdev[i]->flags & IFF_RUNNING) &&
+				(vap_p->VMacEntry.modeOfService ==
+				 VMAC_MODE_AP))
+				wlreset_mbss(appriv->vdev[i]);
 		}
-		break;
+	}
+	break;
 	default:
 		break;
 	}
 }
 
-int
-wlopen_client(struct net_device *netdev)
+int wlopen_client(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
@@ -9915,18 +10414,20 @@ wlopen_client(struct net_device *netdev)
 	WLDBG_ENTER(DBG_LEVEL_2);
 
 	if ((wlpptr->devid == SC5 || wlpptr->devid == SCBT) &&
-	    vmacSta_p->VMacEntry.macId == (bss_num - 1) &&
-	    wlpd_p->SharedBssState == SHARE_VAP) {
+		vmacSta_p->VMacEntry.macId == (bss_num - 1) &&
+		wlpd_p->SharedBssState == SHARE_VAP)
+	{
 		printk("BSS_%u alreay occupied by VAP\n",
-		       vmacSta_p->VMacEntry.macId);
+			   vmacSta_p->VMacEntry.macId);
 		return -EIO;
 	}
 
 	netdev->type = ARPHRD_ETHER;
 
 #ifdef CFG80211
-	if (wiphy_priv->request) {
-#if LINUX_VERSION_CODE > KERNEL_VERSION(4,7,0)
+	if (wiphy_priv->request)
+	{
+#if LINUX_VERSION_CODE > KERNEL_VERSION(4, 7, 0)
 		struct cfg80211_scan_info info = {
 			.aborted = true,
 		};
@@ -9940,7 +10441,8 @@ wlopen_client(struct net_device *netdev)
 	}
 #endif
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		vmacSta_p->InfUpFlag = 0;
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
@@ -9954,30 +10456,32 @@ wlopen_client(struct net_device *netdev)
 
 #ifdef SOC_W906X
 	mib = vmacSta_p->Mib802dot11;
-	if (!(*(mib->mib_STAMacCloneEnable) == 1)) {
-		if (wlFwSetBssForClientMode(netdev, WL_ENABLE)) {
+	if (!(*(mib->mib_STAMacCloneEnable) == 1))
+	{
+		if (wlFwSetBssForClientMode(netdev, WL_ENABLE))
+		{
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "Falied to start the %d"
-				    "th BSS for client mode\n",
-				    vmacSta_p->VMacEntry.macId);
+						"Falied to start the %d"
+						"th BSS for client mode\n",
+						vmacSta_p->VMacEntry.macId);
 			return -EIO;
 		}
 	}
 #endif /* SOC_W906X */
 
-	netif_wake_queue(netdev);	/* Start/Restart Q if stopped. */
+	netif_wake_queue(netdev); /* Start/Restart Q if stopped. */
 	vmacSta_p->InfUpFlag = 1;
 	netdev->flags |= IFF_RUNNING;
 	WL_MOD_INC_USE(THIS_MODULE, return -EIO);
 
 	if ((wlpptr->devid == SC5 || wlpptr->devid == SCBT) &&
-	    vmacSta_p->VMacEntry.macId == (bss_num - 1))
+		vmacSta_p->VMacEntry.macId == (bss_num - 1))
 		wlpd_p->SharedBssState = SHARE_STA;
 
 	/* Wireless Client Specific */
 	{
 		// Moved to ieee80211_encapSta for Client auto connect.
-		//wlLinkMgt(netdev, vmacEntry_p->phyHwMacIndx);
+		// wlLinkMgt(netdev, vmacEntry_p->phyHwMacIndx);
 		wlInitClientLink(netdev);
 	}
 	/* end Wireless Client Specific */
@@ -9990,7 +10494,7 @@ wlstop_client(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacEntry_t *vmacParentEntry_p =
-		(vmacEntry_t *) wlpptr->clntParent_priv_p;
+		(vmacEntry_t *)wlpptr->clntParent_priv_p;
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
 #ifdef CFG80211
 	struct wlprivate *wiphy_priv =
@@ -10005,15 +10509,18 @@ wlstop_client(struct net_device *netdev)
 	// linkMgtStop() might need a MIBs to control funct call
 	linkMgtStop(vmacParentEntry_p->phyHwMacIndx);
 
-	if (vmacParentEntry_p->active) {
+	if (vmacParentEntry_p->active)
+	{
 		smeStopBss(vmacParentEntry_p->phyHwMacIndx);
 	}
 #ifdef SOC_W906X
 	if ((wlpd_p->downloadSuccessful == TRUE) &&
-	    wlFwSetBssForClientMode(netdev, WL_DISABLE)) {
+		wlFwSetBssForClientMode(netdev, WL_DISABLE))
+	{
 		WLDBG_ERROR(DBG_LEVEL_0,
-			    "Falied to stop the %d" "th BSS for client mode\n",
-			    vmacSta_p->VMacEntry.macId);
+					"Falied to stop the %d"
+					"th BSS for client mode\n",
+					vmacSta_p->VMacEntry.macId);
 		return -EIO;
 	}
 #endif /* SOC_W906X */
@@ -10022,8 +10529,9 @@ wlstop_client(struct net_device *netdev)
 	/* end Wireless Client Specific */
 
 #ifdef CFG80211
-	if (wiphy_priv->request) {
-#if LINUX_VERSION_CODE > KERNEL_VERSION(4,7,0)
+	if (wiphy_priv->request)
+	{
+#if LINUX_VERSION_CODE > KERNEL_VERSION(4, 7, 0)
 		struct cfg80211_scan_info info = {
 			.aborted = true,
 		};
@@ -10037,14 +10545,15 @@ wlstop_client(struct net_device *netdev)
 	}
 #endif
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
 	}
 
 	if ((wlpptr->devid == SC5 || wlpptr->devid == SCBT) &&
-	    vmacSta_p->VMacEntry.macId == (bss_num - 1) &&
-	    wlpd_p->SharedBssState == SHARE_STA)
+		vmacSta_p->VMacEntry.macId == (bss_num - 1) &&
+		wlpd_p->SharedBssState == SHARE_STA)
 		wlpd_p->SharedBssState = SHARE_NONE;
 
 	WL_MOD_DEC_USE(THIS_MODULE);
@@ -10052,12 +10561,11 @@ wlstop_client(struct net_device *netdev)
 	return 0;
 }
 
-int
-wlreset_client(struct net_device *netdev)
+int wlreset_client(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacEntry_t *vmacParentEntry_p =
-		(vmacEntry_t *) wlpptr->clntParent_priv_p;
+		(vmacEntry_t *)wlpptr->clntParent_priv_p;
 	vmacApInfo_t *vmacSta_p = wlpptr->vmacSta_p;
 #ifdef CFG80211
 	struct wlprivate *wiphy_priv =
@@ -10066,18 +10574,20 @@ wlreset_client(struct net_device *netdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlpptr->wlpd_p->inReset) {
+	if (wlpptr->wlpd_p->inReset)
+	{
 		return 0;
 	}
 
 	/* Wireless Client Specific */
-	//printk("********  wlreset_client\n");
+	// printk("********  wlreset_client\n");
 	smeStopBss(vmacParentEntry_p->phyHwMacIndx);
 	/* end Wireless Client Specific */
 
 #ifdef CFG80211
-	if (wiphy_priv->request) {
-#if LINUX_VERSION_CODE > KERNEL_VERSION(4,7,0)
+	if (wiphy_priv->request)
+	{
+#if LINUX_VERSION_CODE > KERNEL_VERSION(4, 7, 0)
 		struct cfg80211_scan_info info = {
 			.aborted = true,
 		};
@@ -10091,7 +10601,8 @@ wlreset_client(struct net_device *netdev)
 	}
 #endif
 
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		vmacSta_p->InfUpFlag = 0;
 		netif_stop_queue(netdev);
 		netdev->flags &= ~IFF_RUNNING;
@@ -10104,20 +10615,22 @@ wlreset_client(struct net_device *netdev)
 
 #ifdef SOC_W906X
 	if ((!(*(vmacSta_p->Mib802dot11->mib_STAMacCloneEnable) == 1)) &&
-	    (wlpptr->wlpd_p->downloadSuccessful == TRUE) &&
-	    /* check SharedBssState to avoid ERROR return from FW */
-	    (wlpptr->wlpd_p->SharedBssState == SHARE_NONE)) {
-		if (wlFwSetBssForClientMode(netdev, WL_ENABLE)) {
+		(wlpptr->wlpd_p->downloadSuccessful == TRUE) &&
+		/* check SharedBssState to avoid ERROR return from FW */
+		(wlpptr->wlpd_p->SharedBssState == SHARE_NONE))
+	{
+		if (wlFwSetBssForClientMode(netdev, WL_ENABLE))
+		{
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "Falied to start the %d"
-				    "th BSS for client mode\n",
-				    vmacSta_p->VMacEntry.macId);
+						"Falied to start the %d"
+						"th BSS for client mode\n",
+						vmacSta_p->VMacEntry.macId);
 			return -EIO;
 		}
 	}
 #endif /* SOC_W906X */
 
-	netif_wake_queue(netdev);	/* restart Q if interface was running */
+	netif_wake_queue(netdev); /* restart Q if interface was running */
 	vmacSta_p->InfUpFlag = 1;
 	netdev->flags |= IFF_RUNNING;
 
@@ -10133,7 +10646,8 @@ wltxTimeout_client(struct net_device *netdev)
 
 	WLDBG_ENTER(DBG_LEVEL_2);
 
-	if (wlpptr->wlpd_p->inReset) {
+	if (wlpptr->wlpd_p->inReset)
+	{
 		return;
 	}
 
@@ -10147,7 +10661,8 @@ wlsetMacAddr_client(struct net_device *netdev, void *addr)
 	struct sockaddr *macAddr = (struct sockaddr *)addr;
 
 	WLDBG_ENTER(DBG_LEVEL_2);
-	if (is_valid_ether_addr(macAddr->sa_data)) {
+	if (is_valid_ether_addr(macAddr->sa_data))
+	{
 		memcpy(netdev->dev_addr, addr, 6);
 		WLDBG_EXIT(DBG_LEVEL_2);
 		return 0;
@@ -10161,10 +10676,12 @@ wlchangeMtu_client(struct net_device *netdev, int mtu)
 {
 	WLDBG_ENTER(DBG_LEVEL_2);
 	netdev->mtu = mtu;
-	if (netdev->flags & IFF_RUNNING) {
+	if (netdev->flags & IFF_RUNNING)
+	{
 		WLDBG_EXIT(DBG_LEVEL_2);
 		return (wlreset_client(netdev));
-	} else
+	}
+	else
 		WLDBG_EXIT(DBG_LEVEL_2);
 	return -EPERM;
 	WLDBG_EXIT(DBG_LEVEL_2);
@@ -10187,9 +10704,8 @@ static const struct net_device_ops wlclient_netdev_ops = {
 	.ndo_get_stats = wlgetStats,
 };
 
-int
-wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
-	      unsigned char *ApRootmacAddr_p)
+int wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
+				  unsigned char *ApRootmacAddr_p)
 {
 	struct wlprivate *wlpptr = NULL;
 	vmacEntry_t *clientVMacEntry_p;
@@ -10200,19 +10716,21 @@ wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
 	{
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)
 		dev = alloc_netdev(sizeof(struct wlprivate), DRV_NAME_CLIENT,
-				   NET_NAME_UNKNOWN, wlwlan_setup);
+						   NET_NAME_UNKNOWN, wlwlan_setup);
 #else
 		dev = alloc_netdev(sizeof(struct wlprivate), DRV_NAME_CLIENT,
-				   wlwlan_setup);
+						   wlwlan_setup);
 #endif
-		if (dev) {
+		if (dev)
+		{
 			wlpptr = NETDEV_PRIV(struct wlprivate, dev);
 			NETDEV_PRIV_S(dev) = wlpptr;
 		}
 
-		if (wlpptr == NULL) {
+		if (wlpptr == NULL)
+		{
 			printk("%s: no mem for private driver context\n",
-			       DRV_NAME);
+				   DRV_NAME);
 			goto err_out;
 		}
 		memset(wlpptr, 0, sizeof(struct wlprivate));
@@ -10224,12 +10742,12 @@ wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
 #else
 		wlpptr->netDev->br_port = NULL;
 #endif
-		//from probe
+		// from probe
 		wlpptr->ioBase0 = wlp->ioBase0;
 		wlpptr->ioBase1 = wlp->ioBase1;
-		//sprintf(wlpptr->netDev->name, wlp->netDev->name);
+		// sprintf(wlpptr->netDev->name, wlp->netDev->name);
 		sprintf(wlpptr->netDev->name, "%s%1d%s%1d", DRV_NAME, wlinitcnt,
-			DRV_NAME_CLIENT, 0);
+				DRV_NAME_CLIENT, 0);
 		wlpptr->netDev->irq = wlp->netDev->irq;
 		wlpptr->netDev->mem_start = wlp->netDev->mem_start;
 		wlpptr->netDev->mem_end = wlp->netDev->mem_end;
@@ -10244,11 +10762,12 @@ wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
 		memcpy(&wlpptr->hwData.macAddr[0], macAddr_p, 6);
 		wlpptr->vmacSta_p =
 			Mac_Init(wlp, wlpptr->netDev, macAddr_p,
-				 WL_OP_MODE_VSTA, wlinitcnt);
+					 WL_OP_MODE_VSTA, wlinitcnt);
 
-		if (wlpptr->vmacSta_p == NULL) {
+		if (wlpptr->vmacSta_p == NULL)
+		{
 			printk(KERN_ERR "%s: failed to init driver mac\n",
-			       wlpptr->netDev->name);
+				   wlpptr->netDev->name);
 			goto err_out;
 		}
 
@@ -10280,9 +10799,10 @@ wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
 #endif
 		wlpptr->bgscan_period = DEF_BGSCAN_PERIOD;
 
-		if (register_netdev(wlpptr->netDev)) {
+		if (register_netdev(wlpptr->netDev))
+		{
 			printk("%s: failed to register device\n",
-			       wlpptr->netDev->name);
+				   wlpptr->netDev->name);
 			goto err_register_netdev;
 		}
 		ap8x_stat_proc_register(wlpptr->netDev);
@@ -10291,11 +10811,11 @@ wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
 		{
 			{
 				if ((clientVMacEntry_p =
-				     smeInitParentSession(wlinitcnt, macAddr_p,
-							  0,
-							  &wlStatusUpdate_clientParent,
-							  (void *)wlpptr->
-							  netDev)) == NULL) {
+						 smeInitParentSession(wlinitcnt, macAddr_p,
+											  0,
+											  &wlStatusUpdate_clientParent,
+											  (void *)wlpptr->netDev)) == NULL)
+				{
 					goto err_init;
 				}
 				mainNetdev_p[wlinitcnt] = wlp->netDev;
@@ -10307,7 +10827,6 @@ wlInit_client(struct wlprivate *wlp, unsigned char *macAddr_p,
 			}
 			// Initialize Client PeerInfo.
 			InitClientPeerInfo(wlpptr->netDev);
-
 		}
 	}
 	/* end Wireless Client Specific */
@@ -10330,12 +10849,11 @@ err_register_netdev:
 	return -EIO;
 }
 
-void
-wlDeinit_client(struct net_device *netdev)
+void wlDeinit_client(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacEntry_t *vmacParentEntry_p =
-		(vmacEntry_t *) wlpptr->clntParent_priv_p;
+		(vmacEntry_t *)wlpptr->clntParent_priv_p;
 	struct wlprivate *wlp;
 	int i;
 
@@ -10346,10 +10864,12 @@ wlDeinit_client(struct net_device *netdev)
 	for (i = 0; i < wlpptr->wlpd_p->vmacIndex; i++)
 #endif
 	{
-		if (wlpptr->vdev[i]->flags & IFF_RUNNING) {
-			if (wlstop_client(wlpptr->vdev[i])) {
+		if (wlpptr->vdev[i]->flags & IFF_RUNNING)
+		{
+			if (wlstop_client(wlpptr->vdev[i]))
+			{
 				printk(KERN_ERR "%s: failed to stop device\n",
-				       wlpptr->vdev[i]->name);
+					   wlpptr->vdev[i]->name);
 			}
 		}
 		wlp = NETDEV_PRIV_P(struct wlprivate, wlpptr->vdev[i]);
@@ -10376,8 +10896,7 @@ wlDeinit_client(struct net_device *netdev)
 }
 
 #endif /* CLIENT_SUPPORT */
-void
-WlSendDeauth(struct net_device *netdev)
+void WlSendDeauth(struct net_device *netdev)
 {
 	struct wlprivate *priv = NETDEV_PRIV_P(struct wlprivate, netdev);
 	vmacApInfo_t *vmacSta_p = priv->vmacSta_p;
@@ -10386,58 +10905,60 @@ WlSendDeauth(struct net_device *netdev)
 	extStaDb_StaInfo_t *pStaInfo;
 
 	entries = extStaDb_entries(vmacSta_p, 0);
-	if (entries == 0) {
-		//printk(" zero station list\n");
+	if (entries == 0)
+	{
+		// printk(" zero station list\n");
 		return;
 	}
 	sta_buf = wl_kmalloc(entries * 256, GFP_KERNEL);
-	if (sta_buf == NULL) {
+	if (sta_buf == NULL)
+	{
 		printk("wl_kmalloc fail \n");
 		return;
 	}
 	extStaDb_list(vmacSta_p, sta_buf, 1);
 	show_buf = sta_buf;
-	for (i = 0; i < entries; i++) {
+	for (i = 0; i < entries; i++)
+	{
 		if ((pStaInfo =
-		     extStaDb_GetStaInfo(vmacSta_p,
-					 (IEEEtypes_MacAddr_t *) show_buf,
-					 STADB_DONT_UPDATE_AGINGTIME)) ==
-		    NULL) {
+				 extStaDb_GetStaInfo(vmacSta_p,
+									 (IEEEtypes_MacAddr_t *)show_buf,
+									 STADB_DONT_UPDATE_AGINGTIME)) ==
+			NULL)
+		{
 			printk("error: NO station info found \n");
 			break;
 		}
 #ifdef SOC_W906X
 		macMgmtMlme_SendDeauthenticateMsg(vmacSta_p, &pStaInfo->Addr,
-						  pStaInfo->StnId,
-						  IEEEtypes_REASON_DEAUTH_LEAVING,
-						  TRUE);
+										  pStaInfo->StnId,
+										  IEEEtypes_REASON_DEAUTH_LEAVING,
+										  TRUE);
 #else
 		macMgmtMlme_SendDeauthenticateMsg(vmacSta_p,
-						  (IEEEtypes_MacAddr_t *)
-						  pStaInfo->Addr,
-						  pStaInfo->StnId,
-						  IEEEtypes_REASON_DEAUTH_LEAVING);
+										  (IEEEtypes_MacAddr_t *)
+											  pStaInfo->Addr,
+										  pStaInfo->StnId,
+										  IEEEtypes_REASON_DEAUTH_LEAVING);
 #endif
 		show_buf += sizeof(STA_INFO);
 	}
 	wl_kfree(sta_buf);
-
 }
 
-void
-wlReadyStart160MhzBcn(DfsApDesc * dfsDesc_p)
+void wlReadyStart160MhzBcn(DfsApDesc *dfsDesc_p)
 {
 	struct wlprivate *priv;
 	vmacApInfo_t *vmacSta_p;
 	MIB_802DOT11 *mib;
 	struct net_device *dev;
-	//DfsAp *dfsap;
+	// DfsAp *dfsap;
 	DfsAp *me;
 	MIB_PHY_DSSS_TABLE *PhyDSSSTable;
 	MIB_SPECTRUM_MGMT *mib_SpectrumMagament_p;
 	UINT8 channel;
 
-	me = (DfsAp *) (dfsDesc_p->me);
+	me = (DfsAp *)(dfsDesc_p->me);
 	dev = me->pNetDev;
 	priv = NETDEV_PRIV_P(struct wlprivate, dev);
 	vmacSta_p = priv->vmacSta_p;
@@ -10445,14 +10966,17 @@ wlReadyStart160MhzBcn(DfsApDesc * dfsDesc_p)
 	PhyDSSSTable = mib->PhyDSSSTable;
 	mib_SpectrumMagament_p = mib->SpectrumMagament;
 	if (priv->wlpd_p->bStopBcnProbeResp && macMgmtMlme_DfsEnabled(dev) &&
-	    ((PhyDSSSTable->Chanflag.ChnlWidth == CH_160_MHz_WIDTH) ||
-	     (PhyDSSSTable->Chanflag.ChnlWidth == CH_AUTO_WIDTH))) {
+		((PhyDSSSTable->Chanflag.ChnlWidth == CH_160_MHz_WIDTH) ||
+		 (PhyDSSSTable->Chanflag.ChnlWidth == CH_AUTO_WIDTH)))
+	{
 
-		if (PhyDSSSTable->Chanflag.FreqBand != FREQ_BAND_5GHZ) {
+		if (PhyDSSSTable->Chanflag.FreqBand != FREQ_BAND_5GHZ)
+		{
 			printk("error:wrong band %d\n",
-			       PhyDSSSTable->Chanflag.FreqBand);
+				   PhyDSSSTable->Chanflag.FreqBand);
 		}
-		if (mib->StationConfig->SpectrumManagementRequired != TRUE) {
+		if (mib->StationConfig->SpectrumManagementRequired != TRUE)
+		{
 			printk("error:spectrum management disabled\n");
 		}
 #ifdef CONCURRENT_DFS_SUPPORT
@@ -10461,15 +10985,16 @@ wlReadyStart160MhzBcn(DfsApDesc * dfsDesc_p)
 #else
 		channel = DfsDecideNewTargetChannel(dev, dfsDesc_p, TRUE);
 #endif /* CONCURRENT_DFS_SUPPORT */
-		if (channel == 0) {
-			//should not happen. Just in case.
+		if (channel == 0)
+		{
+			// should not happen. Just in case.
 			channel = 36;
 		}
 		printk("160Mhz:next target channel %d \n", channel);
 		PhyDSSSTable->CurrChan = channel;
 		me->dfsApDesc.currChanInfo.channel = channel;
 		memcpy(&me->dfsApDesc.currChanInfo.chanflag,
-		       &PhyDSSSTable->Chanflag, sizeof(CHNL_FLAGS));
+			   &PhyDSSSTable->Chanflag, sizeof(CHNL_FLAGS));
 		FireCACTimer(me);
 		mhsm_transition(&me->super, &me->Dfs_Scan);
 	}
@@ -10489,46 +11014,52 @@ wlIntrPoll(struct net_device *netdev)
 
 	// Check the RxQ
 	for (qid = SC5_RXQ_START_INDEX;
-	     qid < (SC5_RXQ_START_INDEX + SC5_RXQ_NUM); qid++) {
-		if (wlSQEmpty(netdev, qid) == FALSE) {
+		 qid < (SC5_RXQ_START_INDEX + SC5_RXQ_NUM); qid++)
+	{
+		if (wlSQEmpty(netdev, qid) == FALSE)
+		{
 			ctx.msg_id = (qid << 1) + wlpd_p->intr_shift;
 			ctx.netDev = netdev;
-			wlSC5MSIX_rx(0, (void *)&ctx);	//"irq" is not used 
+			wlSC5MSIX_rx(0, (void *)&ctx); //"irq" is not used
 		}
 	}
 	// Check the ReleaseQ
 	for (qid = pbqm_args->bmq_release_index;
-	     qid < (pbqm_args->bmq_release_index + pbqm_args->bmq_release_num);
-	     qid++) {
-		if (wlSQEmpty(netdev, qid) == FALSE) {
+		 qid < (pbqm_args->bmq_release_index + pbqm_args->bmq_release_num);
+		 qid++)
+	{
+		if (wlSQEmpty(netdev, qid) == FALSE)
+		{
 			ctx.msg_id = (qid << 1) + wlpd_p->intr_shift;
 			ctx.netDev = netdev;
-			wlSC5MSIX_rel(0, (void *)&ctx);	//"irq" is not used 
+			wlSC5MSIX_rel(0, (void *)&ctx); //"irq" is not used
 		}
 	}
 	return;
 }
 
 #ifdef SOC_W906X
-void
-update_mbss_status(struct wlprivate *wlpptr, u8 status)
+void update_mbss_status(struct wlprivate *wlpptr, u8 status)
 {
 	struct wlprivate_data *wlpd_p =
 		(wlpptr != NULL) ? wlpptr->wlpd_p : NULL;
 	vmacApInfo_t *vmacSta_p = (wlpptr != NULL) ? wlpptr->vmacSta_p : NULL;
-	//mbss_set_t    *pset = &wlpd_p->mbssSet;
+	// mbss_set_t    *pset = &wlpd_p->mbssSet;
 
-	if (wlpd_p == NULL || vmacSta_p == NULL) {
+	if (wlpd_p == NULL || vmacSta_p == NULL)
+	{
 		return;
 	}
-	if (status) {
+	if (status)
+	{
 		wlpd_p->bss_active |= (1 << vmacSta_p->VMacEntry.macId);
-	} else {
+	}
+	else
+	{
 		wlpd_p->bss_active &= (~(1 << vmacSta_p->VMacEntry.macId));
 		wlpd_p->smon.ActVapBitmap &=
 			(~(1 << vmacSta_p->VMacEntry.macId));
 	}
-
 }
 #endif
 #ifdef MV_NSS_SUPPORT
@@ -10539,9 +11070,10 @@ wlAllocSkb(unsigned int length)
 	mv_nss_metadata_t *mdat_ptr = NULL;
 
 	skb = wlNssOps->alloc_skb(length, GFP_ATOMIC);
-	if (skb) {
+	if (skb)
+	{
 		mdat_ptr =
-			(mv_nss_metadata_t *) wlNssOps->get_metadata_skb(skb);
+			(mv_nss_metadata_t *)wlNssOps->get_metadata_skb(skb);
 
 #ifdef MV_NSS_METADATA_RESET
 		memset(mdat_ptr, 0, sizeof(mv_nss_metadata_t));
@@ -10555,14 +11087,12 @@ wlAllocSkb(unsigned int length)
 	return skb;
 }
 
-void
-wlFreeSkb(struct sk_buff *skb)
+void wlFreeSkb(struct sk_buff *skb)
 {
 	return wlNssOps->free_skb(skb);
 }
 
-int
-wlReceiveSkb(struct sk_buff *skb)
+int wlReceiveSkb(struct sk_buff *skb)
 {
 	if (IS_DATA_SKB(skb))
 		return wlNssOps->receive_skb(skb);

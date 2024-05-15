@@ -1,23 +1,23 @@
 /** @file ap8xLnxFwdl.c
-  *
-  * @brief This file contains WLAN driver specific defines etc.
-  *
-  * Copyright 2005-2020 NXP
-  *
-  * This software file (the "File") is distributed by NXP
-  * under the terms of the GNU General Public License Version 2, June 1991
-  * (the "License").  You may use, redistribute and/or modify the File in
-  * accordance with the terms and conditions of the License, a copy of which
-  * is available by writing to the Free Software Foundation, Inc.,
-  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or on the
-  * worldwide web at http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
-  *
-  * THE FILE IS DISTRIBUTED AS-IS, WITHOUT WARRANTY OF ANY KIND, AND THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
-  * ARE EXPRESSLY DISCLAIMED.  The License provides additional details about
-  * this warranty disclaimer.
-  *
-  */
+ * IMPORTANT
+ * @brief This file contains WLAN driver specific defines etc.
+ *
+ * Copyright 2005-2020 NXP
+ *
+ * This software file (the "File") is distributed by NXP
+ * under the terms of the GNU General Public License Version 2, June 1991
+ * (the "License").  You may use, redistribute and/or modify the File in
+ * accordance with the terms and conditions of the License, a copy of which
+ * is available by writing to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or on the
+ * worldwide web at http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+ *
+ * THE FILE IS DISTRIBUTED AS-IS, WITHOUT WARRANTY OF ANY KIND, AND THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
+ * ARE EXPRESSLY DISCLAIMED.  The License provides additional details about
+ * this warranty disclaimer.
+ *
+ */
 
 /** include files **/
 #ifndef NEW_DP
@@ -40,7 +40,7 @@
 #include "ap8xLnxFwcmd.h"
 #include "ap8xLnxIntf.h"
 #include "wldebug.h"
-#if defined (MFG_SUPPORT)
+#if defined(MFG_SUPPORT)
 #include "wl_mib.h"
 #include "wl_hal.h"
 #endif
@@ -59,10 +59,10 @@
 /** private data **/
 
 /** local definitions **/
-#define FW_MAX_CHUNK_LEN                2048
+#define FW_MAX_CHUNK_LEN 2048
 
-#define FW_CHECK_MSECS                  1
-#define FW_MAX_NUM_CHECKS               0xffff
+#define FW_CHECK_MSECS 1
+#define FW_MAX_NUM_CHECKS 0xffff
 
 #ifdef SOC_W906X
 static void
@@ -92,25 +92,25 @@ fw_setup_intr(struct wlprivate *wlpptr)
 		wlpptr->wlpd_p->reg.a2h_int_status_mask;
 
 	writel(MACREG_A2HRIC_BIT_MASK,
-	       wlpptr->ioBase1 + reg_a2h_intr_clear_sel);
+		   wlpptr->ioBase1 + reg_a2h_intr_clear_sel);
 	writel(0x00, wlpptr->ioBase1 + reg_a2h_intr_cause);
 	writel(0x00, wlpptr->ioBase1 + reg_a2h_intr_mask);
 	writel(trigger, wlpptr->ioBase1 + reg_a2h_status_mask);
 }
 #endif /* #ifdef SOC_W906X */
 
-#define FW_DOWNLOAD_BLOCK_SIZE                 256
-#define FW_CHECK_MSECS                           1
+#define FW_DOWNLOAD_BLOCK_SIZE 256
+#define FW_CHECK_MSECS 1
 
-#define FW_MAX_NUM_CHECKS                      0xffff	/* why is this needed? */
+#define FW_MAX_NUM_CHECKS 0xffff /* why is this needed? */
 
-#define FW_LOAD_STA_FWRDY_SIGNATURE     0xf0f1f2f4
-#define FW_LOAD_SOFTAP_FWRDY_SIGNATURE  0xf1f2f4a5
+#define FW_LOAD_STA_FWRDY_SIGNATURE 0xf0f1f2f4
+#define FW_LOAD_SOFTAP_FWRDY_SIGNATURE 0xf1f2f4a5
 
-#define HostCmd_STA_MODE     0x5A
-#define HostCmd_SOFTAP_MODE  0xA5
+#define HostCmd_STA_MODE 0x5A
+#define HostCmd_SOFTAP_MODE 0xA5
 
-#define WL_SEC_SLEEP(NumSecs)       mdelay(NumSecs * 1000);
+#define WL_SEC_SLEEP(NumSecs) mdelay(NumSecs * 1000);
 #define WL_MSEC_SLEEP(NumMilliSecs) mdelay(NumMilliSecs);
 
 /** internal functions **/
@@ -125,13 +125,12 @@ extern int reset_mode;
 #endif /* #ifdef SOC_W906X */
 
 /** public functions **/
-int
-wlFwDownload(struct net_device *netdev)
+int wlFwDownload(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
-	unsigned char *pFwImage = wlpptr->FwPointer;	//&fmimage[0];
+	unsigned char *pFwImage = wlpptr->FwPointer; //&fmimage[0];
 	unsigned int currIteration = FW_MAX_NUM_CHECKS;
-	//unsigned short firmwareBlockSize = FW_DOWNLOAD_BLOCK_SIZE;
+	// unsigned short firmwareBlockSize = FW_DOWNLOAD_BLOCK_SIZE;
 	unsigned int FwReadySignature = FW_LOAD_STA_FWRDY_SIGNATURE;
 	unsigned int OpMode = HostCmd_STA_MODE;
 
@@ -152,13 +151,13 @@ wlFwDownload(struct net_device *netdev)
 #endif /* #ifdef SOC_W906X */
 
 	unsigned int sizeFwDownloaded = 0;
-	//unsigned int remainingFwBytes = 0;
+	// unsigned int remainingFwBytes = 0;
 	unsigned int intCode;
-	//unsigned int sizeSend = 0;
-	//unsigned int sizeGood = 0;
-	//unsigned int i,       sizeBlock;
-	//unsigned char useHelp = 0;
-	//unsigned long dummy;
+	// unsigned int sizeSend = 0;
+	// unsigned int sizeGood = 0;
+	// unsigned int i,       sizeBlock;
+	// unsigned char useHelp = 0;
+	// unsigned long dummy;
 	unsigned int len;
 
 #ifndef SOC_W906X
@@ -167,7 +166,8 @@ wlFwDownload(struct net_device *netdev)
 	unsigned char *p = (unsigned char *)&ddr_init[0];
 	unsigned int sizeDdrInitDownloaded = 0;
 
-	if ((wlpptr->devid == SC4) || (wlpptr->devid == SC4P)) {
+	if ((wlpptr->devid == SC4) || (wlpptr->devid == SC4P))
+	{
 		sizeDdrInit = sizeof(sc4_ddr_init);
 		p = (unsigned char *)&sc4_ddr_init[0];
 	}
@@ -177,10 +177,13 @@ wlFwDownload(struct net_device *netdev)
 	WLDBG_ENTER(DBG_LEVEL_3);
 
 #ifdef SOC_W906X
-	if (IS_BUS_TYPE_MCI(wlpptr)) {
+	if (IS_BUS_TYPE_MCI(wlpptr))
+	{
 		FwReadySignature = HostCmd_SOFTAP_FWRDY_SIGNATURE;
 		OpMode = HostCmd_SOFTAP_MODE;
-	} else {
+	}
+	else
+	{
 		FwReadySignature = FW_LOAD_STA_FWRDY_SIGNATURE;
 		OpMode = HostCmd_STA_MODE;
 		wlpd_p->downloadSuccessful = 1;
@@ -194,32 +197,27 @@ wlFwDownload(struct net_device *netdev)
 	wlFwReset(netdev);
 
 #ifdef SOC_W906X
-	if (IS_BUS_TYPE_MCI(wlpptr)) {
-		//FW before jumping to boot rom, it will enable PCIe transaction retry,
-		//wait for boot code to stop it.
+	if (IS_BUS_TYPE_MCI(wlpptr))
+	{
+		// FW before jumping to boot rom, it will enable PCIe transaction retry,
+		// wait for boot code to stop it.
 		mdelay(FW_CHECK_MSECS);
 
 		fw_setup_intr(wlpptr);
-	} else {
+	}
+	else
+	{
 #endif /* #ifdef SOC_W906X */
-		//FW before jumping to boot rom, it will enable PCIe transaction retry, wait for boot code to stop it.
+		// FW before jumping to boot rom, it will enable PCIe transaction retry, wait for boot code to stop it.
 		WL_MSEC_SLEEP(FW_CHECK_MSECS);
 
 		writel(MACREG_A2HRIC_BIT_MASK_MSI,
-		       wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_CLEAR_SEL);
+			   wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_CLEAR_SEL);
 		writel(0x00, wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_CAUSE);
 		writel(0x00, wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_MASK);
 		writel(MACREG_A2HRIC_BIT_MASK_MSI,
-		       wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_STATUS_MASK);
+			   wlpptr->ioBase1 + MACREG_REG_A2H_INTERRUPT_STATUS_MASK);
 
-		/** SC3 MFG FW no longer use this signature
-		if (wlpptr->mfgEnable)
-		{
-			FwReadySignature = FW_LOAD_STA_FWRDY_SIGNATURE;
-			OpMode = HostCmd_STA_MODE;
-			printk("client mode\n");
-		}
-		else */
 		{
 			FwReadySignature = FW_LOAD_SOFTAP_FWRDY_SIGNATURE;
 			OpMode = HostCmd_SOFTAP_MODE;
@@ -240,11 +238,14 @@ wlFwDownload(struct net_device *netdev)
 
 	/* len should not be zero. The first len is 0x10 */
 	/* make sure SCRATCH2 C40 is clear, in case we are too quick */
-	while (readl(wlpptr->ioBase1 + reg_len_offset) == 0) ;
+	while (readl(wlpptr->ioBase1 + reg_len_offset) == 0)
+		;
 
-	while (sizeFwDownloaded < wlpptr->FwSize) {
+	while (sizeFwDownloaded < wlpptr->FwSize)
+	{
 		len = readl(wlpptr->ioBase1 + reg_len_offset);
-		if (len > FW_MAX_CHUNK_LEN) {
+		if (len > FW_MAX_CHUNK_LEN)
+		{
 			printk("bad len: 0x%x !!", len);
 			return FAIL;
 		}
@@ -253,12 +254,14 @@ wlFwDownload(struct net_device *netdev)
 	writel(0x100, wlpptr->ioBase1 + 0xE0E4);
 
 	/* make sure SCRATCH2 C40 is clear, in case we are too quick */
-	while (readl(wlpptr->ioBase1 + 0xc40) == 0) ;
+	while (readl(wlpptr->ioBase1 + 0xc40) == 0)
+		;
 #ifdef NEW_DP
 	/* download ddr init code */
 	printk("init ddr...\n");
 
-	while (sizeDdrInitDownloaded < sizeDdrInit) {
+	while (sizeDdrInitDownloaded < sizeDdrInit)
+	{
 		len = readl(wlpptr->ioBase1 + 0xc40);
 		if (!len)
 			break;
@@ -266,16 +269,17 @@ wlFwDownload(struct net_device *netdev)
 		/* this copies the next chunk of fw binary to be delivered */
 		memcpy((char *)&wlpptr->pCmdBuf[0], p, len);
 
-		currIteration = FW_MAX_NUM_CHECKS * 500;	/* this is arbitrary per your platform; we use 0xffff */
+		currIteration = FW_MAX_NUM_CHECKS * 500; /* this is arbitrary per your platform; we use 0xffff */
 		/* this function writes pdata to c10, then write 2 to c18 */
 		wltriggerPciCmd_bootcode(netdev);
 
-		/* NOTE: the following back to back checks on C1C is time sensitive, hence  
-		   may need to be tweaked dependent on host processor. Time for SC2 to go from 
+		/* NOTE: the following back to back checks on C1C is time sensitive, hence
+		   may need to be tweaked dependent on host processor. Time for SC2 to go from
 		   the write of event 2 to C1C == 2 is ~1300 nSec. Hence the checkings on host
 		   has to consider how efficient your code can be to meet this timing, or you
 		   can alternatively tweak this routines to fit your platform */
-		do {
+		do
+		{
 			intCode = readl(wlpptr->ioBase1 + 0xc1c);
 			if (intCode != 0)
 				break;
@@ -283,15 +287,17 @@ wlFwDownload(struct net_device *netdev)
 
 		} while (currIteration);
 
-		do {
+		do
+		{
 			intCode = readl(wlpptr->ioBase1 + 0xc1c);
 			if ((intCode & MACREG_H2ARIC_BIT_DOOR_BELL) !=
-			    MACREG_H2ARIC_BIT_DOOR_BELL)
+				MACREG_H2ARIC_BIT_DOOR_BELL)
 				break;
 			currIteration--;
 		} while (currIteration);
 
-		if (currIteration == 0) {
+		if (currIteration == 0)
+		{
 			/* This limited loop check allows you to exit gracefully without locking up
 			   your entire system just because fw download failed */
 			printk("Exhausted currIteration during ddr init code download\n");
@@ -302,28 +308,31 @@ wlFwDownload(struct net_device *netdev)
 		sizeDdrInitDownloaded += len;
 	}
 #endif
-	while (sizeFwDownloaded < wlpptr->FwSize) {
+	while (sizeFwDownloaded < wlpptr->FwSize)
+	{
 		len = readl(wlpptr->ioBase1 + 0xc40);
 #ifdef SOC_W8964
-		if (len > 512) {
+		if (len > 512)
+		{
 			printk("bad len: 0x%x !!", len);
-			while (1) ;
+			while (1)
+				;
 		}
 #endif
 #endif /* #ifdef SOC_W906X */
 
 		if (!len)
 			break;
-		/* this copies the next chunk of fw binary to be delivered */
+			/* this copies the next chunk of fw binary to be delivered */
 #ifndef SOC_W906X
 		memcpy((char *)&wlpptr->pCmdBuf[0],
-		       (pFwImage + sizeFwDownloaded), len);
+			   (pFwImage + sizeFwDownloaded), len);
 #else
 		memcpy((char *)&wlpptr->pFwDlBuf[0],
-		       (pFwImage + sizeFwDownloaded), len);
-#endif		 /**/
-			currIteration = FW_MAX_NUM_CHECKS;	/* this is arbitrary per your platform; we use 0xffff */
-		/* this function writes pdata to c10, then write 2 to c18 */
+			   (pFwImage + sizeFwDownloaded), len);
+#endif									   /**/
+		currIteration = FW_MAX_NUM_CHECKS; /* this is arbitrary per your platform; we use 0xffff */
+										   /* this function writes pdata to c10, then write 2 to c18 */
 #ifdef SOC_W906X
 		if (IS_BUS_TYPE_MCI(wlpptr))
 			fw_chunk_transfer(netdev);
@@ -336,21 +345,24 @@ wlFwDownload(struct net_device *netdev)
 		   the write of event 2 to C1C == 2 is ~1300 nSec. Hence the checkings on host
 		   has to consider how efficient your code can be to meet this timing, or you
 		   can alternatively tweak this routines to fit your platform */
-		do {
+		do
+		{
 			intCode = readl(wlpptr->ioBase1 + reg_cause_offset);
 			if (intCode != 0)
 				break;
 			currIteration--;
 		} while (currIteration);
 
-		do {
+		do
+		{
 			intCode = readl(wlpptr->ioBase1 + reg_cause_offset);
 			if ((intCode & MACREG_H2ARIC_BIT_DOOR_BELL) !=
-			    MACREG_H2ARIC_BIT_DOOR_BELL)
+				MACREG_H2ARIC_BIT_DOOR_BELL)
 				break;
 			currIteration--;
 		} while (currIteration);
-		if (currIteration == 0) {
+		if (currIteration == 0)
+		{
 			/* This limited loop check allows you to exit gracefully without locking up
 			   your entire system just because fw download failed */
 			printk("Exhausted currIteration during fw download\n");
@@ -376,10 +388,11 @@ wlFwDownload(struct net_device *netdev)
 	printk("\n");
 #endif
 	printk("FwSize = %d downloaded Size = %d currIteration %d\n",
-	       (int)wlpptr->FwSize, sizeFwDownloaded, currIteration);
+		   (int)wlpptr->FwSize, sizeFwDownloaded, currIteration);
 #ifdef SOC_W906X
 	tick3 = xxGetTimeStamp();
-	if (!IS_BUS_TYPE_MCI(wlpptr)) {
+	if (!IS_BUS_TYPE_MCI(wlpptr))
+	{
 		if (!wlpd_p->downloadSuccessful)
 			goto complete;
 	}
@@ -387,10 +400,10 @@ wlFwDownload(struct net_device *netdev)
 	if (!downloadSuccessful)
 		goto complete;
 #endif /* #ifdef SOC_W906X */
-	/* Now firware is downloaded successfully, so this part is to check
-	   whether fw can properly execute to an extent that write back signature
-	   to indicate its readiness to the host. NOTE: if your downloaded fw crashes,
-	   this signature checking will fail. This part is similar as SC1 */
+	   /* Now firware is downloaded successfully, so this part is to check
+		  whether fw can properly execute to an extent that write back signature
+		  to indicate its readiness to the host. NOTE: if your downloaded fw crashes,
+		  this signature checking will fail. This part is similar as SC1 */
 
 #ifndef SOC_W906X
 	writew(0x00, &wlpptr->pCmdBuf[1]);
@@ -400,7 +413,8 @@ wlFwDownload(struct net_device *netdev)
 #endif /* #ifndef SOC_W906X */
 	currIteration = FW_MAX_NUM_CHECKS;
 
-	do {
+	do
+	{
 		currIteration--;
 		writel(OpMode, wlpptr->ioBase1 + reg_gen_ptr);
 #ifdef SOC_W906X
@@ -421,7 +435,8 @@ wlFwDownload(struct net_device *netdev)
 	tick4 = xxGetTimeStamp();
 #endif /* #ifdef SOC_W906X */
 
-	if (currIteration == 0) {
+	if (currIteration == 0)
+	{
 		printk("Exhausted currIteration waiting for fw signature; firmware seems failed to operate\n");
 #ifdef SOC_W906X
 		if (!IS_BUS_TYPE_MCI(wlpptr))
@@ -435,7 +450,7 @@ wlFwDownload(struct net_device *netdev)
 
 complete:
 #ifdef SOC_W906X
-	printk("wlFwDownload complete\nFwDownload time = %u us\nRadio Cal  time = %u us\n", (u32) (tick2 - tick1), (u32) (tick4 - tick3));
+	printk("wlFwDownload complete\nFwDownload time = %u us\nRadio Cal  time = %u us\n", (u32)(tick2 - tick1), (u32)(tick4 - tick3));
 	writel(wlpptr->wlpd_p->pPhysCmdBuf, wlpptr->ioBase1 + reg_gen_ptr);
 
 	wlpd_p->downloadSuccessful = TRUE;
@@ -455,12 +470,12 @@ wltriggerPciCmd(struct net_device *netdev)
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
 	writel(wlpptr->wlpd_p->pPhysCmdBuf,
-	       wlpptr->ioBase1 + MACREG_REG_GEN_PTR);
+		   wlpptr->ioBase1 + MACREG_REG_GEN_PTR);
 
 	writel(0x00, wlpptr->ioBase1 + MACREG_REG_INT_CODE);
 
 	writel(MACREG_H2ARIC_BIT_DOOR_BELL,
-	       wlpptr->ioBase1 + MACREG_REG_H2A_INTERRUPT_EVENTS);
+		   wlpptr->ioBase1 + MACREG_REG_H2A_INTERRUPT_EVENTS);
 }
 #endif /* #ifndef SOC_W906X */
 
@@ -472,15 +487,15 @@ wltriggerPciCmd_bootcode(struct net_device *netdev)
 #ifdef SOC_W906X
 	/* write location of data to c10 */
 	writel(wlpptr->wlpd_p->pPhysFwDlBuf,
-	       wlpptr->ioBase1 + MACREG_REG_GEN_PTR);
+		   wlpptr->ioBase1 + MACREG_REG_GEN_PTR);
 #else
 	/* write location of data to c10 */
 	writel(wlpptr->wlpd_p->pPhysCmdBuf,
-	       wlpptr->ioBase1 + MACREG_REG_GEN_PTR);
+		   wlpptr->ioBase1 + MACREG_REG_GEN_PTR);
 #endif
 	/* write 2 to c18 */
 	writel(MACREG_H2ARIC_BIT_DOOR_BELL,
-	       wlpptr->ioBase1 + MACREG_REG_H2A_INTERRUPT_EVENTS);
+		   wlpptr->ioBase1 + MACREG_REG_H2A_INTERRUPT_EVENTS);
 }
 
 extern int LoadExternalFw(struct wlprivate *priv, char *filename);
@@ -494,10 +509,10 @@ extern int LoadExternalFw(struct wlprivate *priv, char *filename);
 #ifdef EEPROM_REGION_PWRTABLE_SUPPORT
 #define EXTERNAL_FILE_NAME_FOR_SC4 "/lib/firmware/wlan-v9_8964/W8964-eeprom.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC4P "/lib/firmware/wlan-v9_8964/W8966-eeprom.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5  "/lib/firmware/marvell/W9068-eeprom.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5_A0  "/lib/firmware/marvell/W9068-eeprom-A0.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5_STA  "/lib/firmware/marvell/W9068-eeprom-STA.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5_AP  "/lib/firmware/marvell/W9068-eeprom-AP.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5 "/lib/firmware/marvell/W9068-eeprom.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5_A0 "/lib/firmware/marvell/W9068-eeprom-A0.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5_STA "/lib/firmware/marvell/W9068-eeprom-STA.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5_AP "/lib/firmware/marvell/W9068-eeprom-AP.bin"
 #define EXTERNAL_FILE_NAME_FOR_SCBT "/lib/firmware/marvell/W9064-eeprom.bin"
 #define EXTERNAL_FILE_NAME_FOR_SCBT_A0 "/lib/firmware/marvell/W9064-eeprom-A0.bin"
 #define EXTERNAL_FILE_NAME_FOR_SCBT_STA "/lib/firmware/marvell/W9064-eeprom-STA.bin"
@@ -505,7 +520,7 @@ extern int LoadExternalFw(struct wlprivate *priv, char *filename);
 #else
 #define EXTERNAL_FILE_NAME_FOR_SC4 "/lib/firmware/wlan-v9_8964/W8964.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC4P "/lib/firmware/wlan-v9_8964/W8966.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5  "/lib/firmware/marvell/W9068.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5 "/lib/firmware/marvell/W9068.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC5_A0 "/lib/firmware/marvell/W9068.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC5_STA "/lib/firmware/marvell/W9068-STA.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC5_AP "/lib/firmware/marvell/W9068-AP.bin"
@@ -524,10 +539,10 @@ extern int LoadExternalFw(struct wlprivate *priv, char *filename);
 #ifdef EEPROM_REGION_PWRTABLE_SUPPORT
 #define EXTERNAL_FILE_NAME_FOR_SC4 "W8964-eeprom.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC4P "W8966-eeprom.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5  "W9068-eeprom.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5_A0  "W9068-eeprom-A0.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5_STA  "W9068-eeprom-STA.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5_AP  "W9068-eeprom-AP.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5 "W9068-eeprom.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5_A0 "W9068-eeprom-A0.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5_STA "W9068-eeprom-STA.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5_AP "W9068-eeprom-AP.bin"
 #define EXTERNAL_FILE_NAME_FOR_SCBT "W9064-eeprom.bin"
 #define EXTERNAL_FILE_NAME_FOR_SCBT_A0 "W9064-eeprom-A0.bin"
 #define EXTERNAL_FILE_NAME_FOR_SCBT_STA "W9064-eeprom-STA.bin"
@@ -535,7 +550,7 @@ extern int LoadExternalFw(struct wlprivate *priv, char *filename);
 #else
 #define EXTERNAL_FILE_NAME_FOR_SC4 "W8964.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC4P "W8966.bin"
-#define EXTERNAL_FILE_NAME_FOR_SC5  "W9068.bin"
+#define EXTERNAL_FILE_NAME_FOR_SC5 "W9068.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC5_A0 "W9068.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC5_STA "W9068-STA.bin"
 #define EXTERNAL_FILE_NAME_FOR_SC5_AP "W9068-AP.bin"
@@ -558,53 +573,63 @@ extern char *CAL_FILE_PATH;
 			- If it's (Zx) => failed to run
 			- Try to load W9064.bin / W9068.bin
 */
-int
-wlPrepareFwFile(struct net_device *netdev)
+int wlPrepareFwFile(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 
 #ifdef DEFAULT_MFG_MODE
 	char *fw_file;
 
-	if (wlpptr->devid == SC3) {
+	if (wlpptr->devid == SC3)
+	{
 		printk("MFG fw file: %s\n", EXTERNAL_MFG_FILE_NAME_FOR_SC3);
 		fw_file = EXTERNAL_MFG_FILE_NAME_FOR_SC3;
-	} else if (wlpptr->devid == SC4P) {
+	}
+	else if (wlpptr->devid == SC4P)
+	{
 		printk("MFG file: %s\n", EXTERNAL_MFG_FILE_NAME_FOR_SC4P);
 		fw_file = EXTERNAL_MFG_FILE_NAME_FOR_SC4P;
 #ifdef SOC_W906X
-	} else if (wlpptr->devid == SC5) {
+	}
+	else if (wlpptr->devid == SC5)
+	{
 		fw_file = EXTERNAL_MFG_FILE_NAME_FOR_SC5;
 
-		switch (wlpptr->hwData.chipRevision) {
+		switch (wlpptr->hwData.chipRevision)
+		{
 		case REV_A0:
 			break;
 		default:
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "=> Unknown revision: %xh, using this fw file: %s\n",
-				    wlpptr->hwData.chipRevision, fw_file);
+						"=> Unknown revision: %xh, using this fw file: %s\n",
+						wlpptr->hwData.chipRevision, fw_file);
 		}
 		printk("MFG file: %s\n", fw_file);
-	} else if (wlpptr->devid == SCBT) {
+	}
+	else if (wlpptr->devid == SCBT)
+	{
 		fw_file = EXTERNAL_MFG_FILE_NAME_FOR_SCBT;
 
-		switch (wlpptr->hwData.chipRevision) {
+		switch (wlpptr->hwData.chipRevision)
+		{
 		case REV_A0:
 			break;
 		default:
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "=> Unknown revision: %xh, using this fw file: %s\n",
-				    wlpptr->hwData.chipRevision, fw_file);
+						"=> Unknown revision: %xh, using this fw file: %s\n",
+						wlpptr->hwData.chipRevision, fw_file);
 		}
 		printk("MFG file: %s\n", fw_file);
 	}
 #endif /* #ifdef SOC_W906X */
-	else {			//SC4
+	else
+	{ // SC4
 		printk("MFG file: %s\n", EXTERNAL_MFG_FILE_NAME_FOR_SC4);
 		fw_file = EXTERNAL_MFG_FILE_NAME_FOR_SC4;
 	}
 
-	if (LoadExternalFw(wlpptr, fw_file)) {
+	if (LoadExternalFw(wlpptr, fw_file))
+	{
 		wlpptr->mfgEnable = 1;
 		wlpptr->mfgLoaded = 1;
 		return SUCCESS;
@@ -612,30 +637,41 @@ wlPrepareFwFile(struct net_device *netdev)
 	wlpptr->mfgEnable = 1;
 	wlpptr->mfgLoaded = 1;
 	printk("load external .bin file fail\n");
-	return FAIL;		/* Load external failed. */
+	return FAIL; /* Load external failed. */
 #else
 	wlpptr->mfgEnable = 0;
 	wlpptr->mfgLoaded = 0;
 
-	if (wlpptr->devid == SC3) {
+	if (wlpptr->devid == SC3)
+	{
 		printk("fw file: %s\n", EXTERNAL_FILE_NAME_FOR_SC3);
-		if (LoadExternalFw(wlpptr, EXTERNAL_FILE_NAME_FOR_SC3)) {
+		if (LoadExternalFw(wlpptr, EXTERNAL_FILE_NAME_FOR_SC3))
+		{
 			return SUCCESS;
 		}
-	} else if (wlpptr->devid == SC4) {
+	}
+	else if (wlpptr->devid == SC4)
+	{
 		printk("fw file: %s\n", EXTERNAL_FILE_NAME_FOR_SC4);
-		if (LoadExternalFw(wlpptr, EXTERNAL_FILE_NAME_FOR_SC4)) {
+		if (LoadExternalFw(wlpptr, EXTERNAL_FILE_NAME_FOR_SC4))
+		{
 			return SUCCESS;
 		}
-	} else if (wlpptr->devid == SC4P) {
+	}
+	else if (wlpptr->devid == SC4P)
+	{
 		printk("fw file: %s\n", EXTERNAL_FILE_NAME_FOR_SC4P);
-		if (LoadExternalFw(wlpptr, EXTERNAL_FILE_NAME_FOR_SC4P)) {
+		if (LoadExternalFw(wlpptr, EXTERNAL_FILE_NAME_FOR_SC4P))
+		{
 			return SUCCESS;
 		}
 #ifdef SOC_W906X
-	} else if (wlpptr->devid == SC5) {
+	}
+	else if (wlpptr->devid == SC5)
+	{
 		char *fw_file;
-		switch (wlpptr->hwData.chipRevision) {
+		switch (wlpptr->hwData.chipRevision)
+		{
 		case REV_A0:
 			fw_file = EXTERNAL_FILE_NAME_FOR_SC5_A0;
 			if (reset_mode == 1)
@@ -646,23 +682,28 @@ wlPrepareFwFile(struct net_device *netdev)
 		default:
 			fw_file = EXTERNAL_FILE_NAME_FOR_SC5;
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "=> Unknown revision: %xh, use this %s\n",
-				    wlpptr->hwData.chipRevision, fw_file);
+						"=> Unknown revision: %xh, use this %s\n",
+						wlpptr->hwData.chipRevision, fw_file);
 		};
 
 		printk("fw file: %s\n", fw_file);
-		if (LoadExternalFw(wlpptr, fw_file)) {
+		if (LoadExternalFw(wlpptr, fw_file))
+		{
 			return SUCCESS;
 		}
 
 		fw_file = EXTERNAL_FILE_NAME_FOR_SC5;
 		printk("Try fw file: %s\n", fw_file);
-		if (LoadExternalFw(wlpptr, fw_file)) {
+		if (LoadExternalFw(wlpptr, fw_file))
+		{
 			return SUCCESS;
 		}
-	} else if (wlpptr->devid == SCBT) {
+	}
+	else if (wlpptr->devid == SCBT)
+	{
 		char *fw_file;
-		switch (wlpptr->hwData.chipRevision) {
+		switch (wlpptr->hwData.chipRevision)
+		{
 		case REV_A0:
 			fw_file = EXTERNAL_FILE_NAME_FOR_SCBT_A0;
 			if (reset_mode == 1)
@@ -673,26 +714,27 @@ wlPrepareFwFile(struct net_device *netdev)
 		default:
 			fw_file = EXTERNAL_FILE_NAME_FOR_SCBT;
 			WLDBG_ERROR(DBG_LEVEL_0,
-				    "=> Unknown revision: %xh, use this %s\n",
-				    wlpptr->hwData.chipRevision, fw_file);
+						"=> Unknown revision: %xh, use this %s\n",
+						wlpptr->hwData.chipRevision, fw_file);
 			break;
 		}
 		printk("fw file: %s\n", fw_file);
-		if (LoadExternalFw(wlpptr, fw_file)) {
+		if (LoadExternalFw(wlpptr, fw_file))
+		{
 			return SUCCESS;
 		}
 
 		fw_file = EXTERNAL_FILE_NAME_FOR_SCBT;
 		printk("Try fw file: %s\n", fw_file);
-		if (LoadExternalFw(wlpptr, fw_file)) {
+		if (LoadExternalFw(wlpptr, fw_file))
+		{
 			return SUCCESS;
 		}
 #endif /* #ifdef SOC_W906X */
 	}
 	printk("load external .bin file fail\n");
-	return FAIL;		/* Load external failed. */
+	return FAIL; /* Load external failed. */
 #endif
-
 }
 
 #ifdef FS_CAL_FILE_SUPPORT
@@ -702,7 +744,8 @@ wlHex2Int(char *pHex)
 	int sum = 0, digit, cnt = 0;
 	unsigned char cDigit;
 
-	for (cnt = 0; cnt < 2; cnt++) {
+	for (cnt = 0; cnt < 2; cnt++)
+	{
 		sum <<= 4;
 		cDigit = /*toupper */ (*pHex);
 		if (cDigit >= '0' && cDigit <= '9')
@@ -728,34 +771,42 @@ wlGetCalFile(char *filename, char *kbuf)
 
 	filp = filp_open(filename, 0, 0);
 
-	if (!IS_ERR(filp)) {
-		while (i < EEPROM_ON_FILE_MAX_SIZE) {
-			if (kernel_read(filp, &str_data[0], 1, &filp->f_pos)) {
+	if (!IS_ERR(filp))
+	{
+		while (i < EEPROM_ON_FILE_MAX_SIZE)
+		{
+			if (kernel_read(filp, &str_data[0], 1, &filp->f_pos))
+			{
 				if ((str_data[0] == ' ') ||
-				    (str_data[0] == '\n') ||
-				    (str_data[0] == '\r'))
+					(str_data[0] == '\n') ||
+					(str_data[0] == '\r'))
 					continue;
-				if (kernel_read
-				    (filp, &str_data[1], 1, &filp->f_pos)) {
+				if (kernel_read(filp, &str_data[1], 1, &filp->f_pos))
+				{
 
 					if (skipCount > 0)
 						skipCount--;
-					else {
+					else
+					{
 						*(kbuf + i) =
 							(char)
-							wlHex2Int(str_data);
+								wlHex2Int(str_data);
 						i++;
 					}
-				} else
+				}
+				else
 					break;
-			} else
+			}
+			else
 				break;
 		}
 
 		filp_close(filp, current->files);
-	} else {
+	}
+	else
+	{
 		WLDBG_WARNING(DBG_LEVEL_3, "%s: open %s Fail\n", __FUNCTION__,
-			      filename);
+					  filename);
 		ret_value = FAIL;
 	}
 
@@ -776,7 +827,7 @@ wlGetCalFile(char *filename, char *kbuf)
 
 static int
 wlGetBufferAddr(struct net_device *netdev, char **dma_buffer,
-		dma_addr_t * dma_handle)
+				dma_addr_t *dma_handle)
 {
 	static char *kbuf = NULL;
 	static dma_addr_t handle = 0;
@@ -787,32 +838,36 @@ wlGetBufferAddr(struct net_device *netdev, char **dma_buffer,
 	// First Call will allocated the buffer. After First Call it just return the allocated buffer address unless the NULL parametwr for free buffer
 	if ((kbuf == NULL) && (handle == 0))
 		kbuf = wl_dma_alloc_coherent(wlpptr->wlpd_p->dev, size, &handle,
-					     GFP_KERNEL);
+									 GFP_KERNEL);
 
-	if ((kbuf == NULL) || (handle == 0)) {
+	if ((kbuf == NULL) || (handle == 0))
+	{
 		WLDBG_ERROR(DBG_LEVEL_3, "%s: allocate buffer fail\n",
-			    __FUNCTION__);
+					__FUNCTION__);
 
 		return FAIL;
 	}
 
-	if (dma_buffer == NULL && dma_handle == NULL) {
+	if (dma_buffer == NULL && dma_handle == NULL)
+	{
 		wl_dma_free_coherent(wlpptr->wlpd_p->dev, size, kbuf, handle);
 
 		WLDBG_INFO(DBG_LEVEL_3,
-			   "%s: Free MFG host memory 0x%x Size 0x%x Success\n",
-			   __FUNCTION__, handle, (int)size);
+				   "%s: Free MFG host memory 0x%x Size 0x%x Success\n",
+				   __FUNCTION__, handle, (int)size);
 
 		kbuf = NULL;
 		handle = 0;
-	} else {
+	}
+	else
+	{
 		*dma_handle = handle;
 		*dma_buffer = kbuf;
 
 		WLDBG_INFO(DBG_LEVEL_3,
-			   "%s: kbuf=%12p, handle=%12p, size = %d\n",
-			   __FUNCTION__, kbuf, (unsigned long *)handle,
-			   (int)size);
+				   "%s: kbuf=%12p, handle=%12p, size = %d\n",
+				   __FUNCTION__, kbuf, (unsigned long *)handle,
+				   (int)size);
 	}
 
 	return SUCCESS;
@@ -821,8 +876,7 @@ wlGetBufferAddr(struct net_device *netdev, char **dma_buffer,
 extern char *SINGLE_MFG_CONF_FILE_NAME;
 extern char *DUAL0_MFG_CONF_FILE_NAME;
 extern char *DUAL1_MFG_CONF_FILE_NAME;
-int
-wlDownloadMFGFile(struct net_device *netdev)
+int wlDownloadMFGFile(struct net_device *netdev)
 {
 	struct wlprivate *wlpptr = NETDEV_PRIV_P(struct wlprivate, netdev);
 	char *kbuf = NULL;
@@ -837,69 +891,62 @@ wlDownloadMFGFile(struct net_device *netdev)
 	memset(kbuf, 0xFF, EEPROM_ON_FILE_MAX_SIZE);
 
 	sprintf(ConfFileName, EXTERNAL_FILE_NAME_FOR_CONF_FILE, CAL_FILE_PATH,
-		netdev->name);
+			netdev->name);
 	//;     printk("Try to read Conf file: %s\n",ConfFileName);
-	if (wlGetCalFile(ConfFileName, kbuf) == FAIL) {
+	if (wlGetCalFile(ConfFileName, kbuf) == FAIL)
+	{
 		printk("%s: No ext cal data file: %s\n", netdev->name,
-		       ConfFileName);
+			   ConfFileName);
 		return FAIL;
-	} else {
+	}
+	else
+	{
 		printk("%s: Parsing complete for ext cal data file: %s \n",
-		       netdev->name, ConfFileName);
+			   netdev->name, ConfFileName);
 	}
 
-	*(u32 *) (&((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->config.
-		  cal_data_conf_phy_addr) = handle;
+	*(u32 *)(&((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config.cal_data_conf_phy_addr) = handle;
 	// wlInit() will overwrite the 1KB SMAC config block with the data in smacconfig.
 	// Therefore, update the data in smacconfig too for writing back.
 	wlpptr->smacconfig.cal_data_conf_phy_addr = handle;
-	mfgval = ((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->config.
-		cal_data_conf_phy_addr;
-	if (handle != mfgval) {
+	mfgval = ((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config.cal_data_conf_phy_addr;
+	if (handle != mfgval)
+	{
 		WLDBG_ERROR(DBG_LEVEL_3,
-			    "%s: FW memory 0x%x= 0x%x mismach address 0x%x\n",
-			    __FUNCTION__,
-			    (unsigned
-			     int)(((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->
-				  config.cal_data_conf_phy_addr), (int)mfgval,
-			    handle);
+					"%s: FW memory 0x%x= 0x%x mismach address 0x%x\n",
+					__FUNCTION__,
+					(unsigned int)(((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config.cal_data_conf_phy_addr), (int)mfgval,
+					handle);
 		WLDBG_INFO(DBG_LEVEL_3,
-			   "%s: Prepare MFG host memory 0x%x Success to FW 0x%x, 0x%x\n",
-			   __FUNCTION__, handle,
-			   (unsigned
-			    int)(((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->config.
-				 cal_data_conf_phy_addr), (int)mfgval);
+				   "%s: Prepare MFG host memory 0x%x Success to FW 0x%x, 0x%x\n",
+				   __FUNCTION__, handle,
+				   (unsigned int)(((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config.cal_data_conf_phy_addr), (int)mfgval);
 		return FAIL;
 	}
 
-	*(u32 *) (&((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->config.
-		  cal_data_conf_signature) = STA_EE_SIGNATURE;
+	*(u32 *)(&((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config.cal_data_conf_signature) = STA_EE_SIGNATURE;
 	// wlInit() will overwrite the 1KB SMAC config block with the data in smacconfig.
 	// Therefore, update the data in smacconfig too for writing back.
 	wlpptr->smacconfig.cal_data_conf_signature = STA_EE_SIGNATURE;
-	mfgval = ((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->config.
-		cal_data_conf_signature;
-	if (STA_EE_SIGNATURE != mfgval) {
+	mfgval = ((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config.cal_data_conf_signature;
+	if (STA_EE_SIGNATURE != mfgval)
+	{
 		WLDBG_ERROR(DBG_LEVEL_3,
-			    "%s: FW memory 0x%x=0x%x mismach address 0x%x\n",
-			    __FUNCTION__,
-			    (unsigned
-			     int)(((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->
-				  config.cal_data_conf_signature),
-			    (unsigned int)mfgval, STA_EE_SIGNATURE);
+					"%s: FW memory 0x%x=0x%x mismach address 0x%x\n",
+					__FUNCTION__,
+					(unsigned int)(((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config.cal_data_conf_signature),
+					(unsigned int)mfgval, STA_EE_SIGNATURE);
 		return FAIL;
 	}
 	WLDBG_INFO(DBG_LEVEL_3,
-		   "%s: Prepare MFG host memory 0x%x Success to FW 0x%x\n",
-		   __FUNCTION__, handle,
-		   (unsigned int)(((SMAC_CTRL_BLK_st *) wlpptr->ioBase0)->
-				  config.cal_data_conf_phy_addr));
+			   "%s: Prepare MFG host memory 0x%x Success to FW 0x%x\n",
+			   __FUNCTION__, handle,
+			   (unsigned int)(((SMAC_CTRL_BLK_st *)wlpptr->ioBase0)->config.cal_data_conf_phy_addr));
 
 	return SUCCESS;
 }
 
-int
-wlFreeMFGFileBuffer(struct net_device *netdev)
+int wlFreeMFGFileBuffer(struct net_device *netdev)
 {
 	if (wlGetBufferAddr(netdev, NULL, NULL) == FAIL)
 		return FAIL;

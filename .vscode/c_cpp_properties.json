@@ -1,0 +1,39 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "D:\\github\\linux-6.1.90\\include\\generated\\uapi",
+                "D:\\github\\linux-6.1.90\\include\\uapi",
+                "D:\\github\\linux-6.1.90\\include",
+                "${workspaceFolder}/DRV/wlan-v10/driver",
+                "${workspaceFolder}/DRV/wlan-v10/driver/W8964",
+                "${workspaceFolder}/DRV/wlan-v10/core/api",
+                "${workspaceFolder}/DRV/wlan-v10/core/incl",
+                "${workspaceFolder}/DRV/wlan-v10/core/mgt/STA/incl",
+                "${workspaceFolder}/SHAL/shal1/include",
+                "${workspaceFolder}/CMIF/include"
+            ],
+            "defines": [
+                "USE_TASKLET",
+                "DRV_SKIP_DEFINE",
+                "MV_CPU_LE",
+                "MV_LINUX",
+                "MV_ARM",
+                "ZERO_COPY_RX",
+                "OWE_SUPPORT",
+                "CONFIG_IEEE80211W",
+                "SOC_W8764",
+                "SOC_W8864",
+                "SOC_W8964",
+                "NUMOFAPS=16",
+                "NEW_DP",
+                "NEWDP_ACNT_BA",
+                "CFG80211",
+                "CFG80211_COMPATIABLE"
+            ]
+        }
+    ],
+    "version": 4
+}
